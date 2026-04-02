@@ -34,7 +34,7 @@ public class PositiveAndNegativeSamples<V> {
         this.slidingWindow = Objects.requireNonNull(slidingWindow, "symmetricSlidingWindow cannot be null");
         this.negativeSample = Objects.requireNonNull(negativeSample, "negativeSample cannot be null");
         this.random = new Random(randomSeed);
-        this.sequences = new ArrayList<>(deepWalk.getRandomWalks());
+        this.sequences = new ArrayList<>(deepWalks.getRandomWalks());
         this.allowSampleDuplicate = allowSampleDuplicate;
     }
 
