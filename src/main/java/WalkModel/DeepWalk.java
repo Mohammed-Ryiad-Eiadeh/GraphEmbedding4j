@@ -72,7 +72,7 @@ public class DeepWalk<V> implements WalkStrategy<V> {
         }
         return sequence;
     }
-
+    
     /**
      * Returns the generated random walks.
      * <p>
@@ -89,9 +89,9 @@ public class DeepWalk<V> implements WalkStrategy<V> {
         }
 
         HashSet<ArrayList<Integer>> RWs = new HashSet<>();
-        for (var i = 0; i < immutableGraphDataObj.vertexCount(); i++) {
-            for (var j = 0; j < walkPerNode; j++) {
-                var walk = generateWalk(mapper.getVertex(i));
+        for (int i = 0; i < immutableGraphDataObj.vertexCount(); i++) {
+            for (int j = 0; j < walkPerNode; j++) {
+                ArrayList<Integer> walk = generateWalk(mapper.getVertex(i));
                 if (walk.size() >= 2) {
                     RWs.add(walk);
                 }
