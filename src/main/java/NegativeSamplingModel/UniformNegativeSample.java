@@ -11,16 +11,17 @@ public class UniformNegativeSample<V> implements NegativeSample {
     private final int graphSize;
 
     /**
-     * Creates a generator for negative samples based on uniform distribution of the graph nodes.
+     * Creates a generator for negative samples using a uniform distribution
+     * over the graph vertices.
      *
-     * @param mapper Mapping between vertices and integer indices
-     *
-     * @throws IllegalArgumentException if sequences is empty
+     * @param mapper mapping between vertices and integer indices
+     * @param seed seed used to initialize the random generator for negative sampling
+     * @throws NullPointerException if {@code mapper} is {@code null}
      */
-    public UniformNegativeSample(VertexIndexMapping<V> mapper) {
+    public UniformNegativeSample(VertexIndexMapping<V> mapper, long seed) {
         VertexIndexMapping<V> mapping = Objects.requireNonNull(mapper, "mapper cannot be null");
         this.graphSize = mapping.getVertexToIndex().size();
-        this.random = new Random();
+        this.random = new Random(seed);
     }
 
     /**
