@@ -49,7 +49,7 @@ public class Main {
 
         var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
                 new SlidingWindow(WindowMode.Symmetric, 2),
-                new UniformNegativeSample<>(mapper),
+                new UniformNegativeSample<>(mapper, 12345L),
                 false,
                 12345L);
 
