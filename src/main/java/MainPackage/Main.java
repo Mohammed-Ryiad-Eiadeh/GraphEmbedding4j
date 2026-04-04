@@ -41,7 +41,7 @@ public class Main {
 
         var mapper = new VertexIndexMapping<>(builder);
 
-        var deepWalk = new DeepWalk<>(builder,
+       var deepWalk = new DeepWalk<>(builder,
                 mapper,
                 100,
                 3,
