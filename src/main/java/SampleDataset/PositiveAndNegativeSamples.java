@@ -80,12 +80,18 @@ public class PositiveAndNegativeSamples<V> {
      * @return nodes forbidden for negative sampling of a target.
      */
     private List<Integer> forbiddingNegatives(int target, List<Integer> walk, int windowSize) {
-        List<Integer> forbidding = new ArrayList<>();
-        int i = walk.indexOf(target);
-        forbidding.add(target);
-        for (int j = Math.max(0, i - windowSize); j <= Math.min(walk.size() - 1, i + windowSize); j++) {
-            if (i != j) {
-                forbidding.add(walk.get(j));
+       List<Integer> forbidding = new ArrayList<>();
+        List<Integer> targetSetIndexes = new ArrayList<>();
+        for (int i = 0; i < walk.size(); i++) {
+            if (Objects.equals(target, walk.get(i))) {
+                targetSetIndexes.add(i);
+            }
+        }
+        for (int i : targetSetIndexes) {
+            for (int j = Math.max(0, i - windowSize); j <= Math.min(walk.size() - 1, i + windowSize); j++) {
+                if (i != j) {
+                    forbidding.add(walk.get(j));
+                }
             }
         }
         return forbidding;
