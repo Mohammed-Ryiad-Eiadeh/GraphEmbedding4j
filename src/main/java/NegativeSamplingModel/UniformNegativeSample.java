@@ -16,6 +16,7 @@ public class UniformNegativeSample<V> implements NegativeSample {
      *
      * @param mapper mapping between vertices and integer indices
      * @param seed seed used to initialize the random generator for negative sampling
+     *
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
     public UniformNegativeSample(VertexIndexMapping<V> mapper, long seed) {
