@@ -15,7 +15,7 @@ APIs and internal components may change significantly.
 
 ## Overview
 
-NodeEmbedding4j is an exploratory Java library for learning node embeddings from graphs using random walks and Skip-Gram–style objectives.
+GraphEmbedding4j is an exploratory Java library for learning node embeddings from graphs using random walks and Skip-Gram–style objectives.
 
 The goal of the project is **not** to provide a production-ready framework, but to explore a clean and extensible design that separates the main conceptual stages of random-walk–based embedding pipelines.
 
