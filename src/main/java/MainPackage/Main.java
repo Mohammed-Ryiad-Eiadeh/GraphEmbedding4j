@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "DER.txt");
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "ca-citeseer.txt");
         var graphReader = Files.newBufferedReader(graphDataFile);
 
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
@@ -41,21 +41,25 @@ public class Main {
 
         var mapper = new VertexIndexMapping<>(builder);
 
-       var deepWalk = new DeepWalk<>(builder,
+        var deepWalk = new DeepWalk<>(builder,
                 mapper,
                 100,
-                3,
+                4,
                 12345L);
 
         var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
-                new SlidingWindow(WindowMode.Symmetric, 2),
+                new SlidingWindow(WindowMode.Symmetric, 3),
                 new UniformNegativeSample<>(mapper, 12345L),
+                Runtime.getRuntime().availableProcessors(),
                 false,
                 12345L);
 
+        var sdate = System.currentTimeMillis();
         var positiveNegativeSampleDatasets = positiveNegativeSample
                 .generatePositiveNegativeSampleDataset();
+        var edate = System.currentTimeMillis();
 
         positiveNegativeSampleDatasets.forEach(System.out::println);
+        System.out.println(edate - sdate + " is the duration time ");
     }
 }
