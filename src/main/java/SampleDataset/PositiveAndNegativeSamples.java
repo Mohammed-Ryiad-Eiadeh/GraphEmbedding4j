@@ -5,6 +5,10 @@ import NegativeSamplingModel.SampleStrategy.NegativeSample;
 import WalkModel.DeepWalk;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Generates positive and negative training samples from random walk sequences
@@ -16,6 +20,7 @@ public class PositiveAndNegativeSamples<V> {
     private final ArrayList<ArrayList<Integer>> sequences;
     private final ContextWindow slidingWindow;
     private final NegativeSample negativeSample;
+    private final int numberOfThreads;
     private final boolean allowSampleDuplicate;
     private final Random random;
 
@@ -26,13 +31,20 @@ public class PositiveAndNegativeSamples<V> {
      * @param deepWalk the DeepWalk model that provides the walk sequences
      * @param slidingWindow the context window used to extract positive samples
      * @param negativeSample the strategy used to generate negative samples
+     * @param numberOfThreads the number of threads in a pool to generate the positive-negative samples
      * @param allowSampleDuplicate whether duplicate samples are allowed
      * @param randomSeed the seed used to initialize random sampling
      */
-    public PositiveAndNegativeSamples(DeepWalk<V> deepWalk, ContextWindow slidingWindow, NegativeSample negativeSample, boolean allowSampleDuplicate, long randomSeed) {
+    public PositiveAndNegativeSamples(DeepWalk<V> deepWalk, ContextWindow slidingWindow, NegativeSample negativeSample, int numberOfThreads, boolean allowSampleDuplicate, long randomSeed) {
         DeepWalk<V> deepWalks = Objects.requireNonNull(deepWalk, "walk cannot be null");
         this.slidingWindow = Objects.requireNonNull(slidingWindow, "symmetricSlidingWindow cannot be null");
         this.negativeSample = Objects.requireNonNull(negativeSample, "negativeSample cannot be null");
+        if (numberOfThreads <= 0) {
+            throw new IllegalArgumentException("Number of threads must be greater than 0");
+        } else if (numberOfThreads > Runtime.getRuntime().availableProcessors()) {
+            throw new IllegalArgumentException("Number of threads must be less than or equal to number of threads available");
+        }
+        this.numberOfThreads = numberOfThreads;
         this.random = new Random(randomSeed);
         this.sequences = new ArrayList<>(deepWalks.getRandomWalks());
         this.allowSampleDuplicate = allowSampleDuplicate;
@@ -45,26 +57,37 @@ public class PositiveAndNegativeSamples<V> {
      */
     public List<Sample> generatePositiveNegativeSampleDataset() {
         List<Sample> datasets = new ArrayList<>();
-        sequences.removeIf(walk -> walk.size() < 2);
-        for (ArrayList<Integer> walk : sequences) {
-            List<Pair> positivePairs = slidingWindow.generatePositivePairs(walk);
-            for (Pair positivePair : positivePairs) {
-                String label = "1";
-                Sample positiveSample = new Sample(positivePair.v1(), positivePair.v2(), label);
-                datasets.add(positiveSample);
+        try(ExecutorService pool = Executors.newFixedThreadPool(numberOfThreads)) {
+            List<Future<List<Sample>>> futures = new ArrayList<>();
+            for (ArrayList<Integer> walk : sequences) {
+                futures.add(pool.submit(() -> {
+                    List<Sample> local = new ArrayList<>();
+                    List<Pair> positivePairs = slidingWindow.generatePositivePairs(walk);
+                    for (Pair positivePair : positivePairs) {
+                        String label = "1";
+                        Sample positiveSample = new Sample(positivePair.v1(), positivePair.v2(), label);
+                        local.add(positiveSample);
+                    }
+                    int slidingWindowSize = this.slidingWindow.getWindowSize();
+                    for (var target : walk) {
+                        List<Pair> negativePairs = negativeSample
+                                .generatePositivePairs(target,
+                                        new HashSet<>(forbiddingNegatives(target, walk, slidingWindowSize)),
+                                        slidingWindowSize);
+                        for (Pair negativePair : negativePairs) {
+                            String label = "0";
+                            Sample negativeSample = new Sample(negativePair.v1(), negativePair.v2(), label);
+                            local.add(negativeSample);
+                        }
+                    }
+                    return local;
+                }));
             }
-            int slidingWindowSize = this.slidingWindow.getWindowSize();
-            for (var target : walk) {
-                List<Pair> negativePairs = negativeSample
-                        .generatePositivePairs(target,
-                        new HashSet<>(forbiddingNegatives(target, walk, slidingWindowSize)),
-                        slidingWindowSize);
-                for (Pair negativePair : negativePairs) {
-                    String label = "0";
-                    Sample negativeSample = new Sample(negativePair.v1(), negativePair.v2(), label);
-                    datasets.add(negativeSample);
-                }
+            for (Future<List<Sample>> future : futures) {
+                datasets.addAll(future.get());
             }
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
         if (!allowSampleDuplicate) {
             datasets = new ArrayList<>(new LinkedHashSet<>(datasets));
@@ -80,17 +103,16 @@ public class PositiveAndNegativeSamples<V> {
      * @return nodes forbidden for negative sampling of a target.
      */
     private List<Integer> forbiddingNegatives(int target, List<Integer> walk, int windowSize) {
-       List<Integer> forbidding = new ArrayList<>();
-        List<Integer> targetSetIndexes = new ArrayList<>();
+        List<Integer> forbidding = new ArrayList<>();
         for (int i = 0; i < walk.size(); i++) {
             if (Objects.equals(target, walk.get(i))) {
-                targetSetIndexes.add(i);
-            }
-        }
-        for (int i : targetSetIndexes) {
-            for (int j = Math.max(0, i - windowSize); j <= Math.min(walk.size() - 1, i + windowSize); j++) {
-                if (i != j) {
-                    forbidding.add(walk.get(j));
+                int from = Math.max(0, i - windowSize);
+                int to = Math.min(walk.size() - 1, i + windowSize);
+
+                for (int j = from; j <= to; j++) {
+                    if (i != j) {
+                        forbidding.add(walk.get(j));
+                    }
                 }
             }
         }
