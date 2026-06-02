@@ -20,5 +20,5 @@ public interface NegativeSample {
      *
      * @return list of negative pairs (target, negativeContext)
      */
-    List<Pair> generatePositivePairs(int target, Set<Integer> forbidden, int numOfNegativeSamples);
+    List<Pair> generateNegativePairs(int target, Set<Integer> forbidden, int numOfNegativeSamples);
 }

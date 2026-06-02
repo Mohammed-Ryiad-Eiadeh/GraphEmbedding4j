@@ -35,10 +35,13 @@ public class UniformNegativeSample<V> implements NegativeSample {
      * @return list of negative pairs (target, negativeContext)
      */
     @Override
-    public List<Pair> generatePositivePairs(int target, Set<Integer> forbidden, int numOfNegativeSamples) {
+    public List<Pair> generateNegativePairs(int target, Set<Integer> forbidden, int numOfNegativeSamples) {
         List<Pair> negativePairs = new ArrayList<>();
         while (negativePairs.size() < numOfNegativeSamples) {
             int potentialNegativeSampleNode = random.nextInt(this.graphSize);
+            if (target == potentialNegativeSampleNode) {
+                continue;
+            }
             if (!forbidden.contains(potentialNegativeSampleNode)) {
                 negativePairs.add(new Pair(target, potentialNegativeSampleNode));
             }

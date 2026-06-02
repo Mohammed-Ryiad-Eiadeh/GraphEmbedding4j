@@ -5,16 +5,22 @@ import ContextModel.SlidingWindow;
 import Core.GraphBuilder;
 import Core.GraphType;
 import Core.VertexIndexMapping;
+import LearningModel.ActivationFunction.TanhFunction;
+import LearningModel.EmbeddingInitialization.RandomUniformInitializer;
+import LearningModel.OptimizationAlgorithms.MomentumSGD;
+import LearningModel.SkipGram;
 import NegativeSamplingModel.UniformNegativeSample;
 import SampleDataset.PositiveAndNegativeSamples;
 import WalkModel.DeepWalk;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "ca-citeseer.txt");
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "DER.txt");
         var graphReader = Files.newBufferedReader(graphDataFile);
 
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
@@ -50,16 +56,25 @@ public class Main {
         var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
                 new SlidingWindow(WindowMode.Symmetric, 3),
                 new UniformNegativeSample<>(mapper, 12345L),
-                Runtime.getRuntime().availableProcessors(),
                 false,
                 12345L);
 
-        var sdate = System.currentTimeMillis();
-        var positiveNegativeSampleDatasets = positiveNegativeSample
-                .generatePositiveNegativeSampleDataset();
-        var edate = System.currentTimeMillis();
+        var uniformEmbeddingInitializer = new RandomUniformInitializer<>(builder,
+                256,
+                12345L);
 
-        positiveNegativeSampleDatasets.forEach(System.out::println);
-        System.out.println(edate - sdate + " is the duration time ");
+        var skipGramModel = new SkipGram<>(uniformEmbeddingInitializer,
+                positiveNegativeSample,
+                new MomentumSGD(0.05, 0.9),
+                new TanhFunction(),
+                20);
+
+        skipGramModel.trainModel();
+
+        var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
+
+        embeddings.forEach((key, value) -> System.out.println("Embedding: " + mapper.getVertex(key)
+                + "\t" + Arrays.toString(value)));
     }
 }
+

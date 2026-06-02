@@ -72,7 +72,7 @@ public class DeepWalk<V> implements WalkStrategy<V> {
         }
         return sequence;
     }
-    
+
     /**
      * Returns the generated random walks.
      * <p>

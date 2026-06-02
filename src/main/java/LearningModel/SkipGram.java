@@ -1,61 +1,71 @@
 package LearningModel;
 
+import LearningModel.ActivationFunction.Activation;
+import LearningModel.EmbeddingInitialization.EmbeddingInitializer;
+import LearningModel.OptimizationAlgorithms.Optimizer;
+import SampleDataset.PositiveAndNegativeSamples;
 import SampleDataset.Sample;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
-public class SkipGram {
-    private final int numOfNode;
-    private final ArrayList<Sample> dataSamples;
+/**
+ * Implements a Skip-Gram model for learning node embeddings from positive
+ * and negative node-context samples generated from random walks.
+ *
+ * @param <V> the vertex type used in the input graph
+ */
+public class SkipGram<V> {
     private final int embeddingDimension;
+    private final ArrayList<Sample> dataSamples;
+    private final Optimizer optimizer;
+    private final Activation activationFunction;
     private final int numOfEpochs;
-    private final double learningRate;
-    private final long seed;
     private final HashMap<Integer, double[]> Embeddings;
 
-    public SkipGram(int numOfNodes, ArrayList<Sample> dataSamples, int embeddingDimension, int numOfEpochs, double learningRate, long seed) {
-        this.numOfNode = numOfNodes;
-        this.dataSamples = new ArrayList<>(dataSamples);
-        if (embeddingDimension < 1) {
-            throw new IllegalArgumentException("The number of the embedding dimension size have to be positive integer");
-        }
-        this.embeddingDimension = embeddingDimension;
+    /**
+     * Constructs a Skip-Gram model using initialized embeddings, training samples,
+     * an optimizer, an activation function, and the number of training epochs.
+     *
+     * @param embeddingInitializer initializes the node embedding vectors
+     * @param positiveAndNegativeSamples generates positive and negative training samples
+     * @param optimizer the optimization algorithm used to update embeddings
+     * @param activationFunction the activation function applied to dot-product scores
+     * @param numOfEpochs the number of training epochs
+     */
+    public SkipGram(EmbeddingInitializer<V> embeddingInitializer, PositiveAndNegativeSamples<V> positiveAndNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
+        Objects.requireNonNull(positiveAndNegativeSamples, "positiveAndNegativeSamples cannot be null");
+        this.dataSamples = new ArrayList<>(positiveAndNegativeSamples.generatePositiveNegativeSampleDataset());
+
+        Objects.requireNonNull(optimizer, "optimizer cannot be null");
+        this.optimizer = optimizer;
+
+        Objects.requireNonNull(activationFunction, "activationFunction cannot be null");
+        this.activationFunction = activationFunction;
+
         if (numOfEpochs < 1) {
             throw new IllegalArgumentException("The number of the epochs have to be positive integer");
         }
         this.numOfEpochs = numOfEpochs;
-        if (learningRate < Double.MIN_VALUE) {
-            throw new IllegalArgumentException("The number of the embedding dimension size have to be positive");
-        }
-        if (seed < 1) {
-            throw new IllegalArgumentException("The value seed have to be positive integer");
-        }
-        this.seed = seed;
-        this.learningRate = learningRate;
-        Embeddings = new HashMap<>(initializeEmbedding());
+
+        Objects.requireNonNull(embeddingInitializer, "embeddingInitializer cannot be null");
+        Embeddings = new HashMap<>(embeddingInitializer.initializeEmbedding());
+        this.embeddingDimension = embeddingInitializer.getEmbeddingDimension();
     }
 
-    private HashMap<Integer, double[]> initializeEmbedding() {
-        HashMap<Integer, double[]> embeddings = new HashMap<>();
-        Random random = new Random(seed);
-        for (int node = 0; node < numOfNode; node++) {
-            double[] embeddingVec = new double[embeddingDimension];
-            for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
-                embeddingVec[embeddingElementIndex] = random.nextDouble() * 0.01;
-            }
-            embeddings.put(node + 1, embeddingVec);
-        }
-        return embeddings;
-    }
-
+    /**
+     * Trains the embedding model by iterating over all training samples for a
+     * fixed number of epochs. For each target-context pair, gradients are
+     * computed and applied to update both node embeddings.
+     */
     public void trainModel() {
         for (int iter = 0; iter < this.numOfEpochs; iter++) {
             for (Sample instance : this.dataSamples) {
-                int targetNode = instance.targetNode();
                 int contextNode = instance.contextNode();
+                int targetNode = instance.targetNode();
+
                 double[] targetNodeEmbedding = Embeddings.get(targetNode);
                 double[] contextNodeEmbedding = Embeddings.get(contextNode);
 
@@ -69,34 +79,43 @@ public class SkipGram {
         }
     }
 
+    /**
+     * Updates the embedding vector of a given node using the configured optimizer.
+     *
+     * @param nodeIndex the index of the node whose embedding is updated
+     * @param gradient the gradient vector used to update the node embedding
+     */
     private void updateEmbeddings(int nodeIndex, double[] gradient) {
-        double[] newEmbedding = new double[embeddingDimension];
-        for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
-            newEmbedding[embeddingElementIndex] = Embeddings.get(nodeIndex)[embeddingElementIndex]
-                    + this.learningRate
-                    * gradient[embeddingElementIndex];
-        }
-        Embeddings.replace(nodeIndex, newEmbedding);
+        double[] embeddings = Embeddings.get(nodeIndex);
+        optimizer.update(embeddings, gradient);
+        Embeddings.replace(nodeIndex, embeddings);
     }
 
-    private double[] computeGradient(double[] embedding1, double[] embedding2, String label) {
+    /**
+     * Computes the gradient for an embedding vector based on the prediction
+     * error of a target-context pair.
+     *
+     * @param embeddings1 the embedding vector to be updated
+     * @param embeddings2 the neighboring/context embedding vector
+     * @param label the sample label indicating a positive or negative pair
+     * @return the computed gradient vector for the embedding update
+     */
+    private double[] computeGradient(double[] embeddings1, double[] embeddings2, String label) {
         double[] gradient = new double[embeddingDimension];
+
         double dotProduct = IntStream.range(0, embeddingDimension)
-                .mapToDouble(i -> embedding1[i] * embedding2[i])
+                .mapToDouble(i -> embeddings1[i] * embeddings2[i])
                 .sum();
 
-        double prediction = sigmoid(dotProduct);
-        double groundTruth = label.equals("positive") ? 1 : 0;
+        double prediction = activationFunction.applyAsDouble(dotProduct);
+        double groundTruth = label.equals("Positive Sample") ? 1 : 0;
+
         double error = groundTruth - prediction;
 
         for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
-            gradient[embeddingElementIndex] = error * embedding2[embeddingElementIndex];
+            gradient[embeddingElementIndex] = error * embeddings2[embeddingElementIndex];
         }
         return gradient;
-    }
-
-    private double sigmoid(double x) {
-        return 1.0 / (1.0 + Math.exp(-x));
     }
 
     public HashMap<Integer, double[]> getEmbeddings() {
