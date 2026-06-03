@@ -267,6 +267,7 @@ for (var performance : crossValidation.evaluate()) {
     avgPrecision += performance.getA().macroAveragedPrecision();
 }
 
+System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
 System.out.println("Average accuracy: " + avgAcc / crossValidation.getK());
 System.out.println("Average recall: " + avgRecall / crossValidation.getK());
 System.out.println("Average F1-score: " + avgF1 / crossValidation.getK());
