@@ -187,7 +187,7 @@ long startTime = System.currentTimeMillis();
 skipGramModel.trainModel();
 long endTime = System.currentTimeMillis();
 
-System.out.println("Training time: " + Util.formatDuration(startTime, endTime) + " ms");
+System.out.println("Training time: " + Util.formatDuration(startTime, endTime));
 
 // Export embeddings.
 var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
