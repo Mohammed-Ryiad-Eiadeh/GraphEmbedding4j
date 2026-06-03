@@ -182,8 +182,12 @@ var skipGramModel = new SkipGram<>(
         100
 );
 
-// Train the model.
+// Train the model
+long startTime = System.currentTimeMillis();
 skipGramModel.trainModel();
+long endTime = System.currentTimeMillis();
+
+System.out.println("Training time: " + Util.formatDuration(startTime, endTime) + " ms");
 
 // Export embeddings.
 var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
