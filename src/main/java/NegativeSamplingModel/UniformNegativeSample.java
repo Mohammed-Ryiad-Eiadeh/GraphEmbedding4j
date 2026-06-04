@@ -26,7 +26,7 @@ public class UniformNegativeSample<V> implements NegativeSample {
     }
 
     /**
-     * Samples K negative (target, context) pairs for the given target,
+     * Samples K negative (target, context) pairs for the given target based on candidate based sampling,
      * excluding any forbidden nodes (e.g., target itself + window contexts).
      *
      * @param target               the target node
@@ -36,16 +36,25 @@ public class UniformNegativeSample<V> implements NegativeSample {
      */
     @Override
     public List<Pair> generateNegativePairs(int target, Set<Integer> forbidden, int numOfNegativeSamples) {
-        List<Pair> negativePairs = new ArrayList<>();
-        while (negativePairs.size() < numOfNegativeSamples) {
-            int potentialNegativeSampleNode = random.nextInt(this.graphSize);
-            if (target == potentialNegativeSampleNode) {
-                continue;
-            }
-            if (!forbidden.contains(potentialNegativeSampleNode)) {
-                negativePairs.add(new Pair(target, potentialNegativeSampleNode));
-            }
+        Objects.requireNonNull(forbidden, "forbidden cannot be null");
+
+        List<Integer> negativeSamplesCandidate = new ArrayList<>();
+
+        for (int node = 0; node < graphSize; node++) {
+            if (node != target && !forbidden.contains(node))
+                negativeSamplesCandidate.add(node);
         }
+
+        Collections.shuffle(negativeSamplesCandidate, new Random(12345L));
+
+        int limit = Math.min(negativeSamplesCandidate.size(), numOfNegativeSamples);
+
+        List<Pair> negativePairs = new ArrayList<>();
+
+        for (int i = 0; i < limit; i++) {
+            negativePairs.add(new Pair(target, negativeSamplesCandidate.get(i)));
+        }
+
         return negativePairs;
     }
 }

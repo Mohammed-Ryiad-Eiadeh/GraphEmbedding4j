@@ -1,5 +1,6 @@
 package Core;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -69,7 +70,7 @@ public interface GraphData<V> {
      */
     default boolean isNeighbor(V v1, V v2) {
             for (Edge<V> edge : edgeSet()) {
-                if (edge.source() == v1 && edge.destination() == v2) {
+                if (Objects.equals(edge.source(), v1) && Objects.equals(edge.destination(), v2)) {
                     return true;
                 }
             }

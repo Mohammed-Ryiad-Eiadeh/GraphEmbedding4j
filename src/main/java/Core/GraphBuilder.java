@@ -34,8 +34,13 @@ public class GraphBuilder<V> {
      * @param source the source vertex
      * @param destination the destination vertex
      * @param weight the edge weight
+     *
+     * @return object from GraphBuilder to allow chaining
      */
-    public void addConnection(V source, V destination, float weight) {
+    public GraphBuilder<V> addConnection(V source, V destination, float weight) {
+        Objects.requireNonNull(source, "Source vertex cannot be null");
+        Objects.requireNonNull(destination, "Destination vertex cannot be null");
+
         vertexSet.add(source);
         vertexSet.add(destination);
 
@@ -46,6 +51,7 @@ public class GraphBuilder<V> {
                 edgesSet.add(new Edge<>(destination, source, weight));
             }
         }
+        return this;
     }
 
     /**

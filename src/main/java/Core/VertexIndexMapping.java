@@ -20,8 +20,8 @@ public class VertexIndexMapping<V> {
      *
      * @param immutableGraphData the graph snapshot containing ordered vertices
      */
-    public VertexIndexMapping(ImmutableGraphData<V> immutableGraphData) {
-        indexToVertex = List.copyOf(Objects.requireNonNull(immutableGraphData).vertexSet());
+    public VertexIndexMapping(GraphData<V> GraphData) {
+        indexToVertex = List.copyOf(Objects.requireNonNull(GraphData).vertexSet());
         Map<V, Integer> mapper = new HashMap<>();
         for (int index = 0; index < indexToVertex.size(); index++) {
             mapper.putIfAbsent(indexToVertex.get(index), index);

@@ -6,7 +6,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Exports learned node embeddings to a CSV file.
@@ -24,7 +24,7 @@ public class EmbeddingExporter<V> {
      * @param embeddings learned node embeddings
      * @throws IOException if writing fails
      */
-    public void saveEmbeddings(Path path, VertexIndexMapping<V> vertexIndexMapping, HashMap<Integer, double[]> embeddings) throws IOException {
+    public void saveEmbeddings(Path path, VertexIndexMapping<V> vertexIndexMapping, Map<Integer, double[]> embeddings) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             String header = "NodeID".concat(",");
             for (int i = 0; i < embeddings.values().stream().toList().getFirst().length; i++) {
