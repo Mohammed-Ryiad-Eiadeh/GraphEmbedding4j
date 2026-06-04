@@ -295,11 +295,11 @@ Random seed: 12345
 Using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation:
 
 ```text
-Accuracy  : 94.29%
-Recall    : 95.83%
-Precision : 94.05%
-F1-Score  : 93.74%
-Runtime   : 00:00:00:720
+The Training_Testing duration time is : (00:00:00:842)
+The average accuracy is : 0.9142857142857143
+The average recall is : 0.869047619047619
+The average F1-Score is : 0.8580498866213152
+The average precision is : 0.8726190476190476
 ```
 
 ---
