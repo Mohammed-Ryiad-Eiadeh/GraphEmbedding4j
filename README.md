@@ -116,93 +116,104 @@ This modular design enables experimental combinations of embedding strategies wi
 
 ---
 
+## Building a Graph
+
+The graph shown in the figure can be constructed manually using the GraphBuilder API.
+
+<img width="1560" height="983" alt="OrgToy" src="https://github.com/user-attachments/assets/2705409e-5b50-4194-ad41-332b47e749b7" />
+
+```java
+// Construct graph manually
+var graphBuilder = new GraphBuilder<String>(GraphType.Directed);
+
+graphBuilder.addConnection("v1", "v2", 1.0f);
+graphBuilder.addConnection("v2", "vm4", 1.0f);
+graphBuilder.addConnection("v2", "vm5", 1.0f);
+graphBuilder.addConnection("v3", "v1", 1.0f);
+graphBuilder.addConnection("v3", "vm4", 1.0f);
+graphBuilder.addConnection("vm4", "vm5", 1.0f);
+
+// Build immutable graph snapshot
+ImmutableGraphData<String> graph = graphBuilder.build();
+```
+
 ## Example 1: Learning Node Embeddings on the Karate Graph
 
 ```java
-// Load the graph from Graphs/Karate.txt.
-var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "Karate.txt");
-var graphReader = Files.newBufferedReader(graphDataFile);
+        // Load the graph from Graphs/Karate.txt.
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "Karate.txt");
+        var graphReader = Files.newBufferedReader(graphDataFile);
 
-var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
-var headerLineId = 1;
+        var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
+        var headerLineId = 1;
 
-graphReader.lines().skip(headerLineId).forEach(line -> {
-    String[] currentLine = line.trim().split("\\s+");
+        graphReader.lines().skip(headerLineId).forEach(line -> {
+            String[] currentLine = line.trim().split("\\s+");
+            var source = Integer.parseInt(currentLine[0]);
+            var destination = Integer.parseInt(currentLine[1]);
+            var weight = currentLine.length >= 3 ? Float.parseFloat(currentLine[2]) : 1.0f;
+            graphBuilder.addConnection(source, destination, weight);
+        });
+        graphReader.close();
 
-    var source = Integer.parseInt(currentLine[0]);
-    var destination = Integer.parseInt(currentLine[1]);
-    var weight = currentLine.length >= 3
-            ? Float.parseFloat(currentLine[2])
-            : 1.0f;
+        // Build a directed graph using GraphBuilder.
+        var builder = graphBuilder
+                .ifNotEmpty()
+                .build();
 
-    graphBuilder.addConnection(source, destination, weight);
-});
+        var numOfEdges = builder.edgeCount();
+        var numOfVertices = builder.vertexCount();
+        System.out.printf("Number of nodes: %s, Number of edges: %s\n",
+                numOfVertices,
+                numOfEdges);
 
-graphReader.close();
+        System.out.println();
 
-// Build the graph.
-var graph = graphBuilder
-        .ifNotEmpty()
-        .build();
+        // Map each vertex to an internal index using VertexIndexMapping.
+        var mapper = new VertexIndexMapping<>(builder);
 
-// Create node-index mappings.
-var mapper = new VertexIndexMapping<>(graph);
+        // Generate random walks using DeepWalk.
+        var deepWalk = new DeepWalk<>(builder,
+                mapper,
+                10,
+                4,
+                12345L);
 
-// Generate random walks.
-var deepWalk = new DeepWalk<>(
-        graph,
-        mapper,
-        10,
-        4,
-        12345L
-);
+        // Create positive and negative samples using 1) symmetric sliding window and 2) uniform negative sampling
+        var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
+                new SlidingWindow(WindowMode.Symmetric, 3),
+                new UniformNegativeSample<>(mapper, 12345L),
+                20,
+                false,
+                12345L);
 
-// Generate positive and negative samples.
-var positiveNegativeSample = new PositiveAndNegativeSamples<>(
-        deepWalk,
-        new SlidingWindow(WindowMode.Symmetric, 3),
-        new UniformNegativeSample<>(mapper, 12345L),
-        false,
-        12345L
-);
+        // Initialize node embeddings using random uniform initialization.
+        var uniformEmbeddingInitializer = new RandomUniformInitializer<>(builder,
+                256,
+                12345L);
 
-// Initialize node embeddings.
-var initializer = new RandomUniformInitializer<>(
-        graph,
-        256,
-        12345L
-);
+        // Define a Skip-Gram model
+        var skipGramModel = new SkipGram<>(uniformEmbeddingInitializer,
+                positiveNegativeSample,
+                new SGD(0.01),
+                new SigmoidFunction(),
+                100);
 
-// Define the Skip-Gram model.
-var skipGramModel = new SkipGram<>(
-        initializer,
-        positiveNegativeSample,
-        new SGD(0.01),
-        new SigmoidFunction(),
-        100
-);
+        // Train the model
+        long startTime = System.currentTimeMillis();
+        skipGramModel.trainModel();
+        long endTime = System.currentTimeMillis();
 
-// Train the model
-long startTime = System.currentTimeMillis();
-skipGramModel.trainModel();
-long endTime = System.currentTimeMillis();
+        System.out.println("Training time: " + Util.formatDuration(startTime, endTime) + " ms");
 
-System.out.println("Training time: " + Util.formatDuration(startTime, endTime));
+        var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
 
-// Export embeddings.
-var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
 
-var outputPath = Paths.get(
-        System.getProperty("user.dir"),
-        "results",
-        "Karate_embeddings.csv"
-);
-
-new EmbeddingExporter<Integer>().saveEmbeddings(
-        outputPath,
-        mapper,
-        embeddings
-);
+        // Export the learned embeddings to Karate_embeddings.csv
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\Karateh_embeddings.csv";
+        new EmbeddingExporter<Integer>().saveEmbeddings(Paths.get(stringPath),
+                mapper,
+                embeddings);
 ```
 
 ### Configuration
@@ -215,6 +226,7 @@ Number of walks per node: 4
 Window mode: Symmetric
 Window size: 3
 Negative sampling: Uniform
+Number of negative sample nodes: 20
 Embedding dimension: 256
 Optimizer: SGD
 Learning rate: 0.01
