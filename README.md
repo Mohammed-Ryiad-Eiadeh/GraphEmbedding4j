@@ -30,61 +30,15 @@ Rather than targeting production deployment, the library is intended to support:
 * Skip-Gram embedding learning
 * CSV embedding export utilities
 
-### Modular Learning Components
+## Modular Learning Components
 
-#### Activation Functions
-
-* Sigmoid
-* Tanh
-
-Planned:
-
-* ReLU
-* GELU
-* Softmax
-
-#### Optimization Algorithms
-
-* SGD
-* Momentum SGD
-
-Planned:
-
-* Adam
-* AdaGrad
-* RMSProp
-* AdamW
-
-#### Embedding Initialization
-
-* Random Uniform Initialization
-
-Planned:
-
-* Xavier Initialization
-* He Initialization
-
-#### Sampling Strategies
-
-* Positive/Negative sampling
-* Symmetric sliding-window extraction
-* Uniform negative sampling
-
-Planned:
-
-* Degree-biased sampling
-* Adaptive sampling
-* Adversarial negative sampling
-
-#### Walk Engines
-
-* DeepWalk
-
-Planned:
-
-* Node2Vec-style biased walks
-* Dynamic graph walks
-* Temporal random walks
+| Module Category | Currently Implemented | Planned Extensions |
+|---|---|---|
+| **Activation Functions** | Sigmoid, Tanh | ReLU, GELU, Softmax |
+| **Optimization Algorithms** | SGD, Momentum SGD | Adam, AdaGrad, RMSProp, AdamW |
+| **Embedding Initialization** | Random Uniform Initialization | Xavier Initialization, He Initialization |
+| **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
+| **Walk Engines** | DeepWalk | Node2Vec-Style Biased Walks, Dynamic Graph Walks, Temporal Random Walks |
 
 ---
 
