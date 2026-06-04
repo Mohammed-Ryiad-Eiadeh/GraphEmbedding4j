@@ -88,7 +88,9 @@ Planned:
 
 ---
 
-## Design Philosophy
+## Design Philosophy and Diagram
+
+<img width="1690" height="931" alt="30889662-bc16-4699-8e7f-cd6a4f768ce0" src="https://github.com/user-attachments/assets/4a3366a9-16c2-48a1-8d67-f67b4f61416a" />
 
 The framework is organized around clear separation of concerns.
 
