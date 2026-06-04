@@ -120,21 +120,21 @@ This modular design enables experimental combinations of embedding strategies wi
 
 The graph shown in the figure can be constructed manually using the GraphBuilder API.
 
-<img width="1560" height="983" alt="OrgToy" src="https://github.com/user-attachments/assets/2705409e-5b50-4194-ad41-332b47e749b7" />
+<img width="1920" height="1080" alt="Screenshot (228)" src="https://github.com/user-attachments/assets/b1543296-edda-4dd1-8bd9-f8676d8e55c1" />
 
 ```java
-// Construct graph manually
-var graphBuilder = new GraphBuilder<String>(GraphType.Directed);
-
-graphBuilder.addConnection("v1", "v2", 1.0f);
-graphBuilder.addConnection("v2", "vm4", 1.0f);
-graphBuilder.addConnection("v2", "vm5", 1.0f);
-graphBuilder.addConnection("v3", "v1", 1.0f);
-graphBuilder.addConnection("v3", "vm4", 1.0f);
-graphBuilder.addConnection("vm4", "vm5", 1.0f);
-
-// Build immutable graph snapshot
-ImmutableGraphData<String> graph = graphBuilder.build();
+        // Construct graph manually
+        var graphBuilder = new GraphBuilder<String>(GraphType.Directed);
+        
+        graphBuilder.addConnection("v1", "v2", 1.0f);
+        graphBuilder.addConnection("v2", "vm4", 1.0f);
+        graphBuilder.addConnection("v2", "vm5", 1.0f);
+        graphBuilder.addConnection("v3", "v1", 1.0f);
+        graphBuilder.addConnection("v3", "vm4", 1.0f);
+        graphBuilder.addConnection("vm4", "vm5", 1.0f);
+        
+        // Build immutable graph snapshot
+        ImmutableGraphData<String> graph = graphBuilder.build();
 ```
 
 ## Example 1: Learning Node Embeddings on the Karate Graph
@@ -240,54 +240,54 @@ Random seed: 12345
 ## Example 2: Evaluating Learned Embeddings via Tribuo ML library (add the dependency)
 
 ```java
-// Read the embedding dataset.
-var dataPath = Paths.get(
-        System.getProperty("user.dir"),
-        "results",
-        "Karate_embeddings_set.csv"
-);
-
-var dataSource = new CSVLoader<>(new LabelFactory())
-        .loadDataSource(dataPath, "Class");
-
-var data = new MutableDataset<>(dataSource);
-
-// Define a Factorization Machine classifier.
-var fmTrainer = new FMClassificationTrainer(
-        new Hinge(),
-        new AdaGrad(0.01, 0.9),
-        50,
-        Trainer.DEFAULT_SEED,
-        10,
-        0.2D
-);
-
-// Perform 7-fold cross-validation.
-var crossValidation = new CrossValidation<>(
-        fmTrainer,
-        data,
-        new LabelEvaluator(),
-        7
-);
-
-// Compute evaluation metrics.
-var avgAcc = 0D;
-var avgRecall = 0D;
-var avgF1 = 0D;
-var avgPrecision = 0D;
-
-for (var performance : crossValidation.evaluate()) {
-    avgAcc += performance.getA().accuracy();
-    avgRecall += performance.getA().macroAveragedRecall();
-    avgF1 += performance.getA().macroAveragedF1();
-    avgPrecision += performance.getA().macroAveragedPrecision();
-}
-
-System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
-System.out.println("Average accuracy: " + avgAcc / crossValidation.getK());
-System.out.println("Average recall: " + avgRecall / crossValidation.getK());
-System.out.println("Average F1-score: " + avgF1 / crossValidation.getK());
-System.out.println("Average precision: " + avgPrecision / crossValidation.getK());
+        // Read the embedding dataset.
+        var dataPath = Paths.get(
+                System.getProperty("user.dir"),
+                "results",
+                "Karate_embeddings_set.csv"
+        );
+        
+        var dataSource = new CSVLoader<>(new LabelFactory())
+                .loadDataSource(dataPath, "Class");
+        
+        var data = new MutableDataset<>(dataSource);
+        
+        // Define a Factorization Machine classifier.
+        var fmTrainer = new FMClassificationTrainer(
+                new Hinge(),
+                new AdaGrad(0.01, 0.9),
+                50,
+                Trainer.DEFAULT_SEED,
+                10,
+                0.2D
+        );
+        
+        // Perform 7-fold cross-validation.
+        var crossValidation = new CrossValidation<>(
+                fmTrainer,
+                data,
+                new LabelEvaluator(),
+                7
+        );
+        
+        // Compute evaluation metrics.
+        var avgAcc = 0D;
+        var avgRecall = 0D;
+        var avgF1 = 0D;
+        var avgPrecision = 0D;
+        
+        for (var performance : crossValidation.evaluate()) {
+            avgAcc += performance.getA().accuracy();
+            avgRecall += performance.getA().macroAveragedRecall();
+            avgF1 += performance.getA().macroAveragedF1();
+            avgPrecision += performance.getA().macroAveragedPrecision();
+        }
+        
+        System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
+        System.out.println("Average accuracy: " + avgAcc / crossValidation.getK());
+        System.out.println("Average recall: " + avgRecall / crossValidation.getK());
+        System.out.println("Average F1-score: " + avgF1 / crossValidation.getK());
+        System.out.println("Average precision: " + avgPrecision / crossValidation.getK());
 ```
 
 ### Experimental Results
