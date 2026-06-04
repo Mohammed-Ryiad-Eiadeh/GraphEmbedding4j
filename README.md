@@ -76,11 +76,9 @@ This modular design enables experimental combinations of embedding strategies wi
 
 The graph shown in the figure can be constructed manually using the GraphBuilder API.
 
-```html
 <p align="center">
   <img width="500" height="250" alt="Screenshot (228)" src="https://github.com/user-attachments/assets/dd27acc0-828b-4c2d-9685-0f41163ddf7e" />
 </p>
-```
 
 ```java
         // Construct graph manually
