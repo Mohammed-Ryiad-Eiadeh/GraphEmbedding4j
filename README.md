@@ -195,7 +195,7 @@ Random seed: 12345
 
 ---
 
-## Example 2: Evaluating Learned Embeddings via Tribuo ML library (please add the dependency of Tribuo before executing the code)
+## Example 2: Evaluating Learned Embeddings via Tribuo ML library (please add the dependency of Tribuo before executing the code & drop the NodeId column from the embeddings data file)
 
 ```java
         // Read the embedding dataset.
