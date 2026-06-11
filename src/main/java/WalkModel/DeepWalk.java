@@ -19,7 +19,7 @@ public class DeepWalk<V> implements WalkStrategy<V> {
     private final int numOfHops;
     private final int walkPerNode;
     private final Random random;
-    private volatile HashSet<ArrayList<Integer>> cashedSetWalks;
+    private volatile ArrayList<ArrayList<Integer>> cashedSetWalks;
 
     /**
      * Constructs a DeepWalk strategy by preprocessing the input graph into an
@@ -82,13 +82,13 @@ public class DeepWalk<V> implements WalkStrategy<V> {
      *
      * @return a set of generated random walks
      */
-    public HashSet<ArrayList<Integer>> getRandomWalks() {
-        HashSet<ArrayList<Integer>> randomWalks = cashedSetWalks;
+    public ArrayList<ArrayList<Integer>> getRandomWalks() {
+        ArrayList<ArrayList<Integer>> randomWalks = cashedSetWalks;
         if (randomWalks != null) {
             return randomWalks;
         }
 
-        HashSet<ArrayList<Integer>> RWs = new HashSet<>();
+        ArrayList<ArrayList<Integer>> RWs = new ArrayList<>();
         for (int i = 0; i < immutableGraphDataObj.vertexCount(); i++) {
             for (int j = 0; j < walkPerNode; j++) {
                 ArrayList<Integer> walk = generateWalk(mapper.getVertex(i));
@@ -97,6 +97,7 @@ public class DeepWalk<V> implements WalkStrategy<V> {
                 }
             }
         }
+        Collections.shuffle(RWs, new Random(12345));
         cashedSetWalks = RWs;
         return RWs;
     }

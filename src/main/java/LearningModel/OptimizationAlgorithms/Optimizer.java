@@ -9,8 +9,9 @@ public interface Optimizer {
     /**
      * Updates the model parameters using the computed gradient.
      *
+     * @param nodeID the identity of the given node
      * @param weights the parameter vector to be updated
      * @param gradient the computed gradient vector
      */
-    void update(double[] weights, double[] gradient);
+    void update(int nodeID, double[] weights, double[] gradient);
 }

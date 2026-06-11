@@ -7,7 +7,6 @@ import SampleDataset.Pair;
 import java.util.*;
 
 public class UniformNegativeSample<V> implements NegativeSample {
-    private final Random random;
     private final int graphSize;
 
     /**
@@ -19,10 +18,9 @@ public class UniformNegativeSample<V> implements NegativeSample {
      *
      * @throws NullPointerException if {@code mapper} is {@code null}
      */
-    public UniformNegativeSample(VertexIndexMapping<V> mapper, long seed) {
+    public UniformNegativeSample(VertexIndexMapping<V> mapper) {
         VertexIndexMapping<V> mapping = Objects.requireNonNull(mapper, "mapper cannot be null");
         this.graphSize = mapping.getVertexToIndex().size();
-        this.random = new Random(seed);
     }
 
     /**

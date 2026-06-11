@@ -28,9 +28,9 @@ public class SGD implements Optimizer {
      * @param gradient the computed gradient vector
      */
     @Override
-    public void update(double[] weights, double[] gradient) {
+    public void update(int nodeId, double[] weights, double[] gradient) {
         for (int i = 0; i < weights.length; i++) {
-            weights[i] += learningRate * gradient[i];
+            weights[i] -= learningRate * gradient[i];
         }
     }
 }

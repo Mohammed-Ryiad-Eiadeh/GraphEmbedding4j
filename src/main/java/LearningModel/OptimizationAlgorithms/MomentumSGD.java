@@ -1,5 +1,7 @@
 package LearningModel.OptimizationAlgorithms;
 
+import java.util.HashMap;
+
 /**
  * Momentum-based Stochastic Gradient Descent (Momentum SGD) optimizer.
  *
@@ -11,7 +13,7 @@ package LearningModel.OptimizationAlgorithms;
 public class MomentumSGD implements Optimizer {
     private final double learningRate;
     private final double momentum;
-    private double[] velocity;
+    private final HashMap<Integer, double[]> velocityVectors;
 
     /**
      * Constructs a Momentum SGD optimizer.
@@ -31,6 +33,8 @@ public class MomentumSGD implements Optimizer {
             throw new IllegalArgumentException("Momentum must be in [0, 1)");
         }
         this.momentum = momentum;
+
+        this.velocityVectors = new HashMap<>();
     }
 
     /**
@@ -40,13 +44,13 @@ public class MomentumSGD implements Optimizer {
      * @param gradient the computed gradient vector
      */
     @Override
-    public void update(double[] weights, double[] gradient) {
-        if (velocity == null) {
-            velocity = new double[weights.length];
-        }
+    public void update(int nodeID, double[] weights, double[] gradient) {
+        double[] velocity = velocityVectors.computeIfAbsent(nodeID,
+                V -> new double[weights.length]);
+
         for (int i = 0; i < weights.length; i++) {
-            velocity[i] = momentum * velocity[i] + learningRate * gradient[i];
-            weights[i] -= velocity[i];
+            velocity[i] = momentum * velocity[i] + (1 - momentum) * gradient[i];
+            weights[i] -= learningRate * velocity[i];
         }
     }
 }

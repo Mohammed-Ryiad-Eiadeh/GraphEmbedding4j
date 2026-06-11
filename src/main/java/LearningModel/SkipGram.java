@@ -87,7 +87,7 @@ public class SkipGram<V> {
      */
     private void updateEmbeddings(int nodeIndex, double[] gradient) {
         double[] embeddings = Embeddings.get(nodeIndex);
-        optimizer.update(embeddings, gradient);
+        optimizer.update(nodeIndex, embeddings, gradient);
         Embeddings.replace(nodeIndex, embeddings);
     }
 
@@ -110,7 +110,8 @@ public class SkipGram<V> {
         double prediction = activationFunction.applyAsDouble(dotProduct);
         double groundTruth = label.equals("Positive Sample") ? 1 : 0;
 
-        double error = groundTruth - prediction;
+        //double error = groundTruth - prediction;         this version enforce the use of descent based approaches
+        double error = prediction - groundTruth;        // this version enforce the use of Assent based approaches
 
         for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
             gradient[embeddingElementIndex] = error * embeddings2[embeddingElementIndex];
