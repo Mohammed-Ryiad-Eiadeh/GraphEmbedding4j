@@ -87,7 +87,7 @@ public class SkipGram<V> {
      */
     private void updateEmbeddings(int nodeIndex, double[] gradient) {
         double[] embeddings = Embeddings.get(nodeIndex);
-        optimizer.update(nodeIndex, embeddings, gradient);
+        optimizer.update(embeddings, gradient);
         Embeddings.replace(nodeIndex, embeddings);
     }
 

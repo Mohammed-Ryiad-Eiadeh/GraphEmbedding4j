@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class MomentumSGD implements Optimizer {
     private final double learningRate;
     private final double momentum;
-    private final HashMap<Integer, double[]> velocityVectors;
+    private final HashMap<double[], double[]> velocityVectors;
 
     /**
      * Constructs a Momentum SGD optimizer.
@@ -44,8 +44,8 @@ public class MomentumSGD implements Optimizer {
      * @param gradient the computed gradient vector
      */
     @Override
-    public void update(int nodeID, double[] weights, double[] gradient) {
-        double[] velocity = velocityVectors.computeIfAbsent(nodeID,
+    public void update(double[] weights, double[] gradient) {
+        double[] velocity = velocityVectors.computeIfAbsent(weights,
                 V -> new double[weights.length]);
 
         for (int i = 0; i < weights.length; i++) {
