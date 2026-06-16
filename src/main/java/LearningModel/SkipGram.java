@@ -110,8 +110,8 @@ public class SkipGram<V> {
         double prediction = activationFunction.applyAsDouble(dotProduct);
         double groundTruth = label.equals("Positive Sample") ? 1 : 0;
 
-        //double error = groundTruth - prediction;         this version enforce the use of descent based approaches
-        double error = prediction - groundTruth;        // this version enforce the use of Assent based approaches
+        //double error = groundTruth - prediction;      // this version enforces the use of Ascent based approaches
+        double error = prediction - groundTruth;        // this version enforces the use of Descent based approaches
 
         for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
             gradient[embeddingElementIndex] = error * embeddings2[embeddingElementIndex];
