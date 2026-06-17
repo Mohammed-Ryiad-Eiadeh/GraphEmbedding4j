@@ -57,8 +57,7 @@ public class SkipGram<V> {
 
     /**
      * Trains the embedding model by iterating over all training samples for a
-     * fixed number of epochs. For each target-context pair, gradients are
-     * computed and applied to update both node embeddings.
+     * fixed number of epochs. For each target-context pair, gradients are computed and applied to update both node embeddings.
      */
     public void trainModel() {
         for (int iter = 0; iter < this.numOfEpochs; iter++) {
@@ -113,8 +112,8 @@ public class SkipGram<V> {
         //double error = groundTruth - prediction;      // this version enforces the use of Ascent based approaches
         double error = prediction - groundTruth;        // this version enforces the use of Descent based approaches
 
-        for (int embeddingElementIndex = 0; embeddingElementIndex < embeddingDimension; embeddingElementIndex++) {
-            gradient[embeddingElementIndex] = error * embeddings2[embeddingElementIndex];
+        for (int i = 0; i < embeddingDimension; i++) {
+            gradient[i] = error * embeddings2[i];
         }
         return gradient;
     }

@@ -2,11 +2,11 @@ package LearningModel.OptimizationAlgorithms;
 
 /**
  * Stochastic Gradient Descent (SGD) optimizer.
- *
+ * <p>
  * This optimizer updates each parameter by moving it in the opposite
  * direction of its gradient, scaled by a fixed learning rate.
  */
-public class SGD implements Optimizer {
+public non-sealed class SGD implements Optimizer {
     private final double learningRate;
 
     /**
