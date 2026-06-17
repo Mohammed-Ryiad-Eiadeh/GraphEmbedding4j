@@ -34,7 +34,7 @@ Rather than targeting production deployment, the library is intended to support:
 
 | Module Category | Currently Implemented | Planned Extensions |
 |---|---|---|
-| **Activation Functions** | Sigmoid, Tanh | ReLU, GELU, Softmax |
+| **Activation Functions** | Sigmoid, Tanh | GELU, Softmax |
 | **Optimization Algorithms** | SGD, Momentum SGD, AdaGrad, RMSProp, AdaDelta, Sign SGD | Adam, AdamW |
 | **Embedding Initialization** | Random Uniform Initialization | Xavier Initialization, He Initialization |
 | **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
