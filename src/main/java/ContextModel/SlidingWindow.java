@@ -1,7 +1,5 @@
 package ContextModel;
 
-import ContextModel.ContextStrategy.ContextWindow;
-import ContextModel.ContextStrategy.WindowMode;
 import SampleDataset.Pair;
 
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ import java.util.List;
  * Generates symmetric context pairs from a random walk using a sliding window,
  * where either or both forward and backward neighbors are treated as context.
  */
-public class SlidingWindow implements ContextWindow {
+public non-sealed class SlidingWindow implements ContextWindow {
     private final int windowSize;
     private final WindowMode windowMode;;
 
@@ -53,36 +51,23 @@ public class SlidingWindow implements ContextWindow {
     public List<Pair> generatePositivePairs(List<Integer> walk) {
         List<Pair> positiveSamples = new ArrayList<>();
 
-        if (windowMode == WindowMode.Symmetric) {
-            for (int i = 0; i < walk.size(); i++) {
-                int left = Math.max(0, i - windowSize);
-                int right = Math.min(walk.size() - 1, i + windowSize);
+        for (int i = 0; i < walk.size(); i++) {
+            int left = 0;
+            int right = 0;
 
-                for (int j = left; j <= right; j++) {
-                    if (i != j) {
-                        positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
-                    }
-                }
+            if (windowMode == WindowMode.Symmetric) {
+                left = Math.max(0, i - windowSize);
+                right = Math.min(walk.size() - 1, i + windowSize);
+            } else if (windowMode == WindowMode.Left) {
+                left = Math.max(0, i - windowSize);
+                right = i - 1;
+            } else if (windowMode == WindowMode.Right) {
+                left = i + 1;
+                right = Math.min(walk.size() - 1, i + windowSize);
             }
-        }
-        else if (windowMode == WindowMode.Left) {
-            for (int i = 0; i < walk.size(); i++) {
-                int left = Math.max(0, i - windowSize);
-                int right = i - 1;
 
-                for (int j = left; j <= right; j++) {
-                        positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
-                }
-            }
-        }
-        else if (windowMode == WindowMode.Right) {
-            for (int i = 0; i < walk.size(); i++) {
-                int left = i + 1;
-                int right = Math.min(walk.size() - 1, i + windowSize);
-
-                for (int j = left; j <= right; j++) {
-                        positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
-                }
+            for (int j = left; j <= right; j++) {
+                positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
             }
         }
         return positiveSamples;

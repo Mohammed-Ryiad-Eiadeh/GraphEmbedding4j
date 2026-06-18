@@ -1,7 +1,6 @@
 package WalkModel;
 
 import Core.ImmutableGraphData;
-import WalkModel.Strategy.WalkStrategy;
 import representation.AdjacentList.AdjacentListModel.Neighbor;
 import Core.VertexIndexMapping;
 import representation.AdjacentList.ImmutableAdjacentList;
@@ -12,7 +11,7 @@ import java.util.*;
  * Implements the DeepWalk uniform random walk strategy over an immutable adjacency list.
  * Each step selects one outgoing neighbor with equal probability to form a walk sequence.
  */
-public class DeepWalk<V> implements WalkStrategy<V> {
+public non-sealed class DeepWalk<V> implements WalkStrategy<V> {
     private final ImmutableGraphData<V> immutableGraphDataObj;
     private final Map<Integer, List<Neighbor<Integer>>> adjacentList;
     private final VertexIndexMapping<V> mapper;

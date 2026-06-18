@@ -14,7 +14,7 @@ import java.util.Set;
  * or adapters over external graph sources.
  * @param <V> the vertex type
  */
-public interface GraphData<V> {
+public sealed interface GraphData<V> permits ImmutableGraphData {
     /**
      * Returns the type of the graph (directed or bidirectional).
      *

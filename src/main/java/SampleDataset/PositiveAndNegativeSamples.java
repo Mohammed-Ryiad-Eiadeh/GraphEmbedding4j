@@ -1,6 +1,6 @@
 package SampleDataset;
 
-import ContextModel.ContextStrategy.ContextWindow;
+import ContextModel.ContextWindow;
 import NegativeSamplingModel.SampleStrategy.NegativeSample;
 import WalkModel.DeepWalk;
 

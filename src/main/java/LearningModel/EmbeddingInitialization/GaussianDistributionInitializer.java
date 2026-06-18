@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Initializes node embeddings using a random uniform distribution.
+ * Initializes node embeddings using a Gaussian distribution.
  *
  * @param <V> node identifier type
  */
-public non-sealed class RandomUniformInitializer<V> extends EmbeddingInitializer<V> {
+public non-sealed class GaussianDistributionInitializer<V> extends EmbeddingInitializer<V> {
     private final int numOfNode;
     private final int embeddingDimension;
     private final long seed;
@@ -20,9 +20,9 @@ public non-sealed class RandomUniformInitializer<V> extends EmbeddingInitializer
      *
      * @param immutableGraphData graph data tells how many vectors to initialize
      * @param embeddingDimension embedding vector dimension
-     * @param seed          random seed
+     * @param seed               random seed
      */
-    public RandomUniformInitializer(ImmutableGraphData<V> immutableGraphData, int embeddingDimension, long seed) {
+    public GaussianDistributionInitializer(ImmutableGraphData<V> immutableGraphData, int embeddingDimension, long seed) {
         super(immutableGraphData, embeddingDimension, seed);
         this.numOfNode = immutableGraphData.vertexCount();
         this.embeddingDimension = embeddingDimension;
@@ -38,13 +38,12 @@ public non-sealed class RandomUniformInitializer<V> extends EmbeddingInitializer
     public HashMap<Integer, double[]> initializeEmbedding() {
         HashMap<Integer, double[]> embeddings = new HashMap<>();
         Random random = new Random(seed);
-        double bound = 1.0 / embeddingDimension;
 
         for (int i = 0; i < numOfNode; i++) {
             double[] embeddingVec = new double[embeddingDimension];
 
             for (int j = 0; j < embeddingDimension; j++) {
-                embeddingVec[j] = (random.nextDouble() * 2 - 1) *  bound;
+                embeddingVec[j] = random.nextGaussian(0, 1 / Math.sqrt(embeddingDimension));
             }
 
             embeddings.put(i, embeddingVec);
