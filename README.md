@@ -36,7 +36,7 @@ Rather than targeting production deployment, the library is intended to support:
 |---|---|---|
 | **Activation Functions** | Sigmoid, Tanh | ELU, Leaky ReLU |
 | **Optimization Algorithms** | SGD, Momentum SGD, AdaGrad, RMSProp, AdaDelta, Sign SGD, AdaMax, AdamW | Adam |
-| **Embedding Initialization** | Random Uniform Initialization | Xavier Initialization, He Initialization |
+| **Embedding Initialization** | Random Uniformal, Gaussian Distribution | Xavier Initialization, He Initialization |
 | **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
 | **Walk Engines** | DeepWalk | Node2Vec-Style Biased Walks, Dynamic Graph Walks, Temporal Random Walks |
 
