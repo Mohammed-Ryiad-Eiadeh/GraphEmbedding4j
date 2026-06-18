@@ -28,7 +28,7 @@ public non-sealed class AdaGrad implements Optimizer {
         this.learningRate = learningRate;
 
         if (epsilon < 1e-12 || epsilon > 1e-6) {
-            throw new IllegalArgumentException("Epsilon must be in [10^-6, 10^-12]");
+            throw new IllegalArgumentException("Epsilon must be in [1e-12, 1e-6]");
         }
         this.epsilon = epsilon;
 

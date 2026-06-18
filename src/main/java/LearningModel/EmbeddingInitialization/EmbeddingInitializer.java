@@ -9,7 +9,7 @@ import java.util.Objects;
  * Abstract class for initializing node embedding vectors
  * used by embedding learning models such as Skip-Gram.
  */
-public abstract class EmbeddingInitializer<V> {
+public sealed abstract class EmbeddingInitializer<V> permits RandomUniformInitializer {
     private final int numOfNode;
     private final int embeddingDimension;
     private final long seed;

@@ -5,4 +5,5 @@ import java.util.function.DoubleUnaryOperator;
 /**
  * Defines an activation function used in embedding learning models.
  */
-public interface Activation extends DoubleUnaryOperator { }
+public sealed interface Activation extends DoubleUnaryOperator
+        permits SigmoidFunction, TanhFunction { }

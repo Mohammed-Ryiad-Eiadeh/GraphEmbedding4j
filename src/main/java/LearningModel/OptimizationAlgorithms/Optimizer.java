@@ -4,7 +4,7 @@ package LearningModel.OptimizationAlgorithms;
  * Defines the contract for optimization algorithms used to update model
  * parameters during embedding training.
  */
-public sealed interface Optimizer permits SGD, MomentumSGD, RMSProp, AdaGrad, AdaDelta, SignSGD {
+public sealed interface Optimizer permits AdaDelta, AdaGrad, AdaMax, AdamW, MomentumSGD, RMSProp, SGD, SignSGD {
 
     /**
      * Updates the model parameters using the computed gradient.

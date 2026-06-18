@@ -4,7 +4,7 @@ package LearningModel.ActivationFunction;
  * Sigmoid activation function used to map a real-valued score
  * into the probability range (0, 1).
  */
-public class SigmoidFunction implements Activation {
+public non-sealed class SigmoidFunction implements Activation {
 
     /**
      * Applies the activation function to the input value.

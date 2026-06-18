@@ -10,7 +10,7 @@ import java.util.Random;
  *
  * @param <V> node identifier type
  */
-public class RandomUniformInitializer<V> extends EmbeddingInitializer<V> {
+public non-sealed class RandomUniformInitializer<V> extends EmbeddingInitializer<V> {
     private final int numOfNode;
     private final int embeddingDimension;
     private final long seed;
