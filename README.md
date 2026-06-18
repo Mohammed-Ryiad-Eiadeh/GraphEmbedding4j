@@ -98,8 +98,8 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 ## Example 1: Learning Node Embeddings on the Karate Graph
 
 ```java
-        // Load the graph from Graphs/Karate.txt.
-        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "Karate.txt");
+        // Load the graph from Graphs
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "karate.txt");
         var graphReader = Files.newBufferedReader(graphDataFile);
 
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
@@ -137,23 +137,23 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
                 4,
                 12345L);
 
-        // Create positive and negative samples using 1) symmetric sliding window and 2) uniform negative sampling
+        // Create positive and negative samples using 1) right sliding window and 2) uniform negative sampling
         var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
-                new SlidingWindow(WindowMode.Symmetric, 3),
-                new UniformNegativeSample<>(mapper, 12345L),
+                new SlidingWindow(WindowMode.Right, 5),
+                new UniformNegativeSample<>(mapper),
                 20,
                 false,
                 12345L);
 
-        // Initialize node embeddings using random uniform initialization.
-        var uniformEmbeddingInitializer = new RandomUniformInitializer<>(builder,
+        // Initialize node embeddings using random Gaussian initialization.
+        var gaussianInitializer = new GaussianDistributionInitializer<>(builder,
                 256,
                 12345L);
 
         // Define a Skip-Gram model
-        var skipGramModel = new SkipGram<>(uniformEmbeddingInitializer,
+        var skipGramModel = new SkipGram<>(gaussianInitializer,
                 positiveNegativeSample,
-                new SGD(0.01),
+                new AdamW(0.9, 0.999, 0.0001, 1e-8, 0.01),
                 new SigmoidFunction(),
                 100);
 
@@ -164,11 +164,9 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 
         System.out.println("Training time: " + Util.formatDuration(startTime, endTime) + " ms");
 
-        var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-
-
         // Export the learned embeddings to Karate_embeddings.csv
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\Karateh_embeddings.csv";
+        var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\karkar.csv";
         new EmbeddingExporter<Integer>().saveEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
@@ -181,13 +179,17 @@ Dataset: Karate graph
 Graph type: Directed
 Walk length: 10
 Number of walks per node: 4
-Window mode: Symmetric
-Window size: 3
+Window mode: Right
+Window size: 5
 Negative sampling: Uniform
 Number of negative sample nodes: 20
 Embedding dimension: 256
-Optimizer: SGD
-Learning rate: 0.01
+Optimizer: AdamW
+beta1: 0.9
+beta2: 0.999
+Learning rate: 0.0001
+epsilon: 1e-8
+lambda: 0.01
 Activation function: Sigmoid
 Epochs: 100
 Random seed: 12345
@@ -253,11 +255,11 @@ Random seed: 12345
 Using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation:
 
 ```text
-The Training_Testing duration time is : (00:00:00:842)
-The average accuracy is : 0.9142857142857143
-The average recall is : 0.869047619047619
-The average F1-Score is : 0.8580498866213152
-The average precision is : 0.8726190476190476
+The Training_Testing duration time is : (00:00:00:818)
+The average accuracy is : 0.9714285714285714
+The average recall is : 0.9285714285714286
+The average F1-Score is : 0.9206349206349207
+The average precision is : 0.9142857142857144
 ```
 
 ---
