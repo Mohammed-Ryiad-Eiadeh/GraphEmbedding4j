@@ -38,7 +38,7 @@ Rather than targeting production deployment, the library is intended to support:
 | **Optimization Algorithms** | SGD, Momentum SGD, AdaGrad, RMSProp, AdaDelta, Sign SGD, AdaMax, AdamW | Adam |
 | **Embedding Initialization** | Random Uniformal, Gaussian Distribution | Xavier Initialization, He Initialization |
 | **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
-| **Walk Engines** | DeepWalk | Node2Vec-Style Biased Walks, Dynamic Graph Walks, Temporal Random Walks |
+| **Walk Engines** | DeepWalk, Node2Vec-Style Biased Walks (Roulette Wheel Sample) | Dynamic Graph Walks, Temporal Random Walks |
 
 ---
 
