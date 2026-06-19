@@ -15,7 +15,7 @@ public non-sealed class SlidingWindow implements ContextWindow {
 
     /**
      * Constructs a symmetric sliding window.
-     *
+     * @param windowMode sliding window strategy to use
      * @param windowSize the number of neighbors to include on both the left
      *                   and right sides of the center element
      * @throws IllegalArgumentException if {@code windowSize <= 0}
@@ -55,21 +55,26 @@ public non-sealed class SlidingWindow implements ContextWindow {
             int left = 0;
             int right = 0;
 
-            if (windowMode == WindowMode.Symmetric) {
-                left = Math.max(0, i - windowSize);
-                right = Math.min(walk.size() - 1, i + windowSize);
-            } else if (windowMode == WindowMode.Left) {
-                left = Math.max(0, i - windowSize);
-                right = i - 1;
-            } else if (windowMode == WindowMode.Right) {
-                left = i + 1;
-                right = Math.min(walk.size() - 1, i + windowSize);
+            switch (windowMode) {
+                case Symmetric -> {
+                    left = Math.max(0, i - windowSize);
+                    right = Math.min(walk.size() - 1, i + windowSize);
+                }
+                case Left -> {
+                    left = Math.max(0, i - windowSize);
+                    right = i - 1;
+                }
+                case Right -> {
+                    left = i + 1;
+                    right = Math.min(walk.size() - 1, i + windowSize);
+                }
             }
 
             for (int j = left; j <= right; j++) {
                 positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
             }
         }
+
         return positiveSamples;
     }
 }

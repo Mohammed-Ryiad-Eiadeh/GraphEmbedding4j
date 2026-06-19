@@ -1,7 +1,7 @@
 package LearningModel;
 
 import LearningModel.ActivationFunction.Activation;
-import LearningModel.EmbeddingInitialization.EmbeddingInitializer;
+import LearningModel.EmbeddingInitialization.Initializer;
 import LearningModel.OptimizationAlgorithms.Optimizer;
 import SampleDataset.PositiveAndNegativeSamples;
 import SampleDataset.Sample;
@@ -35,7 +35,7 @@ public class SkipGram<V> {
      * @param activationFunction the activation function applied to dot-product scores
      * @param numOfEpochs the number of training epochs
      */
-    public SkipGram(EmbeddingInitializer<V> embeddingInitializer, PositiveAndNegativeSamples<V> positiveAndNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
+    public SkipGram(Initializer<V> embeddingInitializer, PositiveAndNegativeSamples<V> positiveAndNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
         Objects.requireNonNull(positiveAndNegativeSamples, "positiveAndNegativeSamples cannot be null");
         this.dataSamples = new ArrayList<>(positiveAndNegativeSamples.generatePositiveNegativeSampleDataset());
 

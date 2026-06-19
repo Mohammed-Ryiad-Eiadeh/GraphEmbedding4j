@@ -2,7 +2,7 @@ package SampleDataset;
 
 import ContextModel.ContextWindow;
 import NegativeSamplingModel.SampleStrategy.NegativeSample;
-import WalkModel.DeepWalk;
+import WalkModel.WalkStrategy;
 
 import java.util.*;
 
@@ -24,15 +24,15 @@ public class PositiveAndNegativeSamples<V> {
      * Constructs a positive and negative sample generator using walks
      * produced by the given DeepWalk model.
      *
-     * @param deepWalk the DeepWalk model that provides the walk sequences
+     * @param walkStrategy the Walk model that provides the walk sequences
      * @param slidingWindow the context window used to extract positive samples
      * @param negativeSample the strategy used to generate negative samples
      * @param numberOfNegativeSamples the number of negative samples
      * @param allowSampleDuplicate whether duplicate samples are allowed
      * @param randomSeed the seed used to initialize random sampling
      */
-    public PositiveAndNegativeSamples(DeepWalk<V> deepWalk, ContextWindow slidingWindow, NegativeSample negativeSample, int numberOfNegativeSamples, boolean allowSampleDuplicate, long randomSeed) {
-        DeepWalk<V> deepWalks = Objects.requireNonNull(deepWalk, "walk cannot be null");
+    public PositiveAndNegativeSamples(WalkStrategy<V> walkStrategy, ContextWindow slidingWindow, NegativeSample negativeSample, int numberOfNegativeSamples, boolean allowSampleDuplicate, long randomSeed) {
+        WalkStrategy<V> walkModel = Objects.requireNonNull(walkStrategy, "walk cannot be null");
 
         this.slidingWindow = Objects.requireNonNull(slidingWindow, "symmetricSlidingWindow cannot be null");
 
@@ -46,7 +46,7 @@ public class PositiveAndNegativeSamples<V> {
         this.numberOfNegativeSamples = numberOfNegativeSamples;
 
         this.random = new Random(randomSeed);
-        this.sequences = new ArrayList<>(deepWalks.getRandomWalks());
+        this.sequences = new ArrayList<>(walkModel.getRandomWalks());
         this.allowSampleDuplicate = allowSampleDuplicate;
     }
 

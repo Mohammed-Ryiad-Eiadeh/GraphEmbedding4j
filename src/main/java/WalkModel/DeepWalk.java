@@ -11,38 +11,28 @@ import java.util.*;
  * Implements the DeepWalk uniform random walk strategy over an immutable adjacency list.
  * Each step selects one outgoing neighbor with equal probability to form a walk sequence.
  */
-public non-sealed class DeepWalk<V> implements WalkStrategy<V> {
-    private final ImmutableGraphData<V> immutableGraphDataObj;
+public non-sealed class DeepWalk<V> extends WalkStrategy<V> {
     private final Map<Integer, List<Neighbor<Integer>>> adjacentList;
     private final VertexIndexMapping<V> mapper;
     private final int numOfHops;
-    private final int walkPerNode;
     private final Random random;
-    private volatile ArrayList<ArrayList<Integer>> cashedSetWalks;
 
     /**
      * Constructs a DeepWalk strategy by preprocessing the input graph into an
      * immutable adjacency list and initializing the vertex-to-index mapping.
      *
-     * @param immutableGraphData immutable graph structure containing vertices and edges
-     * @param mapping            mapping from generic vertices to internal integer node IDs
-     * @param randomSeed seed for controlling randomness and ensuring reproducible sampling
+     * @param immutableGraphDataObj immutable graph data containing vertices and edges
+     * @param mapping            mapping between vertices and internal node IDs
+     * @param numOfHops          number of steps in each random walk
+     * @param walkPerNode        number of walks generated per node
+     * @param randomSeed         seed used for reproducible sampling
      */
-    public DeepWalk(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, long randomSeed) {
-        this.immutableGraphDataObj = Objects.requireNonNull(immutableGraphData, "immutableGraphData can not be null");
-        this.mapper = Objects.requireNonNull(mapping, "mapping can not be null");
+    public DeepWalk(ImmutableGraphData<V> immutableGraphDataObj, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, long randomSeed) {
+        super(immutableGraphDataObj, mapping, numOfHops, walkPerNode, randomSeed);
 
-        if (numOfHops <= 0) {
-            throw new IllegalArgumentException("numOfHops must be greater than 0");
-        }
-        if (walkPerNode <= 0) {
-            throw new IllegalArgumentException("walkPerNode must be greater than 0");
-        }
-
-        this.adjacentList = new ImmutableAdjacentList<>(immutableGraphDataObj, mapping)
-                .getAdjacentMap();
+        this.mapper = mapping;
+        this.adjacentList = new ImmutableAdjacentList<>(immutableGraphDataObj, mapping).getAdjacentMap();
         this.numOfHops = numOfHops;
-        this.walkPerNode = walkPerNode;
         this.random = new Random(randomSeed);
     }
 
@@ -60,6 +50,7 @@ public non-sealed class DeepWalk<V> implements WalkStrategy<V> {
 
         for (int i = 0; i < numOfHops; i++) {
             List<Neighbor<Integer>> neighbors = adjacentList.get(current);
+
             if (neighbors == null || neighbors.isEmpty()) {
                 break;
             }
@@ -69,35 +60,7 @@ public non-sealed class DeepWalk<V> implements WalkStrategy<V> {
             sequence.add(next);
             current = next;
         }
+
         return sequence;
-    }
-
-    /**
-     * Returns the generated random walks.
-     * <p>
-     * If the walks were generated before, the cached set is returned.
-     * Otherwise, random walks are generated for each vertex and stored for reuse.
-     * Only walks of length at least {@code 2} are included.
-     *
-     * @return a set of generated random walks
-     */
-    public ArrayList<ArrayList<Integer>> getRandomWalks() {
-        ArrayList<ArrayList<Integer>> randomWalks = cashedSetWalks;
-        if (randomWalks != null) {
-            return randomWalks;
-        }
-
-        ArrayList<ArrayList<Integer>> RWs = new ArrayList<>();
-        for (int i = 0; i < immutableGraphDataObj.vertexCount(); i++) {
-            for (int j = 0; j < walkPerNode; j++) {
-                ArrayList<Integer> walk = generateWalk(mapper.getVertex(i));
-                if (walk.size() >= 2) {
-                    RWs.add(walk);
-                }
-            }
-        }
-        Collections.shuffle(RWs, new Random(12345));
-        cashedSetWalks = RWs;
-        return RWs;
     }
 }
