@@ -20,6 +20,7 @@ public class ImmutableAdjacentMatrix<V> extends MatrixData<float[][]> {
 
     public ImmutableAdjacentMatrix(ImmutableGraphData<V> immutableGraphData, Map<V, Integer> vertexToIndex) {
         this.immutableGraphData = immutableGraphData;
+
         this.vertexToIndex = Map.copyOf(vertexToIndex);
     }
 

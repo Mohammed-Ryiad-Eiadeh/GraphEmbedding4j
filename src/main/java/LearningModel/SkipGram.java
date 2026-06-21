@@ -1,10 +1,10 @@
 package LearningModel;
 
-import LearningModel.ActivationFunction.Activation;
-import LearningModel.EmbeddingInitialization.Initializer;
-import LearningModel.OptimizationAlgorithms.Optimizer;
-import SampleDataset.PositiveAndNegativeSamples;
-import SampleDataset.Sample;
+import ActivationFunction.Activation;
+import EmbeddingInitializer.InitializerOpt;
+import OptimizationAlgorithms.Optimizer;
+import PositiveNegativeSampling.Sampler;
+import PositiveNegativeSampling.PositiveNegativeSamples;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
  */
 public class SkipGram<V> {
     private final int embeddingDimension;
-    private final ArrayList<Sample> dataSamples;
+    private final ArrayList<Sampler> dataSamplers;
     private final Optimizer optimizer;
     private final Activation activationFunction;
     private final int numOfEpochs;
@@ -29,15 +29,15 @@ public class SkipGram<V> {
      * Constructs a Skip-Gram model using initialized embeddings, training samples,
      * an optimizer, an activation function, and the number of training epochs.
      *
-     * @param embeddingInitializer initializes the node embedding vectors
-     * @param positiveAndNegativeSamples generates positive and negative training samples
+     * @param embeddingInitializerOpt initializes the node embedding vectors
+     * @param positiveNegativeSamples generates positive and negative training samples
      * @param optimizer the optimization algorithm used to update embeddings
      * @param activationFunction the activation function applied to dot-product scores
      * @param numOfEpochs the number of training epochs
      */
-    public SkipGram(Initializer<V> embeddingInitializer, PositiveAndNegativeSamples<V> positiveAndNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
-        Objects.requireNonNull(positiveAndNegativeSamples, "positiveAndNegativeSamples cannot be null");
-        this.dataSamples = new ArrayList<>(positiveAndNegativeSamples.generatePositiveNegativeSampleDataset());
+    public SkipGram(InitializerOpt<V> embeddingInitializerOpt, PositiveNegativeSamples<V> positiveNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
+        Objects.requireNonNull(positiveNegativeSamples, "positiveNegativeSamples cannot be null");
+        this.dataSamplers = new ArrayList<>(positiveNegativeSamples.generatePositiveNegativeSampleDataset());
 
         Objects.requireNonNull(optimizer, "optimizer cannot be null");
         this.optimizer = optimizer;
@@ -50,9 +50,9 @@ public class SkipGram<V> {
         }
         this.numOfEpochs = numOfEpochs;
 
-        Objects.requireNonNull(embeddingInitializer, "embeddingInitializer cannot be null");
-        Embeddings = new HashMap<>(embeddingInitializer.initializeEmbedding());
-        this.embeddingDimension = embeddingInitializer.getEmbeddingDimension();
+        Objects.requireNonNull(embeddingInitializerOpt, "embeddingInitializerOpt cannot be null");
+        Embeddings = new HashMap<>(embeddingInitializerOpt.initializeEmbedding());
+        this.embeddingDimension = embeddingInitializerOpt.getEmbeddingDimension();
     }
 
     /**
@@ -61,7 +61,7 @@ public class SkipGram<V> {
      */
     public void trainModel() {
         for (int iter = 0; iter < this.numOfEpochs; iter++) {
-            for (Sample instance : this.dataSamples) {
+            for (Sampler instance : this.dataSamplers) {
                 int contextNode = instance.contextNode();
                 int targetNode = instance.targetNode();
 
@@ -107,7 +107,7 @@ public class SkipGram<V> {
                 .sum();
 
         double prediction = activationFunction.applyAsDouble(dotProduct);
-        double groundTruth = label.equals("Positive Sample") ? 1 : 0;
+        double groundTruth = label.equals("Positive PositiveNegativeSampling") ? 1 : 0;
 
         //double error = groundTruth - prediction;      // this version enforces the use of Ascent based approaches
         double error = prediction - groundTruth;        // this version enforces the use of Descent based approaches

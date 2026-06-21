@@ -1,6 +1,6 @@
 package ContextModel;
 
-import SampleDataset.Pair;
+import PositiveNegativeSampling.TrainingPair;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public sealed interface ContextWindow permits SlidingWindow {
      * @param walk the generated random walk
      * @return list of (target, context) index pairs
      */
-    List<Pair> generatePositivePairs(List<Integer> walk);
+    List<TrainingPair> generatePositivePairs(List<Integer> walk);
 
     /**
      * Returns the window size.

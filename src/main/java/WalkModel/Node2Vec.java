@@ -5,7 +5,11 @@ import Core.VertexIndexMapping;
 import representation.AdjacentList.AdjacentListModel.Neighbor;
 import representation.AdjacentList.ImmutableAdjacentList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Node2Vec biased random-walk strategy.
@@ -17,14 +21,13 @@ import java.util.*;
  * @param <V> vertex type used by the input graph
  */
 public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
-    private final ImmutableGraphData<V> immutableGraphDataObj;
     private final Map<Integer, List<Neighbor<Integer>>> adjacentList;
     private final VertexIndexMapping<V> mapper;
     private final int numOfHops;
     private final double p;
     private final double q;
     private final Random random;
-    private volatile ArrayList<ArrayList<Integer>> cashedSetWalks;
+    private final Random randSample;
 
     /**
      * Constructs a Node2Vec walk strategy.
@@ -43,16 +46,16 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
     public Node2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double p, double q, long randomSeed) {
         super(immutableGraphData, mapping, numOfHops, walkPerNode, randomSeed);
 
-        this.immutableGraphDataObj = immutableGraphData;
-
         this.mapper = mapping;
 
         this.p = p;
         this.q = q;
 
-        this.adjacentList = new ImmutableAdjacentList<>(immutableGraphDataObj, mapping).getAdjacentMap();
+        this.adjacentList = new ImmutableAdjacentList<>(immutableGraphData, mapping).getAdjacentMap();
         this.numOfHops = numOfHops;
         this.random = new Random(randomSeed);
+
+        this.randSample = new Random(12345L);
     }
 
     /**
@@ -130,7 +133,7 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
     private int rouletteWheelSample(HashMap<Integer, Double> neighborsToBiasRatio) {
         double total = neighborsToBiasRatio.values().stream().mapToDouble(Double::doubleValue).sum();
 
-        double rand = random.nextDouble() * total;
+        double rand = randSample.nextDouble() * total;
 
         double commutative = 0.0;
 

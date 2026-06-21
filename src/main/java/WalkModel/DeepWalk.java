@@ -5,7 +5,10 @@ import representation.AdjacentList.AdjacentListModel.Neighbor;
 import Core.VertexIndexMapping;
 import representation.AdjacentList.ImmutableAdjacentList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Implements the DeepWalk uniform random walk strategy over an immutable adjacency list.

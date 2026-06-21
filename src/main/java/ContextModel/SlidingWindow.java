@@ -1,6 +1,6 @@
 package ContextModel;
 
-import SampleDataset.Pair;
+import PositiveNegativeSampling.TrainingPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,11 @@ public non-sealed class SlidingWindow implements ContextWindow {
         if  (windowSize <= 0) {
             throw new IllegalArgumentException("windowSize must be greater than 0");
         }
+
         if (windowMode == null) {
             throw new IllegalArgumentException("windowMode must not be null");
         }
+
         this.windowSize = windowSize;
         this.windowMode = windowMode;
     }
@@ -48,8 +50,8 @@ public non-sealed class SlidingWindow implements ContextWindow {
      * @return list of (target, context) index pairs
      */
     @Override
-    public List<Pair> generatePositivePairs(List<Integer> walk) {
-        List<Pair> positiveSamples = new ArrayList<>();
+    public List<TrainingPair> generatePositivePairs(List<Integer> walk) {
+        List<TrainingPair> positiveSamples = new ArrayList<>();
 
         for (int i = 0; i < walk.size(); i++) {
             int left = 0;
@@ -71,7 +73,7 @@ public non-sealed class SlidingWindow implements ContextWindow {
             }
 
             for (int j = left; j <= right; j++) {
-                positiveSamples.add(new Pair(walk.get(i), walk.get(j)));
+                positiveSamples.add(new TrainingPair(walk.get(i), walk.get(j)));
             }
         }
 
