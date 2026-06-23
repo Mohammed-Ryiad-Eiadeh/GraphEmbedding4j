@@ -95,26 +95,19 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
         ImmutableGraphData<String> graph = graphBuilder.build();
 ```
 
-## Example 1: Learning Node Embeddings on the Karate Graph
+## Example 1: Learning Node Embeddings (via Node2Vec Walks) on the Karate Graph
 
 ```java
         // Load the graph from Graphs
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "karate.txt");
-        var graphReader = Files.newBufferedReader(graphDataFile);
 
+        // Load the graph into the passed builder (explicitly update in-place)
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
-        var headerLineId = 1;
+        new CSVGraphLoader<>(graphBuilder).loadGraphIntoBuilder(graphDataFile,
+                Integer::parseInt,
+                1);
 
-        graphReader.lines().skip(headerLineId).forEach(line -> {
-            String[] currentLine = line.trim().split("\\s+");
-            var source = Integer.parseInt(currentLine[0]);
-            var destination = Integer.parseInt(currentLine[1]);
-            var weight = currentLine.length >= 3 ? Float.parseFloat(currentLine[2]) : 1.0f;
-            graphBuilder.addConnection(source, destination, weight);
-        });
-        graphReader.close();
-
-        // Build a directed graph using GraphBuilder.
+        // Build a directed graph using GraphBuilder
         var builder = graphBuilder
                 .ifNotEmpty()
                 .build();
@@ -131,27 +124,31 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
         var mapper = new VertexIndexMapping<>(builder);
 
         // Generate random walks using DeepWalk.
-        var deepWalk = new DeepWalk<>(builder,
+        var Walk = new Node2Vec<>(builder,
                 mapper,
                 10,
-                4,
+                3,
+                0.5,
+                2.0,
+                12345L,
                 12345L);
 
         // Create positive and negative samples using 1) right sliding window and 2) uniform negative sampling
-        var positiveNegativeSample = new PositiveAndNegativeSamples<>(deepWalk,
-                new SlidingWindow(WindowMode.Right, 5),
-                new UniformNegativeSample<>(mapper),
+        var positiveNegativeSample = new PositiveNegativeSamples<>(Walk,
+                new SlidingWindow(WindowMode.Right, 4),
+                new UniformNegativeSampler<>(mapper),
                 20,
                 false,
                 12345L);
 
         // Initialize node embeddings using random Gaussian initialization.
-        var gaussianInitializer = new GaussianDistributionInitializer<>(builder,
+        var embeddingInitializer = new EmbeddingInitializer<>(builder,
+                InitializerMode.Gaussian,
                 256,
                 12345L);
 
         // Define a Skip-Gram model
-        var skipGramModel = new SkipGram<>(gaussianInitializer,
+        var skipGramModel = new SkipGram<>(embeddingInitializer,
                 positiveNegativeSample,
                 new AdamW(0.9, 0.999, 0.0001, 1e-8, 0.01),
                 new SigmoidFunction(),
@@ -167,7 +164,7 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
         var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\karkar.csv";
-        new EmbeddingExporter<Integer>().saveEmbeddings(Paths.get(stringPath),
+        new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
 ```
@@ -178,9 +175,11 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 Dataset: Karate graph
 Graph type: Directed
 Walk length: 10
-Number of walks per node: 4
+Number of walks per node: 3
+p: 0.5
+q: 2.0
 Window mode: Right
-Window size: 5
+Window size: 4
 Negative sampling: Uniform
 Number of negative sample nodes: 20
 Embedding dimension: 256
@@ -255,11 +254,11 @@ Random seed: 12345
 Using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation:
 
 ```text
-The Training_Testing duration time is : (00:00:00:818)
-The average accuracy is : 0.9714285714285714
-The average recall is : 0.9285714285714286
-The average F1-Score is : 0.9206349206349207
-The average precision is : 0.9142857142857144
+The Training_Testing duration time is : (00:00:00:600)
+The average accuracy is : 0.9642857142857143
+The average recall is : 0.9761904761904762
+The average F1-Score is : 0.9619047619047619
+The average precision is : 0.9642857142857143
 ```
 
 ---
