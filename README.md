@@ -123,7 +123,7 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
         // Map each vertex to an internal index using VertexIndexMapping.
         var mapper = new VertexIndexMapping<>(builder);
 
-        // Generate random walks using DeepWalk.
+        // Generate random walks using Node2Vec.
         var Walk = new Node2Vec<>(builder,
                 mapper,
                 10,
