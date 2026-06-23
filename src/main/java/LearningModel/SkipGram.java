@@ -1,7 +1,7 @@
 package LearningModel;
 
 import ActivationFunction.Activation;
-import EmbeddingInitializer.InitializerOpt;
+import EmbeddingInitialization.Initializer;
 import OptimizationAlgorithms.Optimizer;
 import PositiveNegativeSampling.Sampler;
 import PositiveNegativeSampling.PositiveNegativeSamples;
@@ -29,13 +29,13 @@ public class SkipGram<V> {
      * Constructs a Skip-Gram model using initialized embeddings, training samples,
      * an optimizer, an activation function, and the number of training epochs.
      *
-     * @param embeddingInitializerOpt initializes the node embedding vectors
+     * @param embeddingInitializer initializes the node embedding vectors
      * @param positiveNegativeSamples generates positive and negative training samples
      * @param optimizer the optimization algorithm used to update embeddings
      * @param activationFunction the activation function applied to dot-product scores
      * @param numOfEpochs the number of training epochs
      */
-    public SkipGram(InitializerOpt<V> embeddingInitializerOpt, PositiveNegativeSamples<V> positiveNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
+    public SkipGram(Initializer<V> embeddingInitializer, PositiveNegativeSamples<V> positiveNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
         Objects.requireNonNull(positiveNegativeSamples, "positiveNegativeSamples cannot be null");
         this.dataSamplers = new ArrayList<>(positiveNegativeSamples.generatePositiveNegativeSampleDataset());
 
@@ -50,9 +50,10 @@ public class SkipGram<V> {
         }
         this.numOfEpochs = numOfEpochs;
 
-        Objects.requireNonNull(embeddingInitializerOpt, "embeddingInitializerOpt cannot be null");
-        Embeddings = new HashMap<>(embeddingInitializerOpt.initializeEmbedding());
-        this.embeddingDimension = embeddingInitializerOpt.getEmbeddingDimension();
+        Objects.requireNonNull(embeddingInitializer, "embeddingInitializer cannot be null");
+        Embeddings = new HashMap<>(embeddingInitializer.initializeEmbedding());
+
+        this.embeddingDimension = embeddingInitializer.getEmbeddingDimension();
     }
 
     /**
@@ -74,6 +75,7 @@ public class SkipGram<V> {
                 updateEmbeddings(instance.targetNode(), targetNodeGradient);
                 updateEmbeddings(instance.contextNode(), contextNodeGradient);
             }
+
             System.out.println("Epoch " + iter + " completed.");
         }
     }
@@ -115,6 +117,7 @@ public class SkipGram<V> {
         for (int i = 0; i < embeddingDimension; i++) {
             gradient[i] = error * embeddings2[i];
         }
+
         return gradient;
     }
 

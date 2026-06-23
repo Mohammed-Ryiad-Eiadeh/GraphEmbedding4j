@@ -1,6 +1,10 @@
 package Core;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides a bidirectional mapping between graph vertices and
@@ -22,10 +26,13 @@ public class VertexIndexMapping<V> {
      */
     public VertexIndexMapping(GraphData<V> GraphData) {
         indexToVertex = List.copyOf(Objects.requireNonNull(GraphData).vertexSet());
+
         Map<V, Integer> mapper = new HashMap<>();
+
         for (int index = 0; index < indexToVertex.size(); index++) {
             mapper.putIfAbsent(indexToVertex.get(index), index);
         }
+
         vertexToIndex = Collections.unmodifiableMap(mapper);
     }
 
@@ -49,6 +56,7 @@ public class VertexIndexMapping<V> {
         if (!vertexToIndex.containsKey(vertex)) {
             throw new IllegalArgumentException("Vertex " + vertex + " does not exist");
         }
+
         return vertexToIndex.get(vertex);
     }
 
@@ -63,6 +71,7 @@ public class VertexIndexMapping<V> {
         if (index < 0 || index >= indexToVertex.size()) {
             throw new IllegalArgumentException("Index " + index + " is out of bounds");
         }
+
         return indexToVertex.get(index);
     }
 }

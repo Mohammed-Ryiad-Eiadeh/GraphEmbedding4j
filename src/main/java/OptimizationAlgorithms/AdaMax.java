@@ -47,6 +47,7 @@ public non-sealed class AdaMax implements Optimizer {
         this.epsilon = epsilon;
 
         this.m_tVector = new HashMap<>();
+
         this.u_tVector = new HashMap<>();
 
         this.timeStamp = 0L;

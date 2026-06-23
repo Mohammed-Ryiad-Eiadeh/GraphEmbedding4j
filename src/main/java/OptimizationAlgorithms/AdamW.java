@@ -55,7 +55,6 @@ public non-sealed class AdamW implements Optimizer {
 
         this.m_tVector = new HashMap<>();
         this.v_tVector = new HashMap<>();
-
         this.timeStamp = 0L;
     }
 

@@ -51,6 +51,7 @@ public class GraphBuilder<V> {
                 edgesSet.add(new Edge<>(destination, source, weight));
             }
         }
+
         return this;
     }
 

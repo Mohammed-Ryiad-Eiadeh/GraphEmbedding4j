@@ -42,8 +42,9 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
      * @param p                  return parameter; larger values discourage backtracking
      * @param q                  in-out parameter; smaller values encourage outward exploration
      * @param randomSeed         seed used for reproducible sampling
+     * @param sampleSeed         seed used for sampling (i.e., Roulette Wheel Sample)
      */
-    public Node2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double p, double q, long randomSeed) {
+    public Node2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double p, double q, long randomSeed, long sampleSeed) {
         super(immutableGraphData, mapping, numOfHops, walkPerNode, randomSeed);
 
         this.mapper = mapping;
@@ -55,7 +56,7 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
         this.numOfHops = numOfHops;
         this.random = new Random(randomSeed);
 
-        this.randSample = new Random(12345L);
+        this.randSample = new Random(sampleSeed);
     }
 
     /**
