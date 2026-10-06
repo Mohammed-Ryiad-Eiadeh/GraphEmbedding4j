@@ -16,7 +16,7 @@ import java.util.Random;
  *
  * @param <V> vertex type used by the input graph
  */
-public abstract sealed class WalkStrategy<V> permits DeepWalk, Node2Vec {
+public abstract sealed class WalkStrategy<V> permits DeepWalk, MB2Vec, Node2Vec {
     private final ImmutableGraphData<V> immutableGraphDataObj;
     private final VertexIndexMapping<V> mapper;
     private final int walkPerNode;
@@ -31,7 +31,7 @@ public abstract sealed class WalkStrategy<V> permits DeepWalk, Node2Vec {
      * @param walkPerNode        number of walks generated per node
      * @param randomSeed         seed used by concrete strategies for reproducible sampling
      */
-    public WalkStrategy(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, long randomSeed) {
+    public WalkStrategy(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode) {
         this.immutableGraphDataObj = Objects.requireNonNull(immutableGraphData, "immutableGraphData can not be null");
 
         this.mapper = Objects.requireNonNull(mapping, "mapping can not be null");
@@ -43,7 +43,6 @@ public abstract sealed class WalkStrategy<V> permits DeepWalk, Node2Vec {
         if (walkPerNode <= 0) {
             throw new IllegalArgumentException("walkPerNode must be greater than 0");
         }
-
         this.walkPerNode = walkPerNode;
     }
 

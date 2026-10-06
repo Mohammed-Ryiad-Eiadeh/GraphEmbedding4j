@@ -20,7 +20,7 @@ import java.util.Random;
  *
  * @param <V> vertex type used by the input graph
  */
-public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
+public non-sealed class Node2Vec<V> extends WalkStrategy<V> implements SamplingStrategy {
     private final Map<Integer, List<Neighbor<Integer>>> adjacentList;
     private final VertexIndexMapping<V> mapper;
     private final int numOfHops;
@@ -45,7 +45,7 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
      * @param sampleSeed         seed used for sampling (i.e., Roulette Wheel Sample)
      */
     public Node2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double p, double q, long randomSeed, long sampleSeed) {
-        super(immutableGraphData, mapping, numOfHops, walkPerNode, randomSeed);
+        super(immutableGraphData, mapping, numOfHops, walkPerNode);
 
         this.mapper = mapping;
 
@@ -53,9 +53,10 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
         this.q = q;
 
         this.adjacentList = new ImmutableAdjacentList<>(immutableGraphData, mapping).getAdjacentMap();
-        this.numOfHops = numOfHops;
-        this.random = new Random(randomSeed);
 
+        this.numOfHops = numOfHops;
+
+        this.random = new Random(randomSeed);
         this.randSample = new Random(sampleSeed);
     }
 
@@ -63,7 +64,7 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
      * Returns the random walk, starting from a given source
      *
      * @param start the node to launch the walk
-     * @return a random walk starts from the given source node
+     * @return a biased random walk starts from the given source node
      */
     @Override
     public ArrayList<Integer> generateWalk(V start) {
@@ -110,7 +111,7 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
                 }
             }
 
-            int candidate = rouletteWheelSample(neighborsToBiasRatio);
+            int candidate = rouletteWheelSample(neighborsToBiasRatio, randSample);
 
             sequence.add(candidate);
 
@@ -119,33 +120,5 @@ public non-sealed class Node2Vec<V> extends WalkStrategy<V> {
         }
 
         return sequence;
-    }
-
-    /**
-     * Selects a node using roulette-wheel (weighted random) sampling.
-     * <p>
-     * Each candidate node is chosen with probability proportional
-     * to its associated bias weight.
-     *
-     * @param neighborsToBiasRatio mapping from candidate nodes to their bias weights
-     * @return the sampled node ID
-     * @throws IllegalStateException if no candidate can be selected
-     */
-    private int rouletteWheelSample(HashMap<Integer, Double> neighborsToBiasRatio) {
-        double total = neighborsToBiasRatio.values().stream().mapToDouble(Double::doubleValue).sum();
-
-        double rand = randSample.nextDouble() * total;
-
-        double commutative = 0.0;
-
-        for (Map.Entry<Integer, Double> entry : neighborsToBiasRatio.entrySet()) {
-            commutative += entry.getValue();
-
-            if (rand <= commutative) {
-                return entry.getKey();
-            }
-        }
-
-        throw  new IllegalStateException("no more roulette wheel sample");
     }
 }

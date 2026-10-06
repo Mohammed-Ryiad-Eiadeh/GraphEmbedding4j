@@ -31,7 +31,7 @@ public non-sealed class DeepWalk<V> extends WalkStrategy<V> {
      * @param randomSeed         seed used for reproducible sampling
      */
     public DeepWalk(ImmutableGraphData<V> immutableGraphDataObj, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, long randomSeed) {
-        super(immutableGraphDataObj, mapping, numOfHops, walkPerNode, randomSeed);
+        super(immutableGraphDataObj, mapping, numOfHops, walkPerNode);
 
         this.mapper = mapping;
         this.adjacentList = new ImmutableAdjacentList<>(immutableGraphDataObj, mapping).getAdjacentMap();

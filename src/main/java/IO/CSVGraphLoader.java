@@ -38,6 +38,7 @@ public class CSVGraphLoader<V> {
             reader.lines()
                     .skip(skipLine)
                     .filter(line -> !line.isBlank())
+                    .filter(line -> !line.startsWith("L"))
                     .forEach(line -> {
                         String[] currentLine = line.trim().split("\\s+");
 
