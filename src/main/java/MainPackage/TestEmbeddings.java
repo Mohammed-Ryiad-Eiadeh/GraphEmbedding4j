@@ -54,5 +54,7 @@ public class TestEmbeddings {
         System.out.println("The average recall is : " + avgRecall / crossValidation.getK());
         System.out.println("The average F1-Score is : " + avgF1 / crossValidation.getK());
         System.out.println("The average precision is : " +avgPrecision / crossValidation.getK());
+
+        System.out.println("hello GitHub");
     }
 }
