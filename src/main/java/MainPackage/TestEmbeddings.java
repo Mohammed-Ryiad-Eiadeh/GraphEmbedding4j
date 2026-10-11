@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class TestEmbeddings {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_dolphins_Edges.csv";
+        var dataPath = "";
         var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 

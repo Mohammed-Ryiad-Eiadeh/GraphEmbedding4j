@@ -91,7 +91,7 @@ public class LearnEmbeddings_MB2Vec {
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_" + fileName + ".csv";
+        var stringPath = "" + fileName + ".csv";
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
