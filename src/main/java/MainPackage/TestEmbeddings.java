@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class TestEmbeddings {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_polBooks_Edges.csv";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_dolphins_Edges.csv";
         var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 
@@ -37,31 +37,35 @@ public class TestEmbeddings {
                 3);
 
         // get outputs
-        var avgAcc = 0D;
-        var avgRecall = 0D;
-        var avgF1 = 0D;
-        var avgPrecision = 0D;
+        var sumAcc = 0D;
+        var sumRecall = 0D;
+        var sumF1 = 0D;
+        var sumPrecision = 0D;
         var listAcc = new ArrayList<Double>();
         var sTrain = System.currentTimeMillis();
         for (var performance : crossValidation.evaluate()) {
-            avgAcc += performance.getA().accuracy();
-            listAcc.add(avgAcc);
-            avgRecall += performance.getA().macroAveragedRecall();
-            avgF1 += performance.getA().macroAveragedF1();
-            avgPrecision += performance.getA().macroAveragedPrecision();
+            sumAcc += performance.getA().accuracy();
+            listAcc.add(performance.getA().accuracy());
+            sumRecall += performance.getA().macroAveragedRecall();
+            sumF1 += performance.getA().macroAveragedF1();
+            sumPrecision += performance.getA().macroAveragedPrecision();
         }
         var eTrain = System.currentTimeMillis();
 
-        var meanAcc = avgAcc;
+        var avgAcc = sumAcc / crossValidation.getK();
+        var avgRecall = sumRecall / crossValidation.getK();
+        var avgF1 = sumF1 / crossValidation.getK();
+        var avgPrecision = sumPrecision / crossValidation.getK();
+
         var std = Math.sqrt(listAcc.stream()
-                .mapToDouble(value -> Math.pow(value - meanAcc, 2))
+                .mapToDouble(value -> Math.pow(value - avgAcc, 2))
                 .sum() / (listAcc.size() - 1));
 
         System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
-        System.out.println("The average accuracy is : " + avgAcc / crossValidation.getK());
+        System.out.println("The average accuracy is : " + avgAcc);
         System.out.println("The average Std-accuracy is : " + std);
-        System.out.println("The average recall is : " + avgRecall / crossValidation.getK());
-        System.out.println("The average F1-Score is : " + avgF1 / crossValidation.getK());
-        System.out.println("The average precision is : " +avgPrecision / crossValidation.getK());
+        System.out.println("The average recall is : " + avgRecall);
+        System.out.println("The average F1-Score is : " + avgF1);
+        System.out.println("The average precision is : " + avgPrecision);
     }
 }
