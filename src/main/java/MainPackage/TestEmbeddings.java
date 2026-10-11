@@ -57,6 +57,7 @@ public class TestEmbeddings {
         var avgF1 = sumF1 / crossValidation.getK();
         var avgPrecision = sumPrecision / crossValidation.getK();
 
+        //Standard deviation: Measures how much classification performance varies across those folds.
         var std = Math.sqrt(listAcc.stream()
                 .mapToDouble(value -> Math.pow(value - avgAcc, 2))
                 .sum() / (listAcc.size() - 1));
