@@ -1,6 +1,7 @@
+````
 # GraphEmbedding4j
 
-A modular Java library for random-walk–based graph representation learning, designed for research experimentation, algorithmic exploration, and extensible embedding pipelines.
+A modular Java research framework for random-walk-based graph representation learning, including DeepWalk, Node2Vec, and Markov Blanket-based MB2Vec.
 
 ---
 
@@ -24,7 +25,7 @@ Rather than targeting production deployment, the library is intended to support:
 
 ### Random Walk–Based Embedding Pipeline
 
-* DeepWalk-style random walk generation
+* DeepWalk, Node2Vec, and MB2Vec walk generation
 * Sliding-window context extraction
 * Positive and negative sample generation
 * Skip-Gram embedding learning
@@ -36,9 +37,43 @@ Rather than targeting production deployment, the library is intended to support:
 |---|---|---|
 | **Activation Functions** | Sigmoid, Tanh | ELU, Leaky ReLU |
 | **Optimization Algorithms** | SGD, Momentum SGD, AdaGrad, RMSProp, AdaDelta, Sign SGD, AdaMax, AdamW | Adam |
-| **Embedding Initialization** | Random Uniformal, Gaussian Distribution | Xavier Initialization, He Initialization |
+| **Embedding Initialization** | Uniform random, Gaussian | Xavier Initialization, He Initialization |
 | **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
-| **Walk Engines** | DeepWalk, Node2Vec-Style Biased Walks (Roulette Wheel Sample), MB2Vec Biased Walks (Roulette Wheel Sample) | Dynamic Graph Walks, Temporal Random Walks |
+| **Walk Engines** | DeepWalk, Node2Vec biased walks (roulette-wheel sampling), MB2Vec Markov Blanket-biased walks (roulette-wheel sampling) | Dynamic Graph Walks, Temporal Random Walks |
+
+---
+
+## Walk Strategies
+
+| Strategy | Candidate nodes | Transition selection |
+|---|---|---|
+| **DeepWalk** | Graph neighbors | Uniform random walk |
+| **Node2Vec** | Graph neighbors | Second-order walk biased by return and in/out parameters (`p`, `q`) |
+| **MB2Vec** | Markov Blanket of the current node | Context-dependent second-order walk using five transition weights (`a1`–`a5`) |
+
+### MB2Vec: Markov Blanket-Based Walks
+
+For a node `v` in a directed graph, its Markov Blanket consists of its **parents**, **children**, and **co-parents** (other nodes sharing a child with `v`). MB2Vec expands the candidate walk neighborhood to include these structural dependencies, including co-parents that need not be connected by a direct edge.
+
+Given the previous node `t`, current node `v`, and candidate next node `u` in `MB(v)`, the implementation assigns a transition weight according to the **first matching** condition:
+
+| Weight | Condition |
+|---|---|
+| `a1` | `u == t` (return) |
+| `a2` | `u` is a child of `t` |
+| `a3` | `u` is a parent of `t` |
+| `a4` | `u` is otherwise in `MB(t)` (e.g., a co-parent) |
+| `a5` | `u` is outside `MB(t)` |
+
+The candidate is then selected using roulette-wheel sampling, with normalized probability
+
+$$
+P(u\mid t,v)=\frac{w(t,v,u)}{\sum_{z\in MB(v)}w(t,v,z)}.
+$$
+
+The **first step** from the starting node is sampled uniformly from its Markov Blanket. Subsequent steps use the weighted rule above. The weights should be nonnegative, with a positive total weight for the candidate set.
+
+**Implementation:** `src/main/java/WalkModel/MB2Vec.java`. See `src/main/java/MainPackage/LearnEmbeddings_MB2Vec.java` for an entry-point example.
 
 ---
 
@@ -72,6 +107,20 @@ This modular design enables experimental combinations of embedding strategies wi
 
 ---
 
+## Getting Started
+
+**Requirements:** Java JDK compatible with the project’s `pom.xml`, Maven, and an IDE such as IntelliJ IDEA. Check the Maven configuration for the exact Java version and dependencies.
+
+```bash
+git clone https://github.com/Mohammed-Ryiad-Eiadeh/GraphEmbedding4j.git
+cd GraphEmbedding4j
+mvn compile
+```
+
+Open the cloned directory as a Maven project in IntelliJ IDEA. The example entry points are under `src/main/java/MainPackage/`. Dataset files are stored in `Graphs/` and labels in `GroundTruths/`.
+
+---
+
 ## Building a Graph
 
 The graph shown in the figure can be constructed manually using the GraphBuilder API.
@@ -99,7 +148,7 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 
 ```java
         // Load the graph from Graphs
-        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "karate.txt");
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "karate_Edges.txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
@@ -163,8 +212,8 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\karkar.csv";
-        new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
+        var stringPath = Paths.get(System.getProperty("user.dir"), "Karate_embeddings.csv");
+        new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(stringPath,
                 mapper,
                 embeddings);
 ```
@@ -196,7 +245,9 @@ Random seed: 12345
 
 ---
 
-## Example 2: Evaluating Learned Embeddings via Tribuo ML library (please add the dependency of Tribuo before executing the code & drop the NodeId column from the embeddings data file)
+## Example 2: Evaluating Embeddings with Tribuo
+
+This example uses the **Tribuo ML library** (add the relevant Tribuo dependencies to `pom.xml`). Prepare a labeled embedding CSV with a `Class` column and remove the `NodeId` column from the feature inputs before running the example. The example assumes the labeled CSV exists at `results/Karate_embeddings_set.csv`.
 
 ```java
         // Read the embedding dataset.
@@ -229,29 +280,46 @@ Random seed: 12345
                 7
         );
         
-        // Compute evaluation metrics.
-        var avgAcc = 0D;
-        var avgRecall = 0D;
-        var avgF1 = 0D;
-        var avgPrecision = 0D;
-        
-        for (var performance : crossValidation.evaluate()) {
-            avgAcc += performance.getA().accuracy();
+        // Evaluate the model across cross-validation folds.
+        long sTrain = System.currentTimeMillis();
+        var performances = crossValidation.evaluate();
+        long eTrain = System.currentTimeMillis();
+
+        var listAcc = new java.util.ArrayList<Double>();
+        double avgAcc = 0D;
+        double avgRecall = 0D;
+        double avgF1 = 0D;
+        double avgPrecision = 0D;
+
+        for (var performance : performances) {
+            double accuracy = performance.getA().accuracy();
+            listAcc.add(accuracy);
+            avgAcc += accuracy;
             avgRecall += performance.getA().macroAveragedRecall();
             avgF1 += performance.getA().macroAveragedF1();
             avgPrecision += performance.getA().macroAveragedPrecision();
         }
-        
-        System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
-        System.out.println("Average accuracy: " + avgAcc / crossValidation.getK());
-        System.out.println("Average recall: " + avgRecall / crossValidation.getK());
-        System.out.println("Average F1-score: " + avgF1 / crossValidation.getK());
-        System.out.println("Average precision: " + avgPrecision / crossValidation.getK());
+
+        int k = listAcc.size();
+        if (k < 2) {
+            throw new IllegalStateException("At least two folds are required for sample SD.");
+        }
+
+        double meanAcc = avgAcc / k;
+        double stdAcc = Math.sqrt(listAcc.stream()
+                .mapToDouble(acc -> Math.pow(acc - meanAcc, 2))
+                .sum() / (k - 1));
+
+        System.out.println("Training/testing time: " + Util.formatDuration(sTrain, eTrain));
+        System.out.printf("Accuracy (mean +/- SD): %.4f +/- %.4f%n", meanAcc, stdAcc);
+        System.out.println("Average recall: " + avgRecall / k);
+        System.out.println("Average F1-score: " + avgF1 / k);
+        System.out.println("Average precision: " + avgPrecision / k);
 ```
 
 ### Experimental Results
 
-Using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation:
+Previously recorded example using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation (the output below predates the addition of SD reporting):
 
 ```text
 The Training_Testing duration time is : (00:00:00:600)
@@ -260,6 +328,19 @@ The average recall is : 0.9761904761904762
 The average F1-Score is : 0.9619047619047619
 The average precision is : 0.9642857142857143
 ```
+
+---
+
+### Interpreting Cross-Validation Results
+
+The **mean accuracy** summarizes average accuracy across the folds. The **sample standard deviation** describes variation in fold accuracies:
+
+$$
+\bar A = \frac{1}{k}\sum_{i=1}^{k} A_i, \qquad
+s_A = \sqrt{\frac{1}{k-1}\sum_{i=1}^{k}(A_i-\bar A)^2}.
+$$
+
+Report accuracy as `mean ± SD`, clearly identifying the dataset, walk method, classifier, and number of folds. Fold-to-fold SD is not the same as variability across independent random-seed runs.
 
 ---
 
@@ -297,4 +378,5 @@ The implementation is provided as-is and may change without notice.
 
 ## License
 
-Apache License 2.0
+Apache License 2.0. See [`LICENSE`](LICENSE).
+````
