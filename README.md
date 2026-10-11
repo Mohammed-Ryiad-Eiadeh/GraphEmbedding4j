@@ -1,4 +1,3 @@
-````
 # GraphEmbedding4j
 
 A modular Java research framework for random-walk-based graph representation learning, including DeepWalk, Node2Vec, and Markov Blanket-based MB2Vec.
@@ -79,7 +78,7 @@ The **first step** from the starting node is sampled uniformly from its Markov B
 
 ## Design Philosophy and Diagram
 
-<img width="1690" height="931" alt="30889662-bc16-4699-8e7f-cd6a4f768ce0" src="https://github.com/user-attachments/assets/4a3366a9-16c2-48a1-8d67-f67b4f61416a" />
+
 
 The framework is organized around clear separation of concerns.
 
@@ -379,4 +378,3 @@ The implementation is provided as-is and may change without notice.
 ## License
 
 Apache License 2.0. See [`LICENSE`](LICENSE).
-````
