@@ -78,7 +78,7 @@ The **first step** from the starting node is sampled uniformly from its Markov B
 
 ## Design Philosophy and Diagram
 
-
+<img width="1774" height="887" alt="Modular Graph Embedding Pipeline and Walk Strategies" src="https://github.com/user-attachments/assets/56c3923f-1a69-49b9-9712-45fa8b1887e6" />
 
 The framework is organized around clear separation of concerns.
 
