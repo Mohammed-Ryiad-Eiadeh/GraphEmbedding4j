@@ -13,6 +13,7 @@ import org.tribuo.util.Util;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class TestEmbeddings {
     public static void main(String[] args) throws IOException {
@@ -40,17 +41,25 @@ public class TestEmbeddings {
         var avgRecall = 0D;
         var avgF1 = 0D;
         var avgPrecision = 0D;
+        var listAcc = new ArrayList<Double>();
         var sTrain = System.currentTimeMillis();
         for (var performance : crossValidation.evaluate()) {
             avgAcc += performance.getA().accuracy();
+            listAcc.add(avgAcc);
             avgRecall += performance.getA().macroAveragedRecall();
             avgF1 += performance.getA().macroAveragedF1();
             avgPrecision += performance.getA().macroAveragedPrecision();
         }
         var eTrain = System.currentTimeMillis();
 
+        var meanAcc = avgAcc;
+        var std = Math.sqrt(listAcc.stream()
+                .mapToDouble(value -> Math.pow(value - meanAcc, 2))
+                .sum() / (listAcc.size() - 1));
+
         System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
         System.out.println("The average accuracy is : " + avgAcc / crossValidation.getK());
+        System.out.println("The average Std-accuracy is : " + std);
         System.out.println("The average recall is : " + avgRecall / crossValidation.getK());
         System.out.println("The average F1-Score is : " + avgF1 / crossValidation.getK());
         System.out.println("The average precision is : " +avgPrecision / crossValidation.getK());
