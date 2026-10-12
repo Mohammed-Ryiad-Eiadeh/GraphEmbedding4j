@@ -249,71 +249,58 @@ Random seed: 12345
 This example uses the **Tribuo ML library** (add the relevant Tribuo dependencies to `pom.xml`). Prepare a labeled embedding CSV with a `Class` column and remove the `NodeId` column from the feature inputs before running the example. The example assumes the labeled CSV exists at `results/Karate_embeddings_set.csv`.
 
 ```java
-        // Read the embedding dataset.
-        var dataPath = Paths.get(
-                System.getProperty("user.dir"),
-                "results",
-                "Karate_embeddings_set.csv"
-        );
-        
-        var dataSource = new CSVLoader<>(new LabelFactory())
-                .loadDataSource(dataPath, "Class");
-        
-        var data = new MutableDataset<>(dataSource);
-        
-        // Define a Factorization Machine classifier.
-        var fmTrainer = new FMClassificationTrainer(
-                new Hinge(),
-                new AdaGrad(0.01, 0.9),
-                50,
-                Trainer.DEFAULT_SEED,
-                10,
-                0.2D
-        );
-        
-        // Perform 7-fold cross-validation.
-        var crossValidation = new CrossValidation<>(
-                fmTrainer,
-                data,
-                new LabelEvaluator(),
-                7
-        );
-        
-        // Evaluate the model across cross-validation folds.
-        long sTrain = System.currentTimeMillis();
-        var performances = crossValidation.evaluate();
-        long eTrain = System.currentTimeMillis();
-
-        var listAcc = new java.util.ArrayList<Double>();
-        double avgAcc = 0D;
-        double avgRecall = 0D;
-        double avgF1 = 0D;
-        double avgPrecision = 0D;
-
-        for (var performance : performances) {
-            double accuracy = performance.getA().accuracy();
-            listAcc.add(accuracy);
-            avgAcc += accuracy;
-            avgRecall += performance.getA().macroAveragedRecall();
-            avgF1 += performance.getA().macroAveragedF1();
-            avgPrecision += performance.getA().macroAveragedPrecision();
-        }
-
-        int k = listAcc.size();
-        if (k < 2) {
-            throw new IllegalStateException("At least two folds are required for sample SD.");
-        }
-
-        double meanAcc = avgAcc / k;
-        double stdAcc = Math.sqrt(listAcc.stream()
-                .mapToDouble(acc -> Math.pow(acc - meanAcc, 2))
-                .sum() / (k - 1));
-
-        System.out.println("Training/testing time: " + Util.formatDuration(sTrain, eTrain));
-        System.out.printf("Accuracy (mean +/- SD): %.4f +/- %.4f%n", meanAcc, stdAcc);
-        System.out.println("Average recall: " + avgRecall / k);
-        System.out.println("Average F1-score: " + avgF1 / k);
-        System.out.println("Average precision: " + avgPrecision / k);
+    // Read the embedding dataset.
+    // read the entire dataset after the FS process
+    var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\Node2Vec_Karate_Edges.csv";
+    var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
+    var Data = new MutableDataset<>(dataSource);
+    
+    // use FM classifier
+    var FMTrainer = new FMClassificationTrainer(new Hinge(),
+            new AdaGrad(0.01, 0.9),
+            100               ,
+            Trainer.DEFAULT_SEED,
+            10,
+            0.2D);
+    
+    // use cross validation
+    var crossValidation = new CrossValidation<>(FMTrainer,
+            Data,
+            new LabelEvaluator(),
+            3);
+    
+    // get outputs
+    var sumAcc = 0D;
+    var sumRecall = 0D;
+    var sumF1 = 0D;
+    var sumPrecision = 0D;
+    var listAcc = new ArrayList<Double>();
+    var sTrain = System.currentTimeMillis();
+            for (var performance : crossValidation.evaluate()) {
+    sumAcc += performance.getA().accuracy();
+                listAcc.add(performance.getA().accuracy());
+    sumRecall += performance.getA().macroAveragedRecall();
+    sumF1 += performance.getA().macroAveragedF1();
+    sumPrecision += performance.getA().macroAveragedPrecision();
+            }
+    var eTrain = System.currentTimeMillis();
+    
+    var avgAcc = sumAcc / crossValidation.getK();
+    var avgRecall = sumRecall / crossValidation.getK();
+    var avgF1 = sumF1 / crossValidation.getK();
+    var avgPrecision = sumPrecision / crossValidation.getK();
+    
+    //Standard deviation: Measures how much classification performance varies across those folds.
+    var std = Math.sqrt(listAcc.stream()
+            .mapToDouble(value -> Math.pow(value - avgAcc, 2))
+            .sum() / (listAcc.size() - 1));
+    
+            System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
+            System.out.println("The average accuracy is : " + avgAcc);
+            System.out.println("The average Std-accuracy is : " + std);
+            System.out.println("The average recall is : " + avgRecall);
+            System.out.println("The average F1-Score is : " + avgF1);
+            System.out.println("The average precision is : " + avgPrecision);
 ```
 
 ### Experimental Results
