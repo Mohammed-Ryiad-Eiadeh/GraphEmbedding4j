@@ -321,11 +321,12 @@ This example uses the **Tribuo ML library** (add the relevant Tribuo dependencie
 Previously recorded example using 256-dimensional random-walk node embeddings and a Factorization Machine classifier with 7-fold cross-validation (the output below predates the addition of SD reporting):
 
 ```text
-The Training_Testing duration time is : (00:00:00:600)
-The average accuracy is : 0.9642857142857143
-The average recall is : 0.9761904761904762
-The average F1-Score is : 0.9619047619047619
-The average precision is : 0.9642857142857143
+The Training_Testing duration time is : (00:00:00:524)
+The average accuracy is : 0.8510101010101009
+The average Std-accuracy is : 0.10722663507859667
+The average recall is : 0.8595238095238096
+The average F1-Score is : 0.8508158508158506
+The average precision is : 0.8555555555555556
 ```
 
 ---

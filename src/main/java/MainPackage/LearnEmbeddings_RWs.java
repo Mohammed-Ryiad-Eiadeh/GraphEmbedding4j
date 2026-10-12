@@ -84,7 +84,7 @@ public class LearnEmbeddings_RWs {
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "" + fileName + ".csv";
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\RWs_" + fileName + ".csv";
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
