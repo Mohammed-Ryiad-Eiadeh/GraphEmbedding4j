@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_MB2Vec {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "polBooks_Edges";
+        var fileName = "Karate_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -54,7 +54,7 @@ public class LearnEmbeddings_MB2Vec {
                 10,
                 2.0,
                 4.0,
-                10,
+                6.5,
                 0.5,
                 0.2,
                 12345L,
@@ -91,7 +91,7 @@ public class LearnEmbeddings_MB2Vec {
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\RWs_" + fileName + ".csv";
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_" + fileName + ".csv";
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
