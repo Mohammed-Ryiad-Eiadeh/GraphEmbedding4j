@@ -173,32 +173,27 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
                 int candidate = neighbor.destination();
 
                 if (candidate == previous) {
-
                     // a1: Return to the previous node
                     markovBlanketToBiasRatio.put(candidate, a1);
 
                 } else if (previousChildren.stream()
                         .anyMatch(v -> v.destination() == candidate)) {
-
                     // a2: Candidate is a child of the previous node
                     markovBlanketToBiasRatio.put(candidate, a2);
 
                 } else if (previousParents.stream()
                         .anyMatch(v -> v.destination() == candidate)) {
-
                     // a3: Candidate is a parent of the previous node
                     markovBlanketToBiasRatio.put(candidate, a3);
 
                 } else if (previousMarkovBlanket.stream()
                         .anyMatch(v -> v.destination() == candidate)) {
-
                     // a4: Candidate belongs to the previous Markov Blanket
                     // after excluding the preceding transition categories
                     markovBlanketToBiasRatio.put(candidate, a4);
 
                 } else {
-
-                    // a5: Candidate lies outside the previous Markov Blanket
+                    // Candidate lies outside the previous Markov Blanket
                     markovBlanketToBiasRatio.put(candidate, 0.2);
                 }
             }
