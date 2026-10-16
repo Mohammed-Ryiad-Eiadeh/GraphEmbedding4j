@@ -62,7 +62,6 @@ Given the previous node `t`, current node `v`, and candidate next node `u` in `M
 | `a2` | `u` is a child of `t` |
 | `a3` | `u` is a parent of `t` |
 | `a4` | `u` is otherwise in `MB(t)` (e.g., a co-parent) |
-| `a5` | `u` is outside `MB(t)` |
 
 The candidate is then selected using roulette-wheel sampling, with normalized probability
 
