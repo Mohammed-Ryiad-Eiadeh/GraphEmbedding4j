@@ -42,7 +42,6 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
     private final double a2;
     private final double a3;
     private final double a4;
-    private final double a5;
 
     // Random generators for walk initialization, sampling, and shuffling
     private final Random random;
@@ -61,24 +60,11 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
      * @param a2 weight for children of the previous node
      * @param a3 weight for parents of the previous node
      * @param a4 weight for remaining nodes in the previous Markov Blanket
-     * @param a5 weight for nodes outside the previous Markov Blanket
      * @param randomSeed seed for initial uniform sampling
      * @param sampleSeed seed for roulette-wheel sampling
      * @param MBSeed seed for Markov Blanket shuffling
      */
-    public MB2Vec(
-            ImmutableGraphData<V> immutableGraphData,
-            VertexIndexMapping<V> mapping,
-            int numOfHops,
-            int walkPerNode,
-            double a1,
-            double a2,
-            double a3,
-            double a4,
-            double a5,
-            long randomSeed,
-            long sampleSeed,
-            long MBSeed) {
+    public MB2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double a1, double a2, double a3, double a4, long randomSeed, long sampleSeed, long MBSeed) {
 
         super(immutableGraphData, mapping, numOfHops, walkPerNode);
 
@@ -89,7 +75,6 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
         this.a2 = a2;
         this.a3 = a3;
         this.a4 = a4;
-        this.a5 = a5;
 
         // Construct outgoing and incoming adjacency mappings
         this.children = new ImmutableAdjacentList<>(
@@ -214,7 +199,7 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
                 } else {
 
                     // a5: Candidate lies outside the previous Markov Blanket
-                    markovBlanketToBiasRatio.put(candidate, a5);
+                    markovBlanketToBiasRatio.put(candidate, 0.2);
                 }
             }
 

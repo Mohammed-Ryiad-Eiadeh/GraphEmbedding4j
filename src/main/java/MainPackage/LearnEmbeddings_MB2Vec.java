@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_MB2Vec {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "Karate_Edges";
+        var fileName = "polBooks_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -56,7 +56,6 @@ public class LearnEmbeddings_MB2Vec {
                 4.0,
                 6.5,
                 0.5,
-                0.2,
                 12345L,
                 12345L,
                 12345L);
