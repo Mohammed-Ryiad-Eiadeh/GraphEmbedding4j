@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_RWs {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "polBooks_Edges";
+        var fileName = "email-Eu-core_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -50,7 +50,7 @@ public class LearnEmbeddings_RWs {
 
         var walk = new DeepWalk<>(builder,
                 mapper,
-                20,
+                10,
                 10,
                 12345L);
 

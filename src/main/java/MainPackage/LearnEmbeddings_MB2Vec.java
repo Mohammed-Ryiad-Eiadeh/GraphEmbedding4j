@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_MB2Vec {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "polBooks_Edges";
+        var fileName = "Karate_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -50,7 +50,7 @@ public class LearnEmbeddings_MB2Vec {
 
         var walk = new MB2Vec<>(builder,
                 mapper,
-                20,
+                10,
                 10,
                 2.0,
                 4.0,
@@ -68,7 +68,6 @@ public class LearnEmbeddings_MB2Vec {
                 true,
                 12345L);
 
-        // Initialize node embeddings using random Gaussian initialization.
         var embeddingInitializer = new EmbeddingInitializer<>(builder,
                 InitializerMode.Uniform,
                 256,

@@ -28,13 +28,15 @@ import java.util.stream.Collectors;
  *
  * @param <V> the vertex type
  */
-public non-sealed class MB2Vec<V> extends WalkStrategy<V>
-        implements SamplingStrategy {
+public non-sealed class MB2Vec<V> extends WalkStrategy<V> implements SamplingStrategy {
 
     // Graph structure and vertex indexing
     private final Map<Integer, List<Neighbor<Integer>>> children;
     private final Map<Integer, List<Neighbor<Integer>>> parents;
     private final VertexIndexMapping<V> mapper;
+
+    // Cache each node's Markov Blanket to avoid redundant computations during random walks.
+    private final HashMap<Integer, List<Neighbor<Integer>>> cachedMB = new HashMap<>();
 
     // Walk configuration and transition bias parameters
     private final int numOfHops;
@@ -65,7 +67,6 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
      * @param MBSeed seed for Markov Blanket shuffling
      */
     public MB2Vec(ImmutableGraphData<V> immutableGraphData, VertexIndexMapping<V> mapping, int numOfHops, int walkPerNode, double a1, double a2, double a3, double a4, long randomSeed, long sampleSeed, long MBSeed) {
-
         super(immutableGraphData, mapping, numOfHops, walkPerNode);
 
         // Initialize graph indexing and transition bias parameters
@@ -77,11 +78,8 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
         this.a4 = a4;
 
         // Construct outgoing and incoming adjacency mappings
-        this.children = new ImmutableAdjacentList<>(
-                immutableGraphData, mapping).getAdjacentMap();
-
-        this.parents = new ImmutableAdjacentList<>(
-                immutableGraphData, mapping).getNodeToParentMap();
+        this.children = new ImmutableAdjacentList<>(immutableGraphData, mapping).getAdjacentMap();
+        this.parents = new ImmutableAdjacentList<>(immutableGraphData, mapping).getNodeToParentMap();
 
         // Initialize walk configuration and random generators
         this.numOfHops = numOfHops;
@@ -104,7 +102,6 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
      */
     @Override
     ArrayList<Integer> generateWalk(V start) {
-
         // Initialize the walk sequence and starting node
         ArrayList<Integer> sequence = new ArrayList<>();
 
@@ -114,35 +111,24 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
         sequence.add(current);
 
         // Construct the initial Markov Blanket
-        List<Neighbor<Integer>> childrenList =
-                children.getOrDefault(current, List.of());
-
-        List<Neighbor<Integer>> parentList =
-                parents.getOrDefault(current, List.of());
-
-        List<Neighbor<Integer>> markovBlanket =
-                getMarkovBlanket(current, childrenList, parentList);
+        List<Neighbor<Integer>> childrenList = children.getOrDefault(current, List.of());
+        List<Neighbor<Integer>> parentList = parents.getOrDefault(current, List.of());
+        List<Neighbor<Integer>> markovBlanket = getMarkovBlanket(current, childrenList, parentList);
 
         // First transition: uniform sampling from the Markov Blanket
         if (!markovBlanket.isEmpty()) {
-
             int uniformNeighbor = random.nextInt(markovBlanket.size());
-
             int next = markovBlanket.get(uniformNeighbor).destination();
-
             sequence.add(next);
             current = next;
         }
 
         // Generate subsequent transitions using biased sampling
         for (int i = sequence.size(); i < numOfHops + 1; i++) {
-
             // Construct the Markov Blanket of the current node
             childrenList = children.getOrDefault(current, List.of());
             parentList = parents.getOrDefault(current, List.of());
-
-            markovBlanket =
-                    getMarkovBlanket(current, childrenList, parentList);
+            markovBlanket = getMarkovBlanket(current, childrenList, parentList);
 
             // Terminate when no candidate neighbors are available
             if (markovBlanket.isEmpty()) {
@@ -150,26 +136,15 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
             }
 
             // Initialize candidate-to-transition-weight mapping
-            HashMap<Integer, Double> markovBlanketToBiasRatio =
-                    new HashMap<>();
+            HashMap<Integer, Double> markovBlanketToBiasRatio = new HashMap<>();
 
             // Retrieve the previous node's structural neighborhood
-            List<Neighbor<Integer>> previousChildren =
-                    children.getOrDefault(previous, List.of());
-
-            List<Neighbor<Integer>> previousParents =
-                    parents.getOrDefault(previous, List.of());
-
-            List<Neighbor<Integer>> previousMarkovBlanket =
-                    getMarkovBlanket(
-                            previous,
-                            previousChildren,
-                            previousParents
-                    );
+            List<Neighbor<Integer>> previousChildren = children.getOrDefault(previous, List.of());
+            List<Neighbor<Integer>> previousParents = parents.getOrDefault(previous, List.of());
+            List<Neighbor<Integer>> previousMarkovBlanket = getMarkovBlanket(previous, previousChildren, previousParents);
 
             // Assign transition weights based on structural relationships
             for (Neighbor<Integer> neighbor : markovBlanket) {
-
                 int candidate = neighbor.destination();
 
                 if (candidate == previous) {
@@ -199,10 +174,7 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
             }
 
             // Select the next node using roulette-wheel sampling
-            int candidate = rouletteWheelSample(
-                    markovBlanketToBiasRatio,
-                    randSample
-            );
+            int candidate = rouletteWheelSample(markovBlanketToBiasRatio, randSample);
 
             // Update the walk sequence and traversal state
             sequence.add(candidate);
@@ -210,7 +182,6 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
             previous = current;
             current = candidate;
         }
-
         return sequence;
     }
 
@@ -230,42 +201,46 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V>
      * @param parentList incoming neighbors of the current node
      * @return the shuffled Markov Blanket neighbor list
      */
-    private List<Neighbor<Integer>> getMarkovBlanket(
-            int current,
-            List<Neighbor<Integer>> childrenList,
-            List<Neighbor<Integer>> parentList) {
+    private List<Neighbor<Integer>> getMarkovBlanket(int current, List<Neighbor<Integer>> childrenList, List<Neighbor<Integer>> parentList) {
+        // Return the cached Markov Blanket if available
+        if (cachedMB.containsKey(current)) {
+            return cachedMB.get(current);
+        }
 
-        // Identify co-parents through the parents of shared children
-        Set<Neighbor<Integer>> coParentList;
+        // Construct the Markov Blanket
+        List<Neighbor<Integer>> markovBlanket = new ArrayList<>();
 
-        coParentList = childrenList.parallelStream()
+        // Identify co-parents
+        Set<Neighbor<Integer>> coParentList = childrenList
+                .parallelStream()
                 .flatMap(child ->
                         parents.getOrDefault(
                                 child.destination(),
                                 List.of()
                         ).stream()
-                )
-                .collect(Collectors.toSet());
+                ).collect(Collectors.toSet());
 
-        // Exclude the current node from the co-parent collection
+        // Exclude the current node
         coParentList.removeIf(
                 parent -> parent.destination() == current
         );
 
         // Combine parents, children, and co-parents
-        List<Neighbor<Integer>> markovBlanket = new ArrayList<>();
-
         markovBlanket.addAll(parentList);
         markovBlanket.addAll(childrenList);
         markovBlanket.addAll(coParentList);
 
-        // Remove duplicate neighbors
-        markovBlanket = markovBlanket.stream()
+        // Remove duplicates
+        markovBlanket = markovBlanket
+                .stream()
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Shuffle the Markov Blanket using the configured random seed
+        // Shuffle the Markov Blanket
         Collections.shuffle(markovBlanket, mbSeed);
+
+        // Cache the computed Markov Blanket
+        cachedMB.put(current, markovBlanket);
 
         return markovBlanket;
     }

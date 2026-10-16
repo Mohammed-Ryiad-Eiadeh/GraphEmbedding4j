@@ -73,7 +73,9 @@ public class PositiveNegativeSamples<V> {
         List<Sampler> datasets = new ArrayList<>();
 
         for (ArrayList<Integer> walk : sequences) {
-            List<TrainingPair> positiveTrainingPairs = slidingWindow.generatePositivePairs(walk);
+
+            List<TrainingPair> positiveTrainingPairs =
+                    slidingWindow.generatePositivePairs(walk);
 
             // Collect positive contexts for each target node.
             Map<Integer, Set<Integer>> positiveContexts = new HashMap<>();
@@ -86,26 +88,29 @@ public class PositiveNegativeSamples<V> {
                         .add(pair.v2());
             }
 
+            // Include the target node in its forbidden set.
+            for (Map.Entry<Integer, Set<Integer>> entry : positiveContexts.entrySet()) {
+                entry.getValue().add(entry.getKey());
+            }
+
             // Generate samples for each positive pair.
             for (TrainingPair positivePair : positiveTrainingPairs) {
+
                 int target = positivePair.v1();
                 int context = positivePair.v2();
 
                 // Add positive sample.
-                datasets.add(new Sampler(target, context, POSITIVE_LABEL));
+                datasets.add(new Sampler(
+                        target, context, POSITIVE_LABEL));
 
                 if (numberOfNegativeSamples == 0) {
                     continue;
                 }
 
-                // Exclude positive contexts and target node.
-                Set<Integer> forbidden = new HashSet<>(
-                        positiveContexts.getOrDefault(
-                                target,
-                                Collections.emptySet()));
-                forbidden.add(target);
+                // Reuse the forbidden set for this target.
+                Set<Integer> forbidden = positiveContexts.get(target);
 
-                // Generate negatives per positive pair.
+                // Generate negative samples.
                 List<TrainingPair> negativeTrainingPairs =
                         negativeSampler.generateNegativePairs(
                                 target,
@@ -119,17 +124,16 @@ public class PositiveNegativeSamples<V> {
                             NEGATIVE_LABEL));
                 }
             }
+
+            // Remove duplicates only when explicitly requested.
+            if (!allowSampleDuplicate) {
+                datasets = new ArrayList<>(
+                        new LinkedHashSet<>(datasets));
+            }
+
+            // Shuffle training samples.
+            Collections.shuffle(datasets, random);
         }
-
-        // Remove duplicates only when explicitly requested.
-        if (!allowSampleDuplicate) {
-            datasets = new ArrayList<>(
-                    new LinkedHashSet<>(datasets));
-        }
-
-        // Shuffle training samples.
-        Collections.shuffle(datasets, random);
-
         return datasets;
     }
 }

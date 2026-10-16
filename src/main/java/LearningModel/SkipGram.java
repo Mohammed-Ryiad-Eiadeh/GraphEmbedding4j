@@ -46,6 +46,7 @@ public class SkipGram<V> {
      */
     public SkipGram(Initializer<V> embeddingInitializer, PositiveNegativeSamples<V> positiveNegativeSamples, Optimizer optimizer, Activation activationFunction, int numOfEpochs) {
         Objects.requireNonNull(embeddingInitializer, "embeddingInitializer cannot be null");
+
         Objects.requireNonNull(positiveNegativeSamples, "positiveNegativeSamples cannot be null");
 
         this.optimizer = Objects.requireNonNull(optimizer, "optimizer cannot be null");

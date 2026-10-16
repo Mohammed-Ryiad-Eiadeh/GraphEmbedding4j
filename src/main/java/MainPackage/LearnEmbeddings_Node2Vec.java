@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_Node2Vec {
     public static void main(String[] args) throws IOException {
         // Load the graph from Graphs
-        var fileName = "Karate_Edges";
+        var fileName = "email-Eu-core_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -52,7 +52,7 @@ public class LearnEmbeddings_Node2Vec {
         // Generate random walks using DeepWalk.
         var walk = new Node2Vec<>(builder,
                 mapper,
-                20,
+                10,
                 10,
                 0.5,
                 2.0,
