@@ -24,7 +24,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_Node2Vec {
     public static void main(String[] args) throws IOException {
         // Load the graph from Graphs
-        var fileName = "email-Eu-core_Edges";
+        var fileName = "node2vec_PPI_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)

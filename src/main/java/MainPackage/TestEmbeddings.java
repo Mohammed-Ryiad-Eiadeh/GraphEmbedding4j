@@ -18,14 +18,14 @@ import java.util.ArrayList;
 public class TestEmbeddings {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\RWs_email-Eu-core_Edges.csv";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_email-Eu-core_Edges.csv";
         var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 
         // use FM classifier
         var FMTrainer = new FMClassificationTrainer(new Hinge(),
                 new AdaGrad(0.01, 0.9),
-                100               ,
+                100,
                 Trainer.DEFAULT_SEED,
                 10,
                 0.2D);
