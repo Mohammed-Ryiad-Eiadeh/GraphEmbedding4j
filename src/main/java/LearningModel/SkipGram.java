@@ -86,6 +86,14 @@ public class SkipGram<V> {
         for (Integer node : targetEmbeddings.keySet()) {
             contextEmbeddings.put(node, new double[embeddingDimension]);
         }
+
+        long numOfPositiveSamples = dataSamplers.stream().filter(sample -> sample.label().equals(POSITIVE_LABEL)).count();
+        long numOfNegativeSamples = dataSamplers.stream().filter(sample -> sample.label().equals(NEGATIVE_LABEL)).count();
+
+        // Display num of walks / Samples / Positive Samples / Negative Samples
+        System.out.printf("Num of Samples, %d%n ", dataSamplers.size());
+        System.out.printf("Num of Positive Samples, %d%n", numOfPositiveSamples);
+        System.out.printf("Num of Negative Samples, %d%n", numOfNegativeSamples);
     }
 
     /**

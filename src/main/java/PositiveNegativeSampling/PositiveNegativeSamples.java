@@ -1,4 +1,3 @@
-
 package PositiveNegativeSampling;
 
 import ContextModel.ContextWindow;
@@ -14,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Generates positive and negative training samples from random
@@ -70,22 +70,16 @@ public class PositiveNegativeSamples<V> {
      * @return shuffled training samples
      */
     public List<Sampler> generatePositiveNegativeSampleDataset() {
-        List<Sampler> datasets = new ArrayList<>();
+        List<Sampler> datasets = sequences.parallelStream().map(walk -> {
+            List<Sampler> localDataset = new ArrayList<>();
 
-        for (ArrayList<Integer> walk : sequences) {
-
-            List<TrainingPair> positiveTrainingPairs =
-                    slidingWindow.generatePositivePairs(walk);
+            List<TrainingPair> positiveTrainingPairs = slidingWindow.generatePositivePairs(walk);
 
             // Collect positive contexts for each target node.
             Map<Integer, Set<Integer>> positiveContexts = new HashMap<>();
 
             for (TrainingPair pair : positiveTrainingPairs) {
-                positiveContexts
-                        .computeIfAbsent(
-                                pair.v1(),
-                                key -> new HashSet<>())
-                        .add(pair.v2());
+                positiveContexts.computeIfAbsent(pair.v1(), key -> new HashSet<>()).add(pair.v2());
             }
 
             // Include the target node in its forbidden set.
@@ -100,8 +94,7 @@ public class PositiveNegativeSamples<V> {
                 int context = positivePair.v2();
 
                 // Add positive sample.
-                datasets.add(new Sampler(
-                        target, context, POSITIVE_LABEL));
+                localDataset.add(new Sampler(target, context, POSITIVE_LABEL));
 
                 if (numberOfNegativeSamples == 0) {
                     continue;
@@ -111,29 +104,25 @@ public class PositiveNegativeSamples<V> {
                 Set<Integer> forbidden = positiveContexts.get(target);
 
                 // Generate negative samples.
-                List<TrainingPair> negativeTrainingPairs =
-                        negativeSampler.generateNegativePairs(
-                                target,
-                                forbidden,
-                                numberOfNegativeSamples);
+                List<TrainingPair> negativeTrainingPairs = negativeSampler.generateNegativePairs(target, forbidden, numberOfNegativeSamples);
 
                 for (TrainingPair negativePair : negativeTrainingPairs) {
-                    datasets.add(new Sampler(
-                            negativePair.v1(),
-                            negativePair.v2(),
-                            NEGATIVE_LABEL));
+                    localDataset.add(new Sampler(negativePair.v1(), negativePair.v2(), NEGATIVE_LABEL));
                 }
             }
 
             // Remove duplicates only when explicitly requested.
             if (!allowSampleDuplicate) {
-                datasets = new ArrayList<>(
-                        new LinkedHashSet<>(datasets));
+                localDataset = new ArrayList<>(new LinkedHashSet<>(localDataset));
             }
 
             // Shuffle training samples.
-            Collections.shuffle(datasets, random);
-        }
+            Collections.shuffle(localDataset, random);
+
+            return localDataset;
+
+        }).flatMap(List::stream).collect(Collectors.toList());
+
         return datasets;
     }
 }
