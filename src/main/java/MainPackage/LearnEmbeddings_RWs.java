@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_RWs {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "node2vec_PPI_Edges";
+        var fileName = "BlodCatalog3_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)

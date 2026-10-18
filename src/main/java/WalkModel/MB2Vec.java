@@ -1,4 +1,3 @@
-
 package WalkModel;
 
 import Core.ImmutableGraphData;
