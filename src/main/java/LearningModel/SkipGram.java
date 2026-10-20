@@ -1,4 +1,3 @@
-
 package LearningModel;
 
 import ActivationFunction.Activation;

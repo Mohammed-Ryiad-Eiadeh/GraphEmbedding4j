@@ -212,12 +212,8 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V> implements SamplingStr
         // Identify co-parents
         Set<Neighbor<Integer>> coParentList = childrenList
                 .parallelStream()
-                .flatMap(child ->
-                        parents.getOrDefault(
-                                child.destination(),
-                                List.of()
-                        ).stream()
-                ).collect(Collectors.toSet());
+                .flatMap(child -> parents.getOrDefault(child.destination(), List.of()).stream())
+                .collect(Collectors.toSet());
 
         // Exclude the current node
         coParentList.removeIf(
