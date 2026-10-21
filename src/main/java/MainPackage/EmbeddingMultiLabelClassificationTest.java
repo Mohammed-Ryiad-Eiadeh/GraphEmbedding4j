@@ -23,7 +23,7 @@ public class EmbeddingMultiLabelClassificationTest {
         var dataSource = new CSVLoader<>(new MultiLabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 
-        // use FM classifier
+        // use linear SGD with binary cross entropy classifier
         var linTrainer = new LinearSGDTrainer(new BinaryCrossEntropy(),
                 new AdaGrad(0.1, 0.1),
                 5,
