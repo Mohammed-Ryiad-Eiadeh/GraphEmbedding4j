@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class EmbeddingNodeClusteringTest {
     public static void main(String[] args) throws IOException {
         var modelName = "MB2Vec";
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_cora_Edges.csv";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_Wiki_Edges.csv";
         var dataSource = new CSVLoader<>(new ClusteringFactory()).loadDataSource(Paths.get(dataPath), "Class");
 
         // Split data into two portions
@@ -26,7 +26,7 @@ public class EmbeddingNodeClusteringTest {
         var testData = new MutableDataset<>(data.getTest());
 
         // Define clustering algorithm (i.e., Kmeans++)
-        var kMeans = new KMeansTrainer(7,
+        var kMeans = new KMeansTrainer(17,
                 100,
                 new L2Distance(),
                 KMeansTrainer.Initialisation.PLUSPLUS,
