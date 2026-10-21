@@ -19,7 +19,7 @@ public class EmbeddingMultiLabelClassificationTest {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
         var modelName = "MB2Vec";
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_node2vec_PPI_Edges.csv";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_BlodCatalog3_Edges.csv";
         var dataSource = new CSVLoader<>(new MultiLabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 
