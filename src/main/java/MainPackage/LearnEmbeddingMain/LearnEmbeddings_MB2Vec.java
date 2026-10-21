@@ -1,4 +1,4 @@
-package MainPackage;
+package MainPackage.LearnEmbeddingMain;
 
 import ActivationFunction.SigmoidFunction;
 import ContextModel.SlidingWindow;
@@ -8,22 +8,22 @@ import Core.GraphType;
 import Core.VertexIndexMapping;
 import EmbeddingInitialization.EmbeddingInitializer;
 import EmbeddingInitialization.InitializerMode;
-import IO.CSVGraphLoader;
 import IO.CSVNodeEmbeddingExporter;
 import LearningModel.SkipGram;
 import OptimizationAlgorithms.SGD;
 import PositiveNegativeSampling.PositiveNegativeSamples;
 import PositiveNegativeSampling.UniformNegativeSampler;
-import WalkModel.DeepWalk;
+import WalkModel.MB2Vec;
 import org.tribuo.util.Util;
+import IO.CSVGraphLoader;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-public class LearnEmbeddings_RWs {
+public class LearnEmbeddings_MB2Vec {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "BlodCatalog3_Edges";
+        var fileName = "Wiki_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -48,10 +48,16 @@ public class LearnEmbeddings_RWs {
         // Map each vertex to an internal index using VertexIndexMapping.
         var mapper = new VertexIndexMapping<>(builder);
 
-        var walk = new DeepWalk<>(builder,
+        var walk = new MB2Vec<>(builder,
                 mapper,
                 10,
                 10,
+                2.0,
+                4.0,
+                6.5,
+                0.5,
+                12345L,
+                12345L,
                 12345L);
 
         // Create positive and negative samples using 1) right sliding window and 2) uniform negative sampling
@@ -62,7 +68,6 @@ public class LearnEmbeddings_RWs {
                 true,
                 12345L);
 
-        // Initialize node embeddings using random Gaussian initialization.
         var embeddingInitializer = new EmbeddingInitializer<>(builder,
                 InitializerMode.Uniform,
                 256,
@@ -84,7 +89,7 @@ public class LearnEmbeddings_RWs {
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\RWskkkk_" + fileName + ".csv";
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\MB2Vec_" + fileName + ".csv";
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);

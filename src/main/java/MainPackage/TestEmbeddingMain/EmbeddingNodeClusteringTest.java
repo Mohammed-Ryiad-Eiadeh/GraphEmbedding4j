@@ -1,4 +1,4 @@
-package MainPackage;
+package MainPackage.TestEmbeddingMain;
 
 import org.tribuo.MutableDataset;
 import org.tribuo.clustering.ClusteringFactory;
@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class EmbeddingNodeClusteringTest {
     public static void main(String[] args) throws IOException {
         var modelName = "MB2Vec";
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_polBooks_Edges.csv";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_cora_Edges.csv";
         var dataSource = new CSVLoader<>(new ClusteringFactory()).loadDataSource(Paths.get(dataPath), "Class");
 
         // Split data into two portions
@@ -26,7 +26,7 @@ public class EmbeddingNodeClusteringTest {
         var testData = new MutableDataset<>(data.getTest());
 
         // Define clustering algorithm (i.e., Kmeans++)
-        var kMeans = new KMeansTrainer(3,
+        var kMeans = new KMeansTrainer(7,
                 100,
                 new L2Distance(),
                 KMeansTrainer.Initialisation.PLUSPLUS,

@@ -1,4 +1,4 @@
-package MainPackage;
+package MainPackage.TestEmbeddingMain;
 
 import org.tribuo.MutableDataset;
 import org.tribuo.Trainer;

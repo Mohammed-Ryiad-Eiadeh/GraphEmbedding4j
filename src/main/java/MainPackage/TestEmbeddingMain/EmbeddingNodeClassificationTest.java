@@ -1,4 +1,4 @@
-package MainPackage;
+package MainPackage.TestEmbeddingMain;
 
 import org.tribuo.MutableDataset;
 import org.tribuo.Trainer;
@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class EmbeddingNodeClassificationTest {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
-        var modelName = "MB2Vec";
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_polBooks_Edges.csv";
+        var modelName = "Node2Vec";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_Wiki_Edges.csv";
         var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 
