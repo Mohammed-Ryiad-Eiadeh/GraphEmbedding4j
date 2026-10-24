@@ -20,7 +20,7 @@ import org.tribuo.util.Util;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
-public class LearnEmbeddings_RWs {
+public class LearnEmbeddings_DeepWalk {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
         var fileName = "Wiki_Edges";
@@ -84,7 +84,7 @@ public class LearnEmbeddings_RWs {
 
         // Export the learned embeddings to Karate_embeddings.csv
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\RWs_" + fileName + ".csv";
+        var stringPath = "C:\\Users\\moham\\OneDrive\\Desktop\\DeepWalk_" + fileName + ".csv";
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(Paths.get(stringPath),
                 mapper,
                 embeddings);
