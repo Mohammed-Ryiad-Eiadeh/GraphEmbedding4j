@@ -128,13 +128,16 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 ```java
         // Construct graph manually
         var graphBuilder = new GraphBuilder<String>(GraphType.Directed);
-        
+        graphBuilder.addConnection("v0", "v1", 1.0f);
+        graphBuilder.addConnection("v0", "v2", 1.0f);
         graphBuilder.addConnection("v1", "v2", 1.0f);
-        graphBuilder.addConnection("v2", "vm4", 1.0f);
-        graphBuilder.addConnection("v2", "vm5", 1.0f);
-        graphBuilder.addConnection("v3", "v1", 1.0f);
-        graphBuilder.addConnection("v3", "vm4", 1.0f);
-        graphBuilder.addConnection("vm4", "vm5", 1.0f);
+        graphBuilder.addConnection("v1", "v3", 1.0f);
+        graphBuilder.addConnection("v2", "v3", 1.0f);
+        graphBuilder.addConnection("v3", "v4", 1.0f);
+        graphBuilder.addConnection("v4", "v5", 1.0f);
+        graphBuilder.addConnection("v4", "v6", 1.0f);
+        graphBuilder.addConnection("v5", "v6", 1.0f);
+        graphBuilder.addConnection("v6", "v7", 1.0f);
         
         // Build immutable graph snapshot
         ImmutableGraphData<String> graph = graphBuilder.build();
