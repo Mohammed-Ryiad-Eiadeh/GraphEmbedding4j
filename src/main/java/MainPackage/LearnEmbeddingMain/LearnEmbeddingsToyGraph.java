@@ -13,10 +13,13 @@ import IO.CSVNodeEmbeddingExporter;
 import LearningModel.SkipGram;
 import PositiveNegativeSampling.PositiveNegativeSamples;
 import PositiveNegativeSampling.UniformNegativeSampler;
+import Representation.AdjacentList.ImmutableAdjacentList;
+import Representation.matrix.ImmutableAdjacentMatrix;
 import WalkModel.DeepWalk;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class LearnEmbeddingsToyGraph {
@@ -35,8 +38,27 @@ public class LearnEmbeddingsToyGraph {
                 .ifNotEmpty()
                 .build();
 
+        System.out.println("The Edge List of G : ");
+        builder.edgeSet().forEach(System.out::println);
+        System.out.println();
+
         // Map each vertex to an internal index using VertexIndexMapping.
         var mapper = new VertexIndexMapping<>(builder);
+
+        // Represent the graph as adjacent list
+        var representationAsAdjacentList = new ImmutableAdjacentList<>(builder, mapper);
+
+        System.out.println("The Adjacent List of G : ");
+        representationAsAdjacentList.getAdjacentMap().entrySet().forEach(System.out::println);
+        System.out.println();
+
+        // Represent the graph as a matrix
+        var representationAsMatrix = new ImmutableAdjacentMatrix<>(builder, mapper.getVertexToIndex());
+
+        System.out.println("The Adjacent Matrix of G : ");
+        var matrix = representationAsMatrix.getMatrix();
+        Arrays.stream(matrix).forEach(row -> System.out.println(Arrays.toString(row)));
+        System.out.println();
 
         var deepWalk = new DeepWalk<>(builder,
                 mapper,
@@ -44,7 +66,9 @@ public class LearnEmbeddingsToyGraph {
                 3,
                 12345L);
 
+        System.out.println("The Generated Walks : ");
         deepWalk.getRandomWalks().forEach(System.out::println);
+        System.out.println();
 
         // Create positive and negative samples using 1) symmetric sliding window and 2) uniform negative sampling
         var positiveNegativeSampler = new PositiveNegativeSamples<>(deepWalk,
