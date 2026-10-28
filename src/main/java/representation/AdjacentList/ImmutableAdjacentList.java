@@ -3,8 +3,6 @@ package representation.AdjacentList;
 import Core.Edge;
 import Core.ImmutableGraphData;
 import Core.VertexIndexMapping;
-import representation.AdjacentList.AdjacentListModel.AdjacencyListData;
-import representation.AdjacentList.AdjacentListModel.Neighbor;
 
 import java.util.ArrayList;
 import java.util.Collections;

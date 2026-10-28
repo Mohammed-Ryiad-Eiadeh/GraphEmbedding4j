@@ -1,7 +1,7 @@
 package WalkModel;
 
 import Core.ImmutableGraphData;
-import representation.AdjacentList.AdjacentListModel.Neighbor;
+import representation.AdjacentList.Neighbor;
 import Core.VertexIndexMapping;
 import representation.AdjacentList.ImmutableAdjacentList;
 

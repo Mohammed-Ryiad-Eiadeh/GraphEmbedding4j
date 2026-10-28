@@ -2,7 +2,7 @@ package WalkModel;
 
 import Core.ImmutableGraphData;
 import Core.VertexIndexMapping;
-import representation.AdjacentList.AdjacentListModel.Neighbor;
+import representation.AdjacentList.Neighbor;
 import representation.AdjacentList.ImmutableAdjacentList;
 
 import java.util.ArrayList;

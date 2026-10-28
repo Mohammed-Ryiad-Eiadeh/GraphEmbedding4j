@@ -2,7 +2,6 @@ package representation.matrix;
 
 import Core.Edge;
 import Core.ImmutableGraphData;
-import representation.matrix.AdjacentMatrixModel.MatrixData;
 
 import java.util.Map;
 import java.util.Set;
