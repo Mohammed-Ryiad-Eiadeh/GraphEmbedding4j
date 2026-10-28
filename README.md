@@ -77,7 +77,7 @@ The **first step** from the starting node is sampled uniformly from its Markov B
 
 ## Design Philosophy and Diagram
 
-<img width="973" height="670" alt="ToyGraph" src="https://github.com/user-attachments/assets/48358141-6fba-43ea-92e3-c734f4f11816" />
+<img width="1536" height="1024" alt="GraphEmbedding4j Pipeline Overview" src="https://github.com/user-attachments/assets/5d572326-6b9e-427f-8a0c-0a3384696873" />
 
 The framework is organized around clear separation of concerns.
 
@@ -123,9 +123,7 @@ Open the cloned directory as a Maven project in IntelliJ IDEA. The example entry
 
 The graph shown in the figure can be constructed manually using the GraphBuilder API.
 
-<p align="center">
-  <img width="500" height="250" alt="Screenshot (228)" src="https://github.com/user-attachments/assets/dd27acc0-828b-4c2d-9685-0f41163ddf7e" />
-</p>
+<img width="973" height="670" alt="ToyGraph" src="https://github.com/user-attachments/assets/48358141-6fba-43ea-92e3-c734f4f11816" />
 
 ```java
         // Construct graph manually
