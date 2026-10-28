@@ -1,7 +1,7 @@
 package Core;
 
 /**
- * Immutable representation of a weighted edge.
+ * Immutable Representation of a weighted edge.
  *
  * @param source the source vertex
  * @param destination the destination vertex

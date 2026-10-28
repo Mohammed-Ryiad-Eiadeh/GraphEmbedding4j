@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Builder class for constructing a graph using an edge-list representation.
+ * Builder class for constructing a graph using an edge-list Representation.
  * Supports directed and bidirectional graphs and allows incremental
  * addition of weighted and unweighted connections.
  *
@@ -74,7 +74,7 @@ public class GraphBuilder<V> {
      * Builds an immutable snapshot of the graph constructed so far.
      * <p>
      * This method freezes the current state of the builder and returns a
-     * read-only graph representation that cannot be modified. The returned
+     * read-only graph Representation that cannot be modified. The returned
      * snapshot is safe to share across representers, algorithms, and other
      * consumers without risk of accidental mutation.
      * <p>

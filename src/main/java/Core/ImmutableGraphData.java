@@ -46,9 +46,9 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet,
     }
 
     /**
-     * Returns a human-readable representation of the graph data.
+     * Returns a human-readable Representation of the graph data.
      *
-     * @return string representation
+     * @return string Representation
      */
     @Override
     public String toString() {

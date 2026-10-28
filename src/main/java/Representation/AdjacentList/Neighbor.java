@@ -1,7 +1,7 @@
-package representation.AdjacentList;
+package Representation.AdjacentList;
 
 /**
- * Immutable representation of a weighted edge.
+ * Immutable Representation of a weighted edge.
  *
  * @param destination the destination vertex
  * @param weight the edge weight

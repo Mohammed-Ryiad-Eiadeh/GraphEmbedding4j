@@ -1,4 +1,4 @@
-package representation.AdjacentList;
+package Representation.AdjacentList;
 
 import Core.Edge;
 import Core.ImmutableGraphData;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Immutable adjacency list representation backed by indexed vertices.
+ * Immutable adjacency list Representation backed by indexed vertices.
  *
  * <p>The adjacency list is lazily constructed from the underlying
  * immutable graph edge set and cached for fast reuse.</p>
@@ -26,7 +26,7 @@ public class ImmutableAdjacentList<V> extends AdjacencyListData<Integer> {
     private volatile Map<Integer, List<Neighbor<Integer>>> cashedNodeToParentList;
 
     /**
-     * Constructs an immutable adjacency list representation.
+     * Constructs an immutable adjacency list Representation.
      *
      * @param graphData the immutable graph snapshot
      * @param mapper mapping from vertices to integer indices and vice versa

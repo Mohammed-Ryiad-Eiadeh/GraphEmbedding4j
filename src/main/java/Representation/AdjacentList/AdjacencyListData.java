@@ -1,10 +1,10 @@
-package representation.AdjacentList;
+package Representation.AdjacentList;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Interface for graph representers that expose an adjacency-list representation.
+ * Interface for graph representers that expose an adjacency-list Representation.
  *
  * @param <T> the vertex type
  */

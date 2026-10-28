@@ -1,7 +1,7 @@
 package PositiveNegativeSampling;
 
 /**
- * Immutable representation of a positive negative samples triple.
+ * Immutable Representation of a positive negative samples triple.
  *
  * @param targetNode the target vertex
  * @param contextNode the context vertex

@@ -2,8 +2,8 @@ package WalkModel;
 
 import Core.ImmutableGraphData;
 import Core.VertexIndexMapping;
-import representation.AdjacentList.Neighbor;
-import representation.AdjacentList.ImmutableAdjacentList;
+import Representation.AdjacentList.Neighbor;
+import Representation.AdjacentList.ImmutableAdjacentList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +53,7 @@ public non-sealed class MB2Vec<V> extends WalkStrategy<V> implements SamplingStr
      * Initializes MB2Vec with the graph structure, walk configuration,
      * transition bias parameters, and random seeds.
      *
-     * @param immutableGraphData the immutable graph representation
+     * @param immutableGraphData the immutable graph Representation
      * @param mapping vertex-to-index mapping
      * @param numOfHops number of transitions per walk
      * @param walkPerNode number of walks generated per node

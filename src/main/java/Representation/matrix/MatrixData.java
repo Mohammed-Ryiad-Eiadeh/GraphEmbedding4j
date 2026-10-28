@@ -1,13 +1,13 @@
-package representation.matrix;
+package Representation.matrix;
 
 /**
- * Interface for graph representers that expose a Matrix representation.
+ * Interface for graph representers that expose a Matrix Representation.
  *
  * @param <Mat> the matrix type
  */
 public abstract class MatrixData<Mat> {
     /**
-     * Returns the matrix representation of the graph.
+     * Returns the matrix Representation of the graph.
      *
      * @return the graph matrix
      */

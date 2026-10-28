@@ -1,6 +1,6 @@
 # GraphEmbedding4j
 
-A modular Java research framework for random-walk-based graph representation learning, including DeepWalk, Node2Vec, and Markov Blanket-based MB2Vec.
+A modular Java research framework for random-walk-based graph Representation learning, including DeepWalk, Node2Vec, and Markov Blanket-based MB2Vec.
 
 ---
 
@@ -337,7 +337,7 @@ Potential future directions include:
 * Adversarial graph embedding learning
 * FGSM-style embedding perturbations
 * Dynamic and temporal graph embeddings
-* Meta-learning for graph representation selection
+* Meta-learning for graph Representation selection
 * Robustness analysis under graph perturbations
 * Embedding regularization using graph neighborhood consistency
 * Markov Blanket–aware embedding objectives

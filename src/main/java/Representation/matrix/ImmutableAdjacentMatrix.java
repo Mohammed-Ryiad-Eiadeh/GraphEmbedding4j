@@ -1,4 +1,4 @@
-package representation.matrix;
+package Representation.matrix;
 
 import Core.Edge;
 import Core.ImmutableGraphData;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Immutable adjacency matrix representation built from a graph snapshot.
+ * Immutable adjacency matrix Representation built from a graph snapshot.
  *
  * @param <V> vertex type
  */
