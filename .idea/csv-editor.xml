@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\GroundTruths\Toy_Edge_List.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\GroundTruths\Wiki_Labels.csv">
           <value>
             <Attribute>
