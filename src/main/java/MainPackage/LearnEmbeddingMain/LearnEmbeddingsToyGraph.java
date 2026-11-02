@@ -1,16 +1,17 @@
 package MainPackage.LearnEmbeddingMain;
 
-import ContextModel.WindowMode;
+import ActivationFunction.SigmoidFunction;
 import ContextModel.SlidingWindow;
+import ContextModel.WindowMode;
 import Core.GraphBuilder;
 import Core.GraphType;
 import Core.VertexIndexMapping;
-import ActivationFunction.SigmoidFunction;
 import EmbeddingInitialization.EmbeddingInitializer;
 import EmbeddingInitialization.InitializerMode;
-import OptimizationAlgorithms.SGD;
+import GraphVisualization.GraphVisualizer;
 import IO.CSVNodeEmbeddingExporter;
 import LearningModel.SkipGram;
+import OptimizationAlgorithms.SGD;
 import PositiveNegativeSampling.PositiveNegativeSamples;
 import PositiveNegativeSampling.UniformNegativeSampler;
 import Representation.AdjacentList.ImmutableAdjacentList;
@@ -37,10 +38,18 @@ public class LearnEmbeddingsToyGraph {
         graphBuilder.addConnection("v5", "v6", 1.0f);
         graphBuilder.addConnection("v6", "v7", 1.0f);
 
+
         // Build a directed graph using GraphBuilder.
         var builder = graphBuilder
                 .ifNotEmpty()
                 .build();
+
+        // Visualize graph
+        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
+                builder,
+                true,
+                true);
+        graphVisualizer.displaySingleGraph();
 
         System.out.println("The Edge List of G : ");
         builder.edgeSet().forEach(System.out::println);
