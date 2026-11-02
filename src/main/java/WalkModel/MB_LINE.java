@@ -1,4 +1,4 @@
-package LineModel;
+package WalkModel;
 
 public class MB_LINE {
     /*
