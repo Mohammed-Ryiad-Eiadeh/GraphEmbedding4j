@@ -160,6 +160,13 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
                 .ifNotEmpty()
                 .build();
 
+        // Visualize graph
+        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
+                builder,
+                true,
+                true);
+        graphVisualizer.displaySingleGraph();
+
         var numOfEdges = builder.edgeCount();
         var numOfVertices = builder.vertexCount();
         System.out.printf("Number of nodes: %s, Number of edges: %s\n",
