@@ -38,7 +38,6 @@ public class LearnEmbeddingsToyGraph {
         graphBuilder.addConnection("v5", "v6", 1.0f);
         graphBuilder.addConnection("v6", "v7", 1.0f);
 
-
         // Build a directed graph using GraphBuilder.
         var builder = graphBuilder
                 .ifNotEmpty()

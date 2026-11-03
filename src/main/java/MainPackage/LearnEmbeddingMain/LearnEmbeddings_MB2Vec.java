@@ -8,6 +8,8 @@ import Core.GraphType;
 import Core.VertexIndexMapping;
 import EmbeddingInitialization.EmbeddingInitializer;
 import EmbeddingInitialization.InitializerMode;
+import GraphVisualization.GraphVisualizer;
+import IO.CSVGraphLoader;
 import IO.CSVNodeEmbeddingExporter;
 import LearningModel.SkipGram;
 import OptimizationAlgorithms.SGD;
@@ -15,7 +17,6 @@ import PositiveNegativeSampling.PositiveNegativeSamples;
 import PositiveNegativeSampling.UniformNegativeSampler;
 import WalkModel.MB2Vec;
 import org.tribuo.util.Util;
-import IO.CSVGraphLoader;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 public class LearnEmbeddings_MB2Vec {
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
-        var fileName = "Wiki_Edges";
+        var fileName = "Cora_Edges";
         var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\" + fileName + ".txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
@@ -36,6 +37,13 @@ public class LearnEmbeddings_MB2Vec {
         var builder = graphBuilder
                 .ifNotEmpty()
                 .build();
+
+        // Visualize graph
+        var graphVisualizer = new GraphVisualizer<>(fileName,
+                builder,
+                false,
+                false);
+        graphVisualizer.displaySingleGraph();
 
         var numOfEdges = builder.edgeCount();
         var numOfVertices = builder.vertexCount();

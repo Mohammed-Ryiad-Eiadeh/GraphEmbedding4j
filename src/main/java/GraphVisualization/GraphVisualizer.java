@@ -3,9 +3,11 @@ package GraphVisualization;
 import Core.Edge;
 import Core.ImmutableGraphData;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A generic graph visualizer that displays immutable graph data
@@ -40,7 +42,7 @@ public class GraphVisualizer<V> {
         this.visualizeNodes = visualizeNodes;
 
         // By default, don't show nodes Ids
-        for (var node : graph) {
+        for (Node node : graph) {
             node.removeAttribute("ui.label");
         }
 
@@ -52,12 +54,19 @@ public class GraphVisualizer<V> {
      * with styled nodes, edges, labels, and enhanced rendering quality.
      */
     public void displaySingleGraph() {
-        for (var node : immutableGraphDataBuilder.vertexSet()) {
+        Set<V> verticesSet = immutableGraphDataBuilder.vertexSet();
+        Set<Edge<V>>  edgesSet = immutableGraphDataBuilder.edgeSet();
+
+        if (verticesSet.size() > 5000 || edgesSet.size() > 10000) {
+            throw new RuntimeException("Graph has more than 5000 vertices or 10000 edges!");
+        }
+
+        for (V node : verticesSet) {
             graph.addNode(node.toString());
         }
 
         int counter = 0;
-        for (Edge<V> edge : immutableGraphDataBuilder.edgeSet()) {
+        for (Edge<V> edge : edgesSet) {
             String edgeID = "edge : " + counter;
 
             org.graphstream.graph.Edge edges = graph.addEdge(edgeID,
@@ -112,7 +121,7 @@ public class GraphVisualizer<V> {
         graph.setAttribute("ui.antialias");
 
         if  (visualizeNodes) {
-            for (var node : graph) {
+            for (Node node : graph) {
                 node.setAttribute("ui.label", node.getId());
             }
         }
