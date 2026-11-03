@@ -46,6 +46,11 @@ public class GraphVisualizer<V> {
             node.removeAttribute("ui.label");
         }
 
+        // By default, don't show edge weights
+        for (org.graphstream.graph.Edge edge : graph.edges().toList()) {
+            edge.removeAttribute("ui.label");
+        }
+
         this.visualizeEdges = visualizeEdges;
     }
 
@@ -74,12 +79,8 @@ public class GraphVisualizer<V> {
                     edge.destination().toString(),
                     true);
 
-            if (visualizeEdges) {
-                edges.setAttribute("ui.label", edge.weight());
-            }
             counter++;
         }
-
 
         graph.setAttribute("ui.stylesheet",
                 "graph {" +
@@ -132,6 +133,12 @@ public class GraphVisualizer<V> {
         if  (visualizeNodes) {
             for (Node node : graph) {
                 node.setAttribute("ui.label", node.getId());
+            }
+        }
+
+        if (visualizeEdges) {
+            for (org.graphstream.graph.Edge edge : graph.edges().toList()) {
+                edge.setAttribute("ui.label", edge.getId());
             }
         }
 
