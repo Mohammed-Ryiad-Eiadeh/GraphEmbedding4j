@@ -84,23 +84,23 @@ public class GraphVisualizer<V> {
         graph.setAttribute("ui.stylesheet",
                 "graph {" +
                         "   fill-color: #FFFFFF;" +
-                        "   padding: 10px;" +
+                        "   padding: 20px;" +
                         "}" +
 
                         "node {" +
                         "   shape: circle;" +
-                        "   size: 15px;" +
+                        "   size: 10px;" +
                         "   fill-mode: gradient-radial;" +
-                        "   fill-color: #F87171, #B91C1C;" +
+                        "   fill-color: blue;" +
                         "   stroke-mode: plain;" +
-                        "   stroke-color: #7F1D1D;" +
+                        "   stroke-color: blue;" +
                         "   stroke-width: 1.5px;" +
                         "   shadow-mode: none;" +
 
-                        "   text-size: 15;" +
+                        "   text-size: 20;" +
                         "   text-style: bold;" +
                         "   text-font: Arial;" +
-                        "   text-color: #263238;" +
+                        "   text-color: #000000;" +
                         "   text-alignment: at-right;" +
                         "   text-offset: 8px, 0px;" +
                         "}" +
@@ -111,12 +111,12 @@ public class GraphVisualizer<V> {
                         "   size: 1.5px;" +
 
                         "   arrow-shape: arrow;" +
-                        "   arrow-size: 9px, 5px;" +
+                        "   arrow-size: 5px, 5px;" +
 
-                        "   text-size: 12;" +
+                        "   text-size: 15;" +
                         "   text-style: normal;" +
                         "   text-font: Arial;" +
-                        "   text-color: #334155;" +
+                        "   text-color: #000000;" +
                         "   text-alignment: above;" +
                         "   text-offset: 0px, -6px;" +
                         "   text-background-mode: plain;" +
