@@ -80,39 +80,48 @@ public class GraphVisualizer<V> {
             counter++;
         }
 
+
         graph.setAttribute("ui.stylesheet",
                 "graph {" +
                         "   fill-color: #FFFFFF;" +
-                        "   padding: 65px;" +
+                        "   padding: 10px;" +
                         "}" +
+
                         "node {" +
                         "   shape: circle;" +
-                        "   size: 20px;" +
-                        "   fill-color: #800020;" +
+                        "   size: 15px;" +
+                        "   fill-mode: gradient-radial;" +
+                        "   fill-color: #F87171, #B91C1C;" +
                         "   stroke-mode: plain;" +
-                        "   stroke-color: #580016;" +
-                        "   stroke-width: 1px;" +
+                        "   stroke-color: #7F1D1D;" +
+                        "   stroke-width: 1.5px;" +
                         "   shadow-mode: none;" +
+
                         "   text-size: 15;" +
                         "   text-style: bold;" +
-                        "   text-color: #333333;" +
+                        "   text-font: Arial;" +
+                        "   text-color: #263238;" +
                         "   text-alignment: at-right;" +
-                        "   text-offset: 7px, 0px;" +
+                        "   text-offset: 8px, 0px;" +
                         "}" +
+
                         "edge {" +
                         "   shape: line;" +
                         "   fill-color: #000000;" +
-                        "   size: 2px;" +
+                        "   size: 1.5px;" +
+
                         "   arrow-shape: arrow;" +
-                        "   arrow-size: 10px, 5px;" +
-                        "   text-size: 13;" +
+                        "   arrow-size: 9px, 5px;" +
+
+                        "   text-size: 12;" +
                         "   text-style: normal;" +
-                        "   text-color: #000000;" +
+                        "   text-font: Arial;" +
+                        "   text-color: #334155;" +
                         "   text-alignment: above;" +
-                        "   text-offset: 0px, -7px;" +
+                        "   text-offset: 0px, -6px;" +
                         "   text-background-mode: plain;" +
                         "   text-background-color: #FFFFFF;" +
-                        "   text-padding: 2px;" +
+                        "   text-padding: 3px;" +
                         "}"
         );
 
