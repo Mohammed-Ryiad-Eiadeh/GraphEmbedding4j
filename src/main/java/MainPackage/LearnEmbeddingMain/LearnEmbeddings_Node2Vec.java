@@ -40,10 +40,11 @@ public class LearnEmbeddings_Node2Vec {
                 .build();
 
         // Visualize graph
-        var graphVisualizer = new GraphVisualizer<>(fileName,
+        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
                 builder,
-                false,
-                false);
+                true,
+                true,
+                true);
         graphVisualizer.displaySingleGraph();
 
         var numOfEdges = builder.edgeCount();

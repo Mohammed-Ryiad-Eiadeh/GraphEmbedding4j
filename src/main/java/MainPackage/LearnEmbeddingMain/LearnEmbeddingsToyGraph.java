@@ -47,6 +47,7 @@ public class LearnEmbeddingsToyGraph {
         var graphVisualizer = new GraphVisualizer<>("ToyGraph",
                 builder,
                 true,
+                true,
                 true);
         graphVisualizer.displaySingleGraph();
 

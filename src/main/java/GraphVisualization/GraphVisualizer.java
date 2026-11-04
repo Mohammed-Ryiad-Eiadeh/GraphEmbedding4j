@@ -16,9 +16,9 @@ import java.util.Set;
  * @param <V> the type of vertices in the graph
  */
 public class GraphVisualizer<V> {
-
     private final ImmutableGraphData<V> immutableGraphDataBuilder;
     private final Graph graph;
+    private final boolean graphDirection;
     private final boolean visualizeNodes;
     private final boolean visualizeEdges;
 
@@ -32,8 +32,10 @@ public class GraphVisualizer<V> {
      * @param visualizeEdges true to display edge weights; false to hide them
      * @throws NullPointerException if immutableGraphData is null
      */
-    public GraphVisualizer(String graphName, ImmutableGraphData<V> immutableGraphData, boolean visualizeNodes, boolean visualizeEdges) {
+    public GraphVisualizer(String graphName, ImmutableGraphData<V> immutableGraphData, boolean graphDirection, boolean visualizeNodes, boolean visualizeEdges) {
         this.immutableGraphDataBuilder = Objects.requireNonNull(immutableGraphData, "immutableGraphData");
+
+        this.graphDirection = graphDirection;
 
         System.setProperty("org.graphstream.ui", "swing");
 
@@ -62,6 +64,7 @@ public class GraphVisualizer<V> {
         Set<V> verticesSet = immutableGraphDataBuilder.vertexSet();
         Set<Edge<V>>  edgesSet = immutableGraphDataBuilder.edgeSet();
 
+        // This check avoid rendering exceptions
         if (verticesSet.size() > 5000 || edgesSet.size() > 10000) {
             throw new RuntimeException("Graph has more than 5000 vertices or 10000 edges!");
         }
@@ -74,10 +77,11 @@ public class GraphVisualizer<V> {
         for (Edge<V> edge : edgesSet) {
             String edgeID = "edge : " + counter;
 
-            org.graphstream.graph.Edge edges = graph.addEdge(edgeID,
+            graph.addEdge(edgeID,
                     edge.source().toString(),
                     edge.destination().toString(),
-                    true);
+                    graphDirection)
+                    .setAttribute("weight", edge.weight());
 
             counter++;
         }
@@ -85,7 +89,7 @@ public class GraphVisualizer<V> {
         graph.setAttribute("ui.stylesheet",
                 "graph {" +
                         "   fill-color: #FFFFFF;" +
-                        "   padding: 20px;" +
+                        "   padding: 30px;" +
                         "}" +
 
                         "node {" +
@@ -131,15 +135,13 @@ public class GraphVisualizer<V> {
         graph.setAttribute("ui.antialias");
 
         if  (visualizeNodes) {
-            for (Node node : graph) {
-                node.setAttribute("ui.label", node.getId());
-            }
+            graph.nodes().forEach(node -> node.setAttribute("ui.label", node.getId()));
         }
 
         if (visualizeEdges) {
-            for (org.graphstream.graph.Edge edge : graph.edges().toList()) {
-                edge.setAttribute("ui.label", edge.getId());
-            }
+            graph.edges()
+                    .filter((edge) -> edge.hasAttribute("weight"))
+                    .forEach(edge -> edge.setAttribute("ui.label", edge.getAttribute("weight")));
         }
 
         graph.display();
