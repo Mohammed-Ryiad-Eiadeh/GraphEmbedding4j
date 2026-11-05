@@ -18,7 +18,7 @@ import java.util.Set;
 public class GraphVisualizer<V> {
     private final ImmutableGraphData<V> immutableGraphDataBuilder;
     private final Graph graph;
-    private final boolean graphDirection;
+    private final boolean isDirected;
     private final boolean visualizeNodes;
     private final boolean visualizeEdges;
 
@@ -32,10 +32,10 @@ public class GraphVisualizer<V> {
      * @param visualizeEdges true to display edge weights; false to hide them
      * @throws NullPointerException if immutableGraphData is null
      */
-    public GraphVisualizer(String graphName, ImmutableGraphData<V> immutableGraphData, boolean graphDirection, boolean visualizeNodes, boolean visualizeEdges) {
+    public GraphVisualizer(String graphName, ImmutableGraphData<V> immutableGraphData, boolean isDirected, boolean visualizeNodes, boolean visualizeEdges) {
         this.immutableGraphDataBuilder = Objects.requireNonNull(immutableGraphData, "immutableGraphData");
 
-        this.graphDirection = graphDirection;
+        this.isDirected = isDirected;
 
         System.setProperty("org.graphstream.ui", "swing");
 
@@ -80,7 +80,7 @@ public class GraphVisualizer<V> {
             graph.addEdge(edgeID,
                     edge.source().toString(),
                     edge.destination().toString(),
-                    graphDirection)
+                    isDirected)
                     .setAttribute("weight", edge.weight());
 
             counter++;
@@ -96,13 +96,13 @@ public class GraphVisualizer<V> {
                         "   shape: circle;" +
                         "   size: 10px;" +
                         "   fill-mode: gradient-radial;" +
-                        "   fill-color: blue;" +
+                        "   fill-color: brown;" +
                         "   stroke-mode: plain;" +
-                        "   stroke-color: blue;" +
+                        "   stroke-color: brown;" +
                         "   stroke-width: 1.5px;" +
                         "   shadow-mode: none;" +
 
-                        "   text-size: 20;" +
+                        "   text-size: 10;" +
                         "   text-style: bold;" +
                         "   text-font: Arial;" +
                         "   text-color: #000000;" +
@@ -118,7 +118,7 @@ public class GraphVisualizer<V> {
                         "   arrow-shape: arrow;" +
                         "   arrow-size: 5px, 5px;" +
 
-                        "   text-size: 15;" +
+                        "   text-size: 10;" +
                         "   text-style: normal;" +
                         "   text-font: Arial;" +
                         "   text-color: #000000;" +
