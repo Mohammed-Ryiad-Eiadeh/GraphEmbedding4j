@@ -46,6 +46,7 @@ public class LearnEmbeddings_Node2Vec {
                 true,
                 true);
         graphVisualizer.displaySingleGraph();
+        //graphVisualizer.saveGraphToImage(Paths.get("Type the path here" + fileName + ".png"));
 
         var numOfEdges = builder.edgeCount();
         var numOfVertices = builder.vertexCount();

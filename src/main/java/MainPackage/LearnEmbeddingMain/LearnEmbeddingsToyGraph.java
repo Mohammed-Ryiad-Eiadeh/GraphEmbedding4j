@@ -25,6 +25,8 @@ import java.util.HashMap;
 
 public class LearnEmbeddingsToyGraph {
     public static void main(String[] args) throws IOException {
+        var fileName = "ToyGraph";
+
         // Construct graph manually
         var graphBuilder = new GraphBuilder<String>(GraphType.Directed);
         graphBuilder.addConnection("v0", "v1", 1.0f);
@@ -50,6 +52,7 @@ public class LearnEmbeddingsToyGraph {
                 true,
                 true);
         graphVisualizer.displaySingleGraph();
+        //graphVisualizer.saveGraphToImage(Paths.get("Type the path here" + fileName + ".png"));
 
         System.out.println("The Edge List of G : ");
         builder.edgeSet().forEach(System.out::println);

@@ -5,7 +5,12 @@ import Core.ImmutableGraphData;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkImages;
+import org.graphstream.stream.file.images.Resolutions;
+import org.graphstream.ui.swing.util.SwingFileSinkImages;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Set;
 
@@ -102,7 +107,7 @@ public class GraphVisualizer<V> {
                         "   stroke-width: 1.5px;" +
                         "   shadow-mode: none;" +
 
-                        "   text-size: 10;" +
+                        "   text-size: 20;" +
                         "   text-style: bold;" +
                         "   text-font: Arial;" +
                         "   text-color: #000000;" +
@@ -118,7 +123,7 @@ public class GraphVisualizer<V> {
                         "   arrow-shape: arrow;" +
                         "   arrow-size: 5px, 5px;" +
 
-                        "   text-size: 10;" +
+                        "   text-size: 20;" +
                         "   text-style: normal;" +
                         "   text-font: Arial;" +
                         "   text-color: #000000;" +
@@ -126,7 +131,7 @@ public class GraphVisualizer<V> {
                         "   text-offset: 0px, -6px;" +
                         "   text-background-mode: plain;" +
                         "   text-background-color: #FFFFFF;" +
-                        "   text-padding: 3px;" +
+                        "   text-padding: 10px;" +
                         "}"
         );
 
@@ -145,5 +150,21 @@ public class GraphVisualizer<V> {
         }
 
         graph.display();
+    }
+
+    /**
+     * Saves the graph as a PNG image at FWXGA resolution.
+     *
+     * @param path output image path
+     */
+    public void saveGraphToImage(Path path) {
+        SwingFileSinkImages image = new SwingFileSinkImages(FileSinkImages.OutputType.PNG, Resolutions.FWXGA);
+        image.setLayoutPolicy(FileSinkImages.LayoutPolicy.COMPUTED_FULLY_AT_NEW_IMAGE);
+        try {
+            image.writeAll(graph, path.toString());
+            image.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
