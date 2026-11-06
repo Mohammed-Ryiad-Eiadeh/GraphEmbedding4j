@@ -39,7 +39,7 @@ public class LearnEmbeddings_MB2Vec {
                 .build();
 
         // Visualize graph
-        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
+        var graphVisualizer = new GraphVisualizer<>(fileName,
                 builder,
                 true,
                 true,

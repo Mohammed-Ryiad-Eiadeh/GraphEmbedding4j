@@ -46,7 +46,7 @@ public class LearnEmbeddingsToyGraph {
                 .build();
 
         // Visualize graph
-        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
+        var graphVisualizer = new GraphVisualizer<>(fileName,
                 builder,
                 true,
                 true,
