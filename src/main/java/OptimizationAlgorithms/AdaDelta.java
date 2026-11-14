@@ -1,0 +1,63 @@
+package OptimizationAlgorithms;
+
+import java.util.HashMap;
+
+/**
+ * AdaDelta optimizer that adapts step sizes from squared gradient and update averages,
+ * without requiring a global learning rate.
+ */
+public non-sealed class AdaDelta implements Optimizer {
+    private final double rho;
+    private final double epsilon;
+    private final HashMap<double[], double[]> Eg2Vector;
+    private final HashMap<double[], double[]> deltaW;
+    private final HashMap<double[], double[]> Edx2Vector;
+
+    /**
+     * Constructs an AdaDelta optimizer.
+     *
+     * @param rho the decay rate for the running average, in the range [0, 1)
+     * @param epsilon the numerical stability constant, in the range [1e-12, 1e-6]
+     * @throws IllegalArgumentException if rho or epsilon are outside valid ranges
+     */
+    public AdaDelta(double rho, double epsilon) {
+        if (rho < 0 || rho >= 1) {
+            throw new IllegalArgumentException("Decay rate must be in [0, 1)");
+        }
+        this.rho = rho;
+
+        if (epsilon < 1e-12 || epsilon > 1e-6) {
+            throw new IllegalArgumentException("Epsilon must be in [1e-12, 1e-6]");
+        }
+        this.epsilon = epsilon;
+
+        this.Eg2Vector = new HashMap<>();
+        this.deltaW = new HashMap<>();
+        this.Edx2Vector = new HashMap<>();
+    }
+
+    /**
+     * Updates the model parameters using the computed gradient.
+     *
+     * @param weights  the parameter vector to be updated
+     * @param gradient the computed gradient vector
+     */
+    @Override
+    public void update(double[] weights, double[] gradient) {
+        double[] eg2 = Eg2Vector.computeIfAbsent(weights,
+                V -> new double[weights.length]);
+
+        double[] delW = deltaW.computeIfAbsent(weights,
+                V -> new double[gradient.length]);
+
+        double[] edx2 = Edx2Vector.computeIfAbsent(weights,
+                V -> new double[weights.length]);
+
+        for (int i = 0; i < weights.length; i++) {
+            eg2[i] = rho * eg2[i] + (1 - rho) * Math.pow(gradient[i], 2);
+            delW[i] = -Math.sqrt(edx2[i] + epsilon) / Math.sqrt(eg2[i] + epsilon) * gradient[i];
+            edx2[i] = rho * edx2[i] + (1 - rho) * Math.pow(delW[i], 2);
+            weights[i] += delW[i];
+        }
+    }
+}
