@@ -71,7 +71,7 @@ public class GraphVisualizer<V> {
 
         // This check avoids rendering exceptions for large graphs
         if (verticesSet.size() > 5000 || edgesSet.size() > 10000) {
-            throw new RuntimeException("Graph has more than 5000 vertices or 10000 edges!");
+            throw new RuntimeException("Graph has more than 5000 vertices or 10000 edges, hence, dont visualize the graph and re-run");
         }
 
         for (V node : verticesSet) {

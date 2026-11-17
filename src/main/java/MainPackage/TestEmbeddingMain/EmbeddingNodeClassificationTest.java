@@ -22,8 +22,8 @@ import java.util.ArrayList;
 public class EmbeddingNodeClassificationTest {
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
-        var modelName = "TrunctedSVD";
-        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_Cora_Edges.csv";
+        var modelName = "MB2Vec";
+        var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_Karate_Edges.csv";
         var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
         var Data = new MutableDataset<>(dataSource);
 

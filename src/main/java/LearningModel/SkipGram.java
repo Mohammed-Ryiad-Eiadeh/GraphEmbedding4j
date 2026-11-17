@@ -29,9 +29,7 @@ public class SkipGram<V> {
     private final Optimizer optimizer;
     private final Activation activationFunction;
     private final int numOfEpochs;
-    // Input embeddings: target-node representations.
     private final HashMap<Integer, double[]> targetEmbeddings;
-    // Output embeddings: context-node representations.
     private final HashMap<Integer, double[]> contextEmbeddings;
 
     /**
