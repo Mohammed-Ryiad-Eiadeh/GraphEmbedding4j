@@ -75,8 +75,8 @@ public class SimpleSVDApproximation<Mat> {
      * @return the low-rank embedding matrix of shape (rows × k)
      */
     public SimpleMatrix getEmbeddings() {
-        SimpleMatrix u = simpleSVD.getU();
-        SimpleMatrix W = simpleSVD.getW();
+        SimpleMatrix u = getU();
+        SimpleMatrix W = getW();
 
         SimpleMatrix uK = u.extractMatrix(0, u.getNumRows(), 0, K_Dimension);
         SimpleMatrix WK = W.extractMatrix(0, K_Dimension, 0, K_Dimension);
