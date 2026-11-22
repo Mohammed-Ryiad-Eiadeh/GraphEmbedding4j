@@ -6,13 +6,24 @@ package ActivationFunction;
 public non-sealed class SigmoidFunction implements Activation {
 
     /**
-     * Applies the activation function to the input value.
+     * Applies the sigmoid activation function.
      *
-     * @param operand input value
-     * @return activated output
+     * @param dotProduct input value
+     * @return sigmoid output in the range (0, 1)
      */
     @Override
-    public double applyAsDouble(double operand) {
-        return 1.0 / (1.0 + Math.exp(-operand));
+    public double applyAsDouble(double dotProduct) {
+        return 1.0 / (1.0 + Math.exp(-dotProduct));
+    }
+
+    /**
+     * Computes the sigmoid derivative using the activation output.
+     *
+     * @param prediction previously computed sigmoid output
+     * @return sigmoid derivative
+     */
+    @Override
+    public double derivative(double prediction) {
+        return prediction * (1 - prediction);
     }
 }

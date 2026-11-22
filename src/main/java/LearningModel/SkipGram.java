@@ -126,27 +126,37 @@ public class SkipGram<V> {
                     throw new IllegalArgumentException("Unknown sample label: " + sample.label());
                 }
 
-                // Compute dot product.
+                // Compute the raw score s as the dot product of the target and context vectors.
                 double dotProduct = IntStream.range(0, embeddingDimension).mapToDouble(i -> target[i] * context[i]).sum();
 
-                // Apply sigmoid.
+                // Apply the activation function to map the score to a prediction p = f(s).
                 double prediction = activationFunction.applyAsDouble(dotProduct);
 
-                // Gradient of BCE with sigmoid.
+                // Compute the activation derivative dp/ds = f'(s).
+                double derivative = activationFunction.derivative(prediction);
+
+                // Compute the BCE error term (p − y), the numerator of dL/dp.
                 double error = prediction - groundTruth;
 
-                // Calculate gradients using the OLD embeddings.
+                // Apply the chain rule: dL/ds = dL/dp · dp/ds = (p − y) / (p(1 − p)) · f'(s).
+                double delta = error * derivative / (prediction * (1.0 - prediction));
+
+                // Allocate the gradient of the loss with respect to the target vector.
                 double[] targetGradient = new double[embeddingDimension];
 
+                // Allocate the gradient of the loss with respect to the context vector.
                 double[] contextGradient = new double[embeddingDimension];
 
+                // Compute both gradients from the OLD vectors: dL/d(target) = delta · context, dL/d(context) = delta · target.
                 for (int i = 0; i < embeddingDimension; i++) {
-                    targetGradient[i] = error * context[i];
-                    contextGradient[i] = error * target[i];
+                    targetGradient[i] = delta * context[i];
+                    contextGradient[i] = delta * target[i];
                 }
 
-                // Apply gradient descent.
+                // Update the target vector using the optimizer.
                 optimizer.update(target, targetGradient);
+
+                // Update the context vector using the optimizer.
                 optimizer.update(context, contextGradient);
 
                 // Numerically stable BCE loss from the logit.
