@@ -1,12 +1,12 @@
 # GraphEmbedding4j
 
-A modular Java research framework for classic graph Representation learning, including DeepWalk, Node2Vec, and Markov Blanket-based MB2Vec.
+A modular Java research framework for graph representation learning, including DeepWalk, Node2Vec, Markov Blanket-based MB2Vec, and Truncated SVD.
 
 ---
 
 ## Overview
 
-GraphEmbedding4j is an exploratory Java framework for learning node embeddings from graphs using random walks and Skip-Gram–style objectives.
+GraphEmbedding4j is an exploratory Java framework for learning node embeddings from graphs using random walks, Skip-Gram–style objectives, and matrix decomposition techniques.
 
 The project focuses on building a clean and flexible architecture that separates the major stages of graph embedding pipelines, allowing individual components to be independently extended, replaced, or experimentally evaluated.
 
@@ -25,20 +25,37 @@ Rather than targeting production deployment, the library is intended to support:
 ### Random Walk–Based Embedding Pipeline
 
 * DeepWalk, Node2Vec, and MB2Vec walk generation
-* Sliding-window context extraction
+* Sliding-window context extraction (Symmetric, Left, Right modes)
 * Positive and negative sample generation
 * Skip-Gram embedding learning
 * CSV embedding export utilities
+
+### Matrix-Based Embedding Pipeline
+
+* Truncated SVD (Singular Value Decomposition) via EJML for low-rank adjacency matrix approximation
+
+### Graph Visualization
+
+* Interactive graph rendering via GraphStream (Swing)
+* PNG image export at HD720 resolution
+* Configurable node labels and edge weight display
+
+### Downstream Evaluation (via Tribuo)
+
+* Single-label node classification (FM classifier with cross-validation)
+* Multi-label node classification (Linear SGD with cross-validation)
+* Node clustering (K-Means++ with train/test split)
 
 ## Modular Learning Components
 
 | Module Category | Currently Implemented | Planned Extensions |
 |---|---|---|
-| **Activation Functions** | Sigmoid, Tanh | ELU, Leaky ReLU |
-| **Optimization Algorithms** | SGD, Momentum SGD, AdaGrad, RMSProp, AdaDelta, Sign SGD, AdaMax, AdamW | Adam |
-| **Embedding Initialization** | Uniform random, Gaussian | Xavier Initialization, He Initialization |
-| **Sampling Strategies** | Positive/Negative Sampling, Symmetric Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
-| **Walk Engines** | DeepWalk, Node2Vec biased walks (roulette-wheel sampling), MB2Vec Markov Blanket-biased walks (roulette-wheel sampling) | Dynamic Graph Walks, Temporal Random Walks |
+| **Activation Functions** | Sigmoid, CLogLog | Tanh, ELU, Leaky ReLU |
+| **Optimization Algorithms** | SGD, Momentum SGD, NAG, AdaGrad, RMSProp, AdaDelta, Sign SGD, AdaMax, AdamW | Adam |
+| **Embedding Initialization** | Uniform, Gaussian, Exponential | Xavier Initialization, He Initialization |
+| **Sampling Strategies** | Positive/Negative Sampling, Symmetric/Left/Right Sliding-Window Extraction, Uniform Negative Sampling | Degree-Biased Sampling, Adaptive Sampling, Adversarial Negative Sampling |
+| **Walk Engines** | DeepWalk, Node2Vec biased walks (roulette-wheel sampling), MB2Vec Markov Blanket-biased walks (roulette-wheel sampling) | LINE (placeholder), Dynamic Graph Walks, Temporal Random Walks |
+| **Graph Representations** | Adjacency List, Adjacency Matrix | — |
 
 ---
 
@@ -48,7 +65,7 @@ Rather than targeting production deployment, the library is intended to support:
 |---|---|---|
 | **DeepWalk** | Graph neighbors | Uniform random walk |
 | **Node2Vec** | Graph neighbors | Second-order walk biased by return and in/out parameters (`p`, `q`) |
-| **MB2Vec** | Markov Blanket of the current node | Context-dependent second-order walk using five transition weights (`a1`–`a5`) |
+| **MB2Vec** | Markov Blanket of the current node | Context-dependent second-order walk using four transition weights (`a1`–`a4`) |
 
 ### MB2Vec: Markov Blanket-Based Walks
 
@@ -69,9 +86,9 @@ $$
 P(u\mid t,v)=\frac{w(t,v,u)}{\sum_{z\in MB(v)}w(t,v,z)}.
 $$
 
-The **first step** from the starting node is sampled uniformly from its Markov Blanket. Subsequent steps use the weighted rule above. The weights should be nonnegative, with a positive total weight for the candidate set.
+The **first step** from the starting node is sampled uniformly from its Markov Blanket. Subsequent steps use the weighted rule above. The four weights (`a1`–`a4`) should be nonnegative, with a positive total weight for the candidate set.
 
-**Implementation:** `src/main/java/SamplingModel/MB2Vec.java`. See `src/main/java/MainPackage/LearnEmbeddings_MB2Vec.java` for an entry-point example.
+**Implementation:** `src/main/java/SamplingModel/MB2Vec.java`. See `src/main/java/MainPackage/LearnEmbeddingMain/LearnEmbeddings_MB2Vec.java` for an entry-point example.
 
 ---
 
@@ -107,7 +124,15 @@ This modular design enables experimental combinations of embedding strategies wi
 
 ## Getting Started
 
-**Requirements:** Java JDK compatible with the project’s `pom.xml`, Maven, and an IDE such as IntelliJ IDEA. Check the Maven configuration for the exact Java version and dependencies.
+**Requirements:** Java 21, Maven, and an IDE such as IntelliJ IDEA.
+
+**Dependencies:**
+
+| Dependency | Purpose |
+|---|---|
+| [Tribuo](https://tribuo.org/) 4.3.2 | ML evaluation (classification, clustering, multi-label) |
+| [GraphStream](https://graphstream-project.org/) 2.0 | Interactive graph visualization and PNG export |
+| [EJML](http://ejml.org/) 0.46.1 | Matrix operations and SVD decomposition |
 
 ```bash
 git clone https://github.com/Mohammed-Ryiad-Eiadeh/GraphEmbedding4j.git
@@ -115,7 +140,26 @@ cd GraphEmbedding4j
 mvn compile
 ```
 
-Open the cloned directory as a Maven project in IntelliJ IDEA. The example entry points are under `src/main/java/MainPackage/`. Dataset files are stored in `Graphs/` and labels in `GroundTruths/`.
+Open the cloned directory as a Maven project in IntelliJ IDEA. The example entry points are under `src/main/java/MainPackage/LearnEmbeddingMain/` for learning embeddings and `src/main/java/MainPackage/TestEmbeddingMain/` for downstream evaluation.
+
+---
+
+## Datasets
+
+The project ships with 10 built-in graph datasets in the `Graphs/` directory, with corresponding labels/clusters in `GroundTruths/`:
+
+| Dataset | Edges File | Labels File | Task |
+|---|---|---|---|
+| Karate Club | `karate_Edges.txt` | `Karate_Labels.csv` | Node classification |
+| Cora | `cora_Edges.txt` | `cora_labels.csv` | Node classification |
+| CiteSeer | `citeseer_Edges.txt` | `citeseer_Labels.csv` | Node classification |
+| PubMed Blood Catalog | `BlodCatalog3_Edges.txt` | `BlodCatalog3_Labels.csv` | Multi-label classification |
+| PolBooks | `polBooks_Edges.txt` | `polBooks_Labels.csv` | Node classification |
+| Wikipedia | `Wiki_Edges.txt` | `Wiki_Labels.csv` | Node classification |
+| Dolphins | `dolphins_Edges.txt` | `dolphins_Clusters.csv` | Node clustering |
+| Email EU Core | `email-Eu-core_Edges.txt` | `email-Eu-core_Labels.csv` | Node classification |
+| Musea Facebook | `musae_facebook_Edges.txt` | `musae_facebook_Labels.csv` | Node classification |
+| PPI | `node2vec_PPI_Edges.txt` | `node2vec_PPI_Labels.csv` | Node classification |
 
 ---
 
@@ -145,15 +189,17 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 
 ## Example 1: Learning Node Embeddings (via Node2Vec Walks) on the Karate Graph
 
+See `src/main/java/MainPackage/LearnEmbeddingMain/LearnEmbeddings_Node2Vec.java` for the full source.
+
 ```java
         // Load the graph from Graphs
-        var graphDataFile = Paths.get(System.getProperty("user.dir"), "Graphs", "karate_Edges.txt");
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\karate_Edges.txt");
 
         // Load the graph into the passed builder (explicitly update in-place)
         var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
         new CSVGraphLoader<>(graphBuilder).loadGraphIntoBuilder(graphDataFile,
                 Integer::parseInt,
-                1);
+                1);       // Skip the header
 
         // Build a directed graph using GraphBuilder
         var builder = graphBuilder
@@ -161,8 +207,9 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
                 .build();
 
         // Visualize graph
-        var graphVisualizer = new GraphVisualizer<>("ToyGraph",
+        var graphVisualizer = new GraphVisualizer<>("Karate_Edges",
                 builder,
+                true,
                 true,
                 true);
         graphVisualizer.displaySingleGraph();
@@ -179,33 +226,33 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
         var mapper = new VertexIndexMapping<>(builder);
 
         // Generate walks using Node2Vec.
-        var Walk = new Node2Vec<>(builder,
+        var walk = new Node2Vec<>(builder,
                 mapper,
                 10,
-                3,
+                10,
                 0.5,
                 2.0,
                 12345L,
                 12345L);
 
         // Create positive and negative samples using 1) right sliding window and 2) uniform negative sampling
-        var positiveNegativeSample = new PositiveNegativeSamples<>(Walk,
+        var positiveNegativeSample = new PositiveNegativeSample<>(walk,
                 new SlidingWindow(WindowMode.Right, 4),
-                new UniformNegativeSampler<>(mapper),
+                new UniformNegativeSample<>(mapper),
                 20,
-                false,
+                true,
                 12345L);
 
-        // Initialize node embeddings using random Gaussian initialization.
+        // Initialize node embeddings using random Uniform initialization.
         var embeddingInitializer = new EmbeddingInitializer<>(builder,
-                InitializerMode.Gaussian,
+                InitializerMode.Uniform,
                 256,
                 12345L);
 
         // Define a Skip-Gram model
         var skipGramModel = new SkipGram<>(embeddingInitializer,
                 positiveNegativeSample,
-                new AdamW(0.9, 0.999, 0.0001, 1e-8, 0.01),
+                new SGD(0.001),
                 new SigmoidFunction(),
                 100);
 
@@ -216,9 +263,9 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 
         System.out.println("Training time: " + Util.formatDuration(startTime, endTime) + " ms");
 
-        // Export the learned embeddings to Karate_embeddings.csv
+        // Export the learned embeddings to CSV
         var embeddings = new HashMap<>(skipGramModel.getEmbeddings());
-        var stringPath = Paths.get(System.getProperty("user.dir"), "Karate_embeddings.csv");
+        var stringPath = Paths.get("Node2Vec_karate_Edges.csv");
         new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(stringPath,
                 mapper,
                 embeddings);
@@ -230,7 +277,7 @@ The graph shown in the figure can be constructed manually using the GraphBuilder
 Dataset: Karate graph
 Graph type: Directed
 Walk length: 10
-Number of walks per node: 3
+Number of walks per node: 10
 p: 0.5
 q: 2.0
 Window mode: Right
@@ -238,12 +285,8 @@ Window size: 4
 Negative sampling: Uniform
 Number of negative sample nodes: 20
 Embedding dimension: 256
-Optimizer: AdamW
-beta1: 0.9
-beta2: 0.999
-Learning rate: 0.0001
-epsilon: 1e-8
-lambda: 0.01
+Optimizer: SGD
+Learning rate: 0.001
 Activation function: Sigmoid
 Epochs: 100
 Random seed: 12345
@@ -251,63 +294,122 @@ Random seed: 12345
 
 ---
 
-## Example 2: Evaluating Embeddings with Tribuo
+## Example 1b: Learning Node Embeddings via Truncated SVD
 
-This example uses the **Tribuo ML library** (add the relevant Tribuo dependencies to `pom.xml`). Prepare a labeled embedding CSV with a `Class` column and remove the `NodeId` column from the feature inputs before running the example. The example assumes the labeled CSV exists at `results/Karate_embeddings_set.csv`.
+See `src/main/java/MainPackage/LearnEmbeddingMain/LearnEmbeddingTruncatedSVD.java` for the full source.
+
+Instead of random walks, this approach learns embeddings by decomposing the graph's adjacency matrix via Singular Value Decomposition (SVD), producing low-rank node representations.
 
 ```java
-    // Read the embedding dataset.
-    // read the entire dataset after the FS process
-    var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\Node2Vec_Karate_Edges.csv";
+        // Load the graph from Graphs
+        var graphDataFile = Paths.get(System.getProperty("user.dir"), "\\Graphs\\karate_Edges.txt");
+
+        var graphBuilder = new GraphBuilder<Integer>(GraphType.Directed);
+        new CSVGraphLoader<>(graphBuilder).loadGraphIntoBuilder(graphDataFile,
+                Integer::parseInt,
+                1);
+
+        var builder = graphBuilder.ifNotEmpty().build();
+        var mapper = new VertexIndexMapping<>(builder);
+
+        // Represent the graph as an adjacency matrix
+        var representationAsMatrix = new ImmutableAdjacentMatrix<>(builder, mapper.getVertexToIndex());
+
+        // Apply Truncated SVD with target rank k
+        int k = 15;
+        var lowApproximation = new SimpleSVDApproximation<>(representationAsMatrix, k);
+        var embedding = lowApproximation.getEmbeddings();
+
+        // Convert to HashMap and export
+        var map = new HashMap<Integer, double[]>();
+        var embeddingAsMatrix = new double[embedding.getNumRows()][embedding.getNumCols()];
+        for (var i = 0; i < embedding.getNumRows(); i++) {
+            for (var j = 0; j < embedding.getNumCols(); j++) {
+                embeddingAsMatrix[i][j] = embedding.get(i, j);
+            }
+            map.put(i + 1, embeddingAsMatrix[i]);
+        }
+
+        new CSVNodeEmbeddingExporter<Integer>().saveNodeEmbeddings(
+                Paths.get("TruncatedSVD_karate_Edges.csv"), map);
+```
+
+### Configuration
+
+```text
+Dataset: Karate graph
+Graph type: Directed
+Target rank (k): 15
+```
+
+---
+
+## Example 2: Evaluating Embeddings with Tribuo
+
+The project includes three downstream evaluation entry points under `src/main/java/MainPackage/TestEmbeddingMain/`, all using the **Tribuo ML library**:
+
+| Entry Point | Task | Algorithm | Evaluation |
+|---|---|---|---|
+| `EmbeddingNodeClassificationTest` | Single-label node classification | FM classifier (Hinge loss + AdaGrad) | 3-fold cross-validation |
+| `EmbeddingMultiLabelClassificationTest` | Multi-label node classification | Linear SGD (Binary Cross-Entropy + AdaGrad) | 3-fold cross-validation |
+| `EmbeddingNodeClusteringTest` | Node clustering | K-Means++ (L2 distance) | 70/30 train/test split |
+
+Prepare a labeled embedding CSV with a `Class` column before running any evaluation. See the source files for full configuration details.
+
+### Single-Label Classification Example
+
+```java
+    // Read the embedding dataset
+    var dataPath = "MB2Vec_Karate_Edges.csv";
     var dataSource = new CSVLoader<>(new LabelFactory()).loadDataSource(Paths.get(dataPath), "Class");
-    var Data = new MutableDataset<>(dataSource);
-    
-    // use FM classifier
-    var FMTrainer = new FMClassificationTrainer(new Hinge(),
+    var data = new MutableDataset<>(dataSource);
+
+    // Use FM classifier
+    var fmTrainer = new FMClassificationTrainer(new Hinge(),
             new AdaGrad(0.01, 0.9),
-            100               ,
+            100,
             Trainer.DEFAULT_SEED,
             10,
             0.2D);
-    
-    // use cross validation
-    var crossValidation = new CrossValidation<>(FMTrainer,
-            Data,
+
+    // Use 3-fold cross-validation
+    var crossValidation = new CrossValidation<>(fmTrainer,
+            data,
             new LabelEvaluator(),
             3);
-    
-    // get outputs
+
+    // Collect metrics
     var sumAcc = 0D;
     var sumRecall = 0D;
     var sumF1 = 0D;
     var sumPrecision = 0D;
     var listAcc = new ArrayList<Double>();
     var sTrain = System.currentTimeMillis();
-            for (var performance : crossValidation.evaluate()) {
-    sumAcc += performance.getA().accuracy();
-                listAcc.add(performance.getA().accuracy());
-    sumRecall += performance.getA().macroAveragedRecall();
-    sumF1 += performance.getA().macroAveragedF1();
-    sumPrecision += performance.getA().macroAveragedPrecision();
-            }
+    for (var performance : crossValidation.evaluate()) {
+        sumAcc += performance.getA().accuracy();
+        listAcc.add(performance.getA().accuracy());
+        sumRecall += performance.getA().macroAveragedRecall();
+        sumF1 += performance.getA().macroAveragedF1();
+        sumPrecision += performance.getA().macroAveragedPrecision();
+    }
     var eTrain = System.currentTimeMillis();
-    
+
     var avgAcc = sumAcc / crossValidation.getK();
     var avgRecall = sumRecall / crossValidation.getK();
     var avgF1 = sumF1 / crossValidation.getK();
     var avgPrecision = sumPrecision / crossValidation.getK();
-    
-    //Standard deviation: Measures how much classification performance varies across those folds.
+
+    // Standard deviation across folds
     var std = Math.sqrt(listAcc.stream()
             .mapToDouble(value -> Math.pow(value - avgAcc, 2))
             .sum() / (listAcc.size() - 1));
-    
-            System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
-            System.out.println("The average accuracy is : " + avgAcc);
-            System.out.println("The average Std-accuracy is : " + std);
-            System.out.println("The average recall is : " + avgRecall);
-            System.out.println("The average F1-Score is : " + avgF1);
-            System.out.println("The average precision is : " + avgPrecision);
+
+    System.out.println("The Training_Testing duration time is : " + Util.formatDuration(sTrain, eTrain));
+    System.out.println("The average accuracy is : " + avgAcc);
+    System.out.println("The average Std-accuracy is : " + std);
+    System.out.println("The average recall is : " + avgRecall);
+    System.out.println("The average F1-Score is : " + avgF1);
+    System.out.println("The average precision is : " + avgPrecision);
 ```
 
 ### Experimental Results
@@ -338,17 +440,40 @@ Report accuracy as `mean ± SD`, clearly identifying the dataset, walk method, c
 
 ---
 
+## Graph Visualization
+
+The framework includes a `GraphVisualizer` class powered by GraphStream for interactive graph rendering and image export:
+
+```java
+        // Visualize graph interactively
+        var graphVisualizer = new GraphVisualizer<>("Karate_Edges",
+                builder,
+                true,   // directed edges
+                true,   // show node IDs
+                true);  // show edge weights
+        graphVisualizer.displaySingleGraph();
+
+        // Save graph as PNG image (HD720 resolution)
+        graphVisualizer.saveGraphToImage(Paths.get("karate_graph.png"));
+```
+
+**Note:** Visualization is limited to graphs with fewer than 5,000 vertices and 10,000 edges.
+
+---
+
 ## Research Directions
 
 Potential future directions include:
 
+* LINE (Large-scale Information Network Embedding) — placeholder class exists
 * Adversarial graph embedding learning
 * FGSM-style embedding perturbations
 * Dynamic and temporal graph embeddings
-* Meta-learning for graph Representation selection
+* Meta-learning for graph representation selection
 * Robustness analysis under graph perturbations
 * Embedding regularization using graph neighborhood consistency
 * Markov Blanket–aware embedding objectives
+* Adam optimizer implementation
 
 ---
 

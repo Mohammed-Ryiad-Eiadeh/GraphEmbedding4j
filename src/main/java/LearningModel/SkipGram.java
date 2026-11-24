@@ -133,7 +133,7 @@ public class SkipGram<V> {
                 double prediction = activationFunction.applyAsDouble(dotProduct);
 
                 // Compute the activation derivative dp/ds = f'(s).
-                double derivative = activationFunction.derivative(prediction);
+                double derivative = activationFunction.derivative(dotProduct);
 
                 // Compute the BCE error term (p − y), the numerator of dL/dp.
                 double error = prediction - groundTruth;

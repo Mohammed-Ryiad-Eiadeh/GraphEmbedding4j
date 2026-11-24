@@ -19,11 +19,11 @@ public non-sealed class SigmoidFunction implements Activation {
     /**
      * Computes the sigmoid derivative using the activation output.
      *
-     * @param prediction previously computed sigmoid output
+     * @param dotProduct input value
      * @return sigmoid derivative
      */
     @Override
-    public double derivative(double prediction) {
-        return prediction * (1 - prediction);
+    public double derivative(double dotProduct) {
+        return applyAsDouble(dotProduct) * (1 - applyAsDouble(dotProduct));
     }
 }
