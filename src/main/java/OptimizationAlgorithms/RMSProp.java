@@ -22,7 +22,7 @@ public non-sealed class RMSProp implements Optimizer{
      */
     public RMSProp(double learningRate, double decayRate, double epsilon) {
         if (learningRate < 0 || learningRate > 1) {
-            throw new IllegalArgumentException("LearningModel rate must be between 0 and 1");
+            throw new IllegalArgumentException("Learning rate must be between 0 and 1");
         }
         this.learningRate = learningRate;
 
@@ -32,7 +32,7 @@ public non-sealed class RMSProp implements Optimizer{
         this.decayRate = decayRate;
 
         if (epsilon < 1e-12 || epsilon > 1e-6) {
-            throw new IllegalArgumentException("Epsilon must be in [10^-6, 10^-12]");
+            throw new IllegalArgumentException("Epsilon must be in [1e-12, 1e-6]");
         }
         this.epsilon = epsilon;
 
@@ -52,7 +52,7 @@ public non-sealed class RMSProp implements Optimizer{
 
         for (int i = 0; i < weights.length; i++) {
             cache[i] = decayRate * (cache[i]) + (1 - decayRate) * Math.pow(gradient[i], 2) ;
-            weights[i] -= learningRate / Math.sqrt(cache[i] + epsilon) * gradient[i];  // ie-8 is to a void division by 0
+            weights[i] -= learningRate / Math.sqrt(cache[i] + epsilon) * gradient[i];  // epsilon is to avoid division by 0
         }
     }
 }

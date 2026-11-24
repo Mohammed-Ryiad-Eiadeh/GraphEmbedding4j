@@ -19,7 +19,7 @@ public non-sealed class NAG implements Optimizer {
      */
     public NAG(double learningRate, double momentum) {
         if (learningRate < 0 || learningRate > 1) {
-            throw new IllegalArgumentException("LearningModel rate must be between 0 and 1");
+            throw new IllegalArgumentException("Learning rate must be between 0 and 1");
         }
         this.learningRate = learningRate;
 

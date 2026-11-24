@@ -21,7 +21,7 @@ public non-sealed class MomentumSGD implements Optimizer {
      */
     public MomentumSGD(double learningRate, double momentum) {
         if (learningRate < 0 || learningRate > 1) {
-            throw new IllegalArgumentException("LearningModel rate must be between 0 and 1");
+            throw new IllegalArgumentException("Learning rate must be between 0 and 1");
         }
         this.learningRate = learningRate;
 
@@ -46,7 +46,7 @@ public non-sealed class MomentumSGD implements Optimizer {
 
         for (int i = 0; i < weights.length; i++) {
             velocity[i] = momentum * velocity[i] + gradient[i];
-                weights[i] -= learningRate * velocity[i];
+            weights[i] -= learningRate * velocity[i];
         }
     }
 }

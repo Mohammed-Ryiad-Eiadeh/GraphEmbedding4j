@@ -1,9 +1,9 @@
 package SamplingModel;
 
 import Core.ImmutableGraphData;
-import Representation.AdjacentList.Neighbor;
 import Core.VertexIndexMapping;
 import Representation.AdjacentList.ImmutableAdjacentList;
+import Representation.AdjacentList.Neighbor;
 
 import java.util.ArrayList;
 import java.util.List;

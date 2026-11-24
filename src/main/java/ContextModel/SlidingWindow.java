@@ -11,7 +11,7 @@ import java.util.List;
  */
 public non-sealed class SlidingWindow implements ContextWindow {
     private final int windowSize;
-    private final WindowMode windowMode;;
+    private final WindowMode windowMode;
 
     /**
      * Constructs a sliding window with the specified mode and size.

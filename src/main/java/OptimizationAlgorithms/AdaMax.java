@@ -35,7 +35,7 @@ public non-sealed class AdaMax implements Optimizer {
         this.beta2 = beta2;
 
         if (learningRate < 0 || learningRate > 1) {
-            throw new IllegalArgumentException("LearningModel rate must be between 0 and 1");
+            throw new IllegalArgumentException("Learning rate must be between 0 and 1");
         }
         this.learningRate = learningRate;
 

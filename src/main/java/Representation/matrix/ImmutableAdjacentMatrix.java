@@ -20,6 +20,12 @@ public class ImmutableAdjacentMatrix<V> extends MatrixRepresentation<float[][]> 
     private volatile float[][] cachedMatrix;
 
 
+    /**
+     * Constructs an immutable adjacency matrix representation.
+     *
+     * @param immutableGraphData the immutable graph snapshot
+     * @param vertexToIndex mapping from vertices to integer indices
+     */
     public ImmutableAdjacentMatrix(ImmutableGraphData<V> immutableGraphData, Map<V, Integer> vertexToIndex) {
         this.immutableGraphData = immutableGraphData;
 

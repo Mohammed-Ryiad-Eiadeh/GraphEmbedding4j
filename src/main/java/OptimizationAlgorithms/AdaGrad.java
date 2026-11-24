@@ -20,7 +20,7 @@ public non-sealed class AdaGrad implements Optimizer {
      */
     public AdaGrad(double learningRate, double epsilon) {
         if (learningRate < 0 || learningRate > 1) {
-            throw new IllegalArgumentException("LearningModel rate must be between 0 and 1");
+            throw new IllegalArgumentException("Learning rate must be between 0 and 1");
         }
         this.learningRate = learningRate;
 
