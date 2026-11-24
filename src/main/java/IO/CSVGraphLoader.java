@@ -31,7 +31,6 @@ public class CSVGraphLoader<V> {
      * @param path the input file path
      * @param vertexParser converts vertex IDs from String to type V
      * @param skipLine number of header lines to skip
-     * @throws IOException if reading the file fails
      */
     public void loadGraphIntoBuilder(Path path, Function<String, V> vertexParser, int skipLine) {
         try (BufferedReader reader = Files.newBufferedReader(path)) {

@@ -11,8 +11,7 @@ import java.util.Set;
  * Thread-safe and safe to share across algorithms and random walks.
  * </p>
  */
-public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet,
-                                    Set<Edge<V>> edgeSet) implements GraphData<V> {
+public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<Edge<V>> edgeSet) implements GraphData<V> {
     /**
      * Constructs an immutable graph data instance.
      *
