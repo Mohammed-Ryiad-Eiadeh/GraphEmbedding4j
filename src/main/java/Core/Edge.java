@@ -1,7 +1,7 @@
 package Core;
 
 /**
- * Immutable weighted directed edge between two vertices.
+ * Stores one immutable, weighted connection from a source vertex to a destination vertex.
  *
  * @param source the source vertex
  * @param destination the destination vertex

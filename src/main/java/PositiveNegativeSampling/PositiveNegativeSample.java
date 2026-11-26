@@ -16,8 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Produces labeled positive and negative (target, context) training samples
- * from random walk sequences for Skip-Gram embedding models.
+ * Combines walk contexts and a negative sampler into labeled Skip-Gram training data.
  *
  * @param <V> the vertex type used in the input graph
  */
@@ -32,7 +31,7 @@ public class PositiveNegativeSample<V> {
     private final Random random;
 
     /**
-     * Constructs a positive and negative sample generator.
+     * Configures how walks become positive contexts and how negative contexts are drawn.
      *
      * @param abstractWalkStrategy random walk generation strategy
      * @param slidingWindow context window used for positive pairs
@@ -59,12 +58,7 @@ public class PositiveNegativeSample<V> {
     }
 
     /**
-     * Generates positive and negative samples.
-     *
-     * For each positive pair:
-     * 1. Add the positive pair.
-     * 2. Exclude the target and known positive contexts.
-     * 3. Generate negative samples.
+     * Labels positive contexts, adds eligible negatives, and shuffles the resulting dataset.
      *
      * @return shuffled training samples
      */

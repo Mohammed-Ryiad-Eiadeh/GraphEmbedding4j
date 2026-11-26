@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * RMSProp optimizer that adapts the learning rate per parameter
- * using an exponentially decaying average of squared gradients.
+ * Scales each parameter's update using a decaying average of its squared gradients.
  */
 public non-sealed class RMSProp implements Optimizer{
     private final double learningRate;
@@ -13,7 +12,7 @@ public non-sealed class RMSProp implements Optimizer{
     private final HashMap<double[], double[]> cacheVector;
 
     /**
-     * Constructs an RMSProp optimizer.
+     * Sets the step size, gradient decay, and numerical stability value for RMSProp.
      *
      * @param learningRate the learning rate used for parameter updates
      * @param decayRate the exponential decay rate for squared gradients, in the range [0, 1)
@@ -40,7 +39,7 @@ public non-sealed class RMSProp implements Optimizer{
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Updates the squared-gradient cache and uses it to scale this parameter step.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

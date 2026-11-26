@@ -7,10 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Immutable dense adjacency matrix built from a graph snapshot.
- * <p>
- * Lazily constructed and cached for fast reuse.
- * </p>
+ * Converts a graph snapshot into a cached dense matrix of edge weights.
  *
  * @param <V> vertex type
  */
@@ -21,7 +18,7 @@ public class ImmutableAdjacentMatrix<V> extends MatrixRepresentation<float[][]> 
 
 
     /**
-     * Constructs an immutable adjacency matrix representation.
+     * Associates the graph snapshot with the index of each matrix row and column.
      *
      * @param immutableGraphData the immutable graph snapshot
      * @param vertexToIndex mapping from vertices to integer indices
@@ -33,8 +30,7 @@ public class ImmutableAdjacentMatrix<V> extends MatrixRepresentation<float[][]> 
     }
 
     /**
-     * Returns the dense adjacency matrix.
-     * A[i][j] = weight of edge (vi → vj), or 0 if absent.
+     * Builds or returns the matrix whose entries are edge weights, with zero for absent edges.
      *
      * @return adjacency matrix
      */

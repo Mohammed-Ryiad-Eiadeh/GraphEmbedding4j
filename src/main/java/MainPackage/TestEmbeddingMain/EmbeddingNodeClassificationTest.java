@@ -16,10 +16,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
- * Evaluates learned node embeddings on a single-label node classification task
- * using 3-fold cross-validation with a Factorization Machines (FM) classifier.
+ * Measures single-label classification performance of learned node embeddings.
  */
 public class EmbeddingNodeClassificationTest {
+    /** Loads embedding features and reports cross-validated classification metrics. */
     public static void main(String[] args) throws IOException {
         // read the entire dataset after the FS process
         var modelName = "MB2Vec";

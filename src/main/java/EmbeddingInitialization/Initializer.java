@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * Abstract base for initializing node embedding vectors
- * before training begins.
+ * Stores common graph and reproducibility settings for embedding initialization strategies.
  */
 public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     private final int numOfNode;
@@ -15,7 +14,7 @@ public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     private final long seed;
 
     /**
-     * Creates an embedding initializer.
+     * Captures the graph size, vector dimension, and random seed for an initializer.
      *
      * @param immutableGraphData the graph data used to determine the number of vectors
      * @param embeddingDimension the embedding vector dimension
@@ -37,7 +36,7 @@ public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     }
 
     /**
-     * Returns the total number of nodes.
+     * Reports how many node vectors this initializer must produce.
      *
      * @return number of graph nodes
      */
@@ -46,7 +45,7 @@ public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     }
 
     /**
-     * Returns the embedding vector dimension.
+     * Reports the number of coordinates in each node vector.
      *
      * @return embedding dimension
      */
@@ -55,7 +54,7 @@ public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     }
 
     /**
-     * Returns the random seed used for initialization.
+     * Reports the seed that makes initialization reproducible.
      *
      * @return random seed
      */
@@ -64,7 +63,7 @@ public sealed abstract class Initializer<V> permits EmbeddingInitializer {
     }
 
     /**
-     * Initializes embedding vectors.
+     * Produces a vector for each indexed graph node using the concrete strategy.
      *
      * @return map of node IDs to embedding vectors
      */

@@ -16,10 +16,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * End-to-end demo that learns node embeddings via Truncated SVD
- * on the Karate Club graph, then exports the results to CSV.
+ * Demonstrates graph loading, truncated-SVD embedding, visualization, and CSV export.
  */
 public class LearnEmbeddingTruncatedSVD {
+    /** Runs the truncated-SVD example on the Karate Club graph. */
     public static void main(String[] args) throws IOException {
         // Load the graph from Graphs
         var fileName = "Karate_Edges";

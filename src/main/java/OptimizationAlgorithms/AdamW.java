@@ -3,7 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * AdamW optimizer — Adam with decoupled weight decay for better regularization.
+ * Combines Adam's adaptive moments with a separate weight-decay step.
  */
 public non-sealed class AdamW implements Optimizer {
     private final double beta1;
@@ -16,7 +16,7 @@ public non-sealed class AdamW implements Optimizer {
     private long timeStamp;
 
     /**
-     * Constructs an AdamW optimizer.
+     * Sets Adam's moment rates and step size together with the weight-decay strength.
      *
      * @param beta1        the exponential decay rate for the first moment
      * @param beta2        the exponential decay rate for the second moment
@@ -56,7 +56,7 @@ public non-sealed class AdamW implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Applies bias-corrected Adam updates and decoupled weight decay to the parameters.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

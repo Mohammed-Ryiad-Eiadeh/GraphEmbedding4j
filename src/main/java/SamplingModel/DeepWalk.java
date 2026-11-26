@@ -11,8 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * DeepWalk — uniform random walk strategy that selects each outgoing neighbor
- * with equal probability at every step.
+ * Generates walks by choosing uniformly among each current node's outgoing neighbors.
  */
 public non-sealed class DeepWalk<V> extends AbstractWalkingStrategy<V> {
     private final Map<Integer, List<Neighbor<Integer>>> adjacentList;
@@ -21,8 +20,7 @@ public non-sealed class DeepWalk<V> extends AbstractWalkingStrategy<V> {
     private final Random random;
 
     /**
-     * Constructs a DeepWalk strategy by preprocessing the input graph into an
-     * immutable adjacency list and initializing the vertex-to-index mapping.
+     * Prepares indexed graph neighbors and a seeded random generator for uniform walks.
      *
      * @param immutableGraphDataObj immutable graph data containing vertices and edges
      * @param mapping            mapping between vertices and internal node IDs
@@ -40,7 +38,7 @@ public non-sealed class DeepWalk<V> extends AbstractWalkingStrategy<V> {
     }
 
     /**
-     * Generates a random walk starting from the given vertex for a fixed number of hops.
+     * Walks from the starting vertex by repeatedly selecting a uniform outgoing neighbor.
      *
      * @param start starting vertex of the walk
      * @return list of node indices representing the walk path

@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * Nesterov Accelerated Gradient (NAG) — momentum-based optimizer
- * that evaluates gradients at a look-ahead position for faster convergence.
+ * Uses a momentum look-ahead to adjust parameters ahead of the current gradient step.
  */
 public non-sealed class NAG implements Optimizer {
     private final double learningRate;
@@ -12,7 +11,7 @@ public non-sealed class NAG implements Optimizer {
     private final HashMap<double[], double[]> velocityVector;
 
     /**
-     * Creates a NAG optimizer.
+     * Configures the step size and momentum retained between updates.
      *
      * @param learningRate step size
      * @param momentum momentum coefficient
@@ -32,7 +31,7 @@ public non-sealed class NAG implements Optimizer {
     }
 
     /**
-     * Updates model parameters using Nesterov Accelerated Gradient.
+     * Uses the gradient and stored velocity to form a Nesterov look-ahead update.
      *
      * @param weights model parameters
      * @param gradient gradient vector

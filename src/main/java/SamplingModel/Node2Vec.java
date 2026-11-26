@@ -12,10 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Node2Vec — second-order biased random walk that balances BFS and DFS exploration.
- * <p>
- * Parameters {@code p} and {@code q} control return probability and outward exploration.
- * </p>
+ * Generates second-order walks whose return and outward choices are controlled by {@code p} and {@code q}.
  *
  * @param <V> vertex type used by the input graph
  */
@@ -29,10 +26,7 @@ public non-sealed class Node2Vec<V> extends AbstractWalkingStrategy<V> implement
     private final Random randSample;
 
     /**
-     * Constructs a Node2Vec walk strategy.
-     * <p>
-     * Builds an immutable adjacency list from the input graph and initializes
-     * the parameters used for second-order biased random walks.
+     * Prepares indexed neighbors, bias parameters, and seeded random generators for Node2Vec walks.
      *
      * @param immutableGraphData immutable graph data containing vertices and edges
      * @param mapping            mapping between vertices and internal node IDs
@@ -60,7 +54,7 @@ public non-sealed class Node2Vec<V> extends AbstractWalkingStrategy<V> implement
     }
 
     /**
-     * Returns a biased random walk starting from a given source node.
+     * Generates a walk whose next step depends on the relationship to the previous node.
      *
      * @param start the node to launch the walk from
      * @return a biased random walk starting from the given source node

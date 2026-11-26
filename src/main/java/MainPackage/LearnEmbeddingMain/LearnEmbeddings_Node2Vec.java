@@ -23,10 +23,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 /**
- * End-to-end demo that learns node embeddings on graphs
- * using Node2Vec biased random walks and Skip-Gram training.
+ * Demonstrates node embedding training from Node2Vec-biased random-walk sequences.
  */
 public class LearnEmbeddings_Node2Vec {
+    /** Loads the example graph, trains the Node2Vec embedding model, and exports its vectors. */
     public static void main(String[] args) throws IOException {
         // Load the graph from Graphs
         var fileName = "Karate_Edges";

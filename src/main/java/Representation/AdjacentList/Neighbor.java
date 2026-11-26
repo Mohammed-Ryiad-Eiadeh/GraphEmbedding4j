@@ -1,7 +1,7 @@
 package Representation.AdjacentList;
 
 /**
- * A weighted neighbor in an adjacency list.
+ * Stores an adjacent vertex index together with the connecting edge's weight.
  *
  * @param destination the destination vertex
  * @param weight the edge weight

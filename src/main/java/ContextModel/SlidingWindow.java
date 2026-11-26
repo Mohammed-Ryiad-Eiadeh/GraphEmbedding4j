@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Sliding window that extracts (target, context) pairs from a random walk,
- * supporting symmetric, left-only, and right-only window modes.
+ * Extracts positive target-context pairs from a walk using a configurable direction and span.
  */
 public non-sealed class SlidingWindow implements ContextWindow {
     private final int windowSize;
     private final WindowMode windowMode;
 
     /**
-     * Constructs a sliding window with the specified mode and size.
+     * Configures which neighboring walk positions are treated as context.
      *
      * @param windowMode the window direction strategy (symmetric, left, or right)
      * @param windowSize the number of neighbors to include around the center element
@@ -34,7 +33,7 @@ public non-sealed class SlidingWindow implements ContextWindow {
     }
 
     /**
-     * Returns the window size.
+     * Reports the maximum distance from a target considered for context.
      *
      * @return the number of neighbors considered around the center element
      */
@@ -44,7 +43,7 @@ public non-sealed class SlidingWindow implements ContextWindow {
     }
 
     /**
-     * Generate positive (target, context) pairs from a walk.
+     * Builds positive training pairs by treating each walk node as a target in turn.
      *
      * @param walk       the generated random walk
      * @return list of (target, context) index pairs

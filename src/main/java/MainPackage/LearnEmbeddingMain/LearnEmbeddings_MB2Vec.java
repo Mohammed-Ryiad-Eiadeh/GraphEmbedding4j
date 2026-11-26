@@ -22,10 +22,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 /**
- * End-to-end demo that learns node embeddings on graphs
- * using MB2Vec Markov Blanket-based random walks and Skip-Gram training.
+ * Demonstrates node embedding training from Markov Blanket-biased MB2Vec sequences.
  */
 public class LearnEmbeddings_MB2Vec {
+    /** Loads the example graph, trains the MB2Vec embedding model, and exports its vectors. */
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
         var fileName = "Karate_Edges";

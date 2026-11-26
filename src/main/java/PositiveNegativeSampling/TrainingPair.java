@@ -1,6 +1,6 @@
 package PositiveNegativeSampling;
 
 /**
- * An unordered pair of vertex indices representing a (target, context) relationship.
+ * Represents an ordered target-context relationship using vertex indices.
  */
 public record TrainingPair(int v1, int v2) { }

@@ -4,14 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Strategy for generating negative (target, context) samples
- * that are not true neighbors in the random walk.
+ * Defines how non-context nodes are selected as negative training examples.
  */
 public sealed interface NegativeSample permits UniformNegativeSample {
 
     /**
-     * Samples K negative (target, context) pairs for the given target,
-     * excluding any forbidden nodes (e.g., target itself + window contexts).
+     * Selects negative contexts for one target while excluding known positive or forbidden nodes.
      *
      * @param target the target node
      * @param forbidden nodes that must not be sampled as negatives

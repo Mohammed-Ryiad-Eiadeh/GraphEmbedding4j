@@ -1,15 +1,15 @@
 package ActivationFunction;
 
 /**
- * CLogLog activation function that maps a real-valued score to (0, 1).
+ * Converts a real-valued score to a probability-like output with the complementary log-log function.
  */
 public non-sealed class CLogLogFunction implements Activation {
 
     /**
-     * Applies the CLogLog activation function.
+     * Transforms a score into its complementary log-log activation output.
      *
-     * @param  dotProduct value
-     * @return sigmoid output in the range (0, 1)
+     * @param dotProduct target-context score
+     * @return activation output in the range (0, 1)
      */
     @Override
     public double applyAsDouble(double dotProduct) {
@@ -17,10 +17,10 @@ public non-sealed class CLogLogFunction implements Activation {
     }
 
     /**
-     * Computes the CLogLog derivative using the activation output.
+     * Computes the slope of the complementary log-log function at the supplied score.
      *
-     * @param dotProduct previously computed CLogLog output
-     * @return CLogLog derivative
+     * @param dotProduct target-context score
+     * @return the activation derivative
      */
     @Override
     public double derivative(double dotProduct) {

@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * AdaMax optimizer — an Adam variant that uses the infinity norm
- * to scale parameter updates.
+ * Applies Adam-style updates scaled by the running infinity norm of each gradient.
  */
 public non-sealed class AdaMax implements Optimizer {
     private final double beta1;
@@ -16,7 +15,7 @@ public non-sealed class AdaMax implements Optimizer {
     private long timeStamp;
 
     /**
-     * Constructs an AdaMax optimizer.
+     * Sets the moment decay rates, learning rate, and stability value for AdaMax.
      *
      * @param beta1        the exponential decay rate for the first moment
      * @param beta2        the exponential decay rate for the infinity norm
@@ -50,7 +49,7 @@ public non-sealed class AdaMax implements Optimizer {
     }
 
     /**
-     * Updates the parameter vector using AdaMax.
+     * Updates parameters using bias-corrected first moments and infinity-norm scaling.
      *
      * @param weights  the parameter vector to update
      * @param gradient the gradient vector

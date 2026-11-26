@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * AdaDelta optimizer that adapts step sizes from squared gradient and update averages,
- * without requiring a global learning rate.
+ * Scales parameter steps from running averages of squared gradients and past updates.
  */
 public non-sealed class AdaDelta implements Optimizer {
     private final double rho;
@@ -14,7 +13,7 @@ public non-sealed class AdaDelta implements Optimizer {
     private final HashMap<double[], double[]> Edx2Vector;
 
     /**
-     * Constructs an AdaDelta optimizer.
+     * Sets the decay and stability values used by AdaDelta's per-parameter step scaling.
      *
      * @param rho the decay rate for the running average, in the range [0, 1)
      * @param epsilon the numerical stability constant, in the range [1e-12, 1e-6]
@@ -37,7 +36,7 @@ public non-sealed class AdaDelta implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Applies an AdaDelta step using each parameter's accumulated gradient and update history.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

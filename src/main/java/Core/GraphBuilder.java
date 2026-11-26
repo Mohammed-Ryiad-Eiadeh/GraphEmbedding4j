@@ -6,8 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Incremental builder for constructing a graph from weighted edges.
- * Supports directed and bidirectional graphs.
+ * Collects vertices and weighted connections, then produces an immutable graph snapshot.
  *
  * @param <V> the vertex type
  */
@@ -17,7 +16,7 @@ public class GraphBuilder<V> {
     private final Set<V> vertexSet;
 
     /**
-     * Creates a GraphBuilder with the specified graph type.
+     * Starts a graph builder with the requested edge directionality.
      *
      * @param graphType the type of graph (directed or bidirectional)
      */
@@ -28,7 +27,7 @@ public class GraphBuilder<V> {
     }
 
     /**
-     * Adds a weighted connection between two vertices.
+     * Adds both endpoint vertices and records their weighted connection.
      *
      * @param source the source vertex
      * @param destination the destination vertex
@@ -57,7 +56,7 @@ public class GraphBuilder<V> {
     }
 
     /**
-     * Validates that the graph contains at least one vertex.
+     * Ensures construction has added at least one vertex before continuing.
      *
      * @return this builder if the graph is non-empty
      * @throws IllegalStateException if no vertices have been added
@@ -71,15 +70,8 @@ public class GraphBuilder<V> {
     }
 
     /**
-     * Builds an immutable snapshot of the graph constructed so far.
-     * <p>
-     * This method freezes the current state of the builder and returns a
-     * read-only graph Representation that cannot be modified. The returned
-     * snapshot is safe to share across representers, algorithms, and other
-     * consumers without risk of accidental mutation.
-     * <p>
-     * Subsequent modifications to this builder will not affect the returned
-     * graph snapshot.
+     * Creates a read-only graph snapshot from the connections collected so far.
+     * Later builder changes do not alter this snapshot.
      *
      * @return an immutable GraphData snapshot of the constructed graph
      */

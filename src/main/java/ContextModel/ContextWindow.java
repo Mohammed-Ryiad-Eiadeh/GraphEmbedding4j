@@ -5,13 +5,12 @@ import PositiveNegativeSampling.TrainingPair;
 import java.util.List;
 
 /**
- * Generates positive (target, context) pairs from random walks
- * using a sliding window around each node.
+ * Defines how nearby nodes in a random walk become positive training pairs.
  */
 public sealed interface ContextWindow permits SlidingWindow {
 
     /**
-     * Generate positive (target, context) pairs from a walk.
+     * Extracts the target-context relationships represented by one walk.
      *
      * @param walk the generated random walk
      * @return list of (target, context) index pairs
@@ -19,7 +18,7 @@ public sealed interface ContextWindow permits SlidingWindow {
     List<TrainingPair> generatePositivePairs(List<Integer> walk);
 
     /**
-     * Returns the window size.
+     * Reports how many walk positions may contribute context around each target.
      *
      * @return the number of neighbors considered around the center element
      */

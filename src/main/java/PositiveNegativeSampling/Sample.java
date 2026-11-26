@@ -1,7 +1,7 @@
 package PositiveNegativeSampling;
 
 /**
- * A single labeled training sample: a (target, context) pair with a label.
+ * Carries one target-context pair and its positive or negative training label.
  *
  * @param targetNode the target vertex
  * @param contextNode the context vertex

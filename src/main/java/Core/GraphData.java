@@ -4,43 +4,42 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Read-only view of a graph's structure (vertices, edges, and type),
- * independent of its internal representation.
+ * Exposes a graph's vertices, edges, and directionality without prescribing storage.
  *
  * @param <V> the vertex type
  */
 public sealed interface GraphData<V> permits ImmutableGraphData {
 
     /**
-     * Returns the type of the graph (directed or bidirectional).
+     * Identifies whether graph connections are directed or bidirectional.
      *
      * @return the graph type
      */
     GraphType graphType();
 
     /**
-     * Returns the name of the graph representation type.
+     * Provides the graph type name used to identify its representation.
      *
      * @return the representation type name
      */
     String getClassName();
 
     /**
-     * Returns the set of vertices in the graph.
+     * Exposes the vertices that belong to this graph.
      *
      * @return the set of vertices
      */
     Set<V> vertexSet();
 
     /**
-     * Returns the set of edges in the graph.
+     * Exposes the connections that belong to this graph.
      *
      * @return the set of edges
      */
     Set<Edge<V>> edgeSet();
 
     /**
-     * Returns the number of vertices in the graph.
+     * Counts the vertices exposed by this graph view.
      *
      * @return the vertex count
      */
@@ -49,7 +48,7 @@ public sealed interface GraphData<V> permits ImmutableGraphData {
     }
 
     /**
-     * Returns the number of edges in the graph.
+     * Counts the edges exposed by this graph view.
      *
      * @return the edge count
      */
@@ -58,7 +57,7 @@ public sealed interface GraphData<V> permits ImmutableGraphData {
     }
 
     /**
-     * Checks whether a directed edge exists from v1 to v2.
+     * Tests whether the graph contains the directed connection from {@code v1} to {@code v2}.
      *
      * @param v1 the source vertex
      * @param v2 the destination vertex

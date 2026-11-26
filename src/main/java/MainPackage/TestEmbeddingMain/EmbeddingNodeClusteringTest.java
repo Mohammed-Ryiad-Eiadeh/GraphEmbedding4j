@@ -12,10 +12,10 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
- * Evaluates learned node embeddings on a node clustering task
- * using K-Means++ with train / test split evaluation.
+ * Measures whether learned node embeddings form useful clusters under K-Means++.
  */
 public class EmbeddingNodeClusteringTest {
+    /** Loads embedding features, trains the clustering model, and evaluates both data splits. */
     public static void main(String[] args) throws IOException {
         var modelName = "MB2Vec";
         var dataPath = "C:\\Users\\moham\\OneDrive\\Desktop\\" + modelName + "_Karate_Edges.csv";

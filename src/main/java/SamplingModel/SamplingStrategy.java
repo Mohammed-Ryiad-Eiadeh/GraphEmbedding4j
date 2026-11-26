@@ -5,30 +5,12 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Shared sampling utilities for biased random-walk strategies.
- * <p>
- * Provides roulette-wheel (weighted random) sampling used by MB2Vec and Node2Vec.
- * </p>
+ * Provides weighted candidate selection shared by biased random-walk strategies.
  */
 public sealed interface SamplingStrategy permits MB2Vec, Node2Vec {
 
     /**
-     * Performs roulette‑wheel (weighted random) sampling over a set of candidate nodes.
-     * <p>
-     * Each candidate node has an associated bias weight. The probability of selecting
-     * a node is proportional to its weight:
-     *
-     * <pre>
-     *     P(node_i) = weight_i / Σ(weight_j)
-     * </pre>
-     *
-     * This method:
-     * <ol>
-     *   <li>Computes the total weight.</li>
-     *   <li>Draws a random value in [0, total).</li>
-     *   <li>Iterates through candidates, accumulating weights until the
-     *       cumulative sum exceeds the random value.</li>
-     * </ol>
+     * Selects one candidate with probability proportional to its assigned weight.
      *
      * @param neighborsToBiasRatio mapping from candidate node IDs to their bias weights
      * @param randSample random generator used for sampling

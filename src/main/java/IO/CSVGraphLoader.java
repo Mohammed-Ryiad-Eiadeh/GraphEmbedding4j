@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 /**
- * Parses an edge-list file and populates a {@link GraphBuilder} with the loaded edges.
+ * Converts rows from an edge-list file into weighted connections in a graph builder.
  *
  * @param <V> vertex type
  */
@@ -17,7 +17,7 @@ public class CSVGraphLoader<V> {
     private final GraphBuilder<V> graphBuilder;
 
     /**
-     * Creates a graph loader that writes loaded edges into the provided builder.
+     * Associates the loader with the builder that will receive parsed edges.
      *
      * @param graphBuilder the graph builder to update in-place
      */
@@ -26,7 +26,7 @@ public class CSVGraphLoader<V> {
     }
 
     /**
-     * Loads graph edges into the provided {@link GraphBuilder}.
+     * Parses edge rows and adds their endpoints and weights to the associated builder.
      *
      * @param path the input file path
      * @param vertexParser converts vertex IDs from String to type V

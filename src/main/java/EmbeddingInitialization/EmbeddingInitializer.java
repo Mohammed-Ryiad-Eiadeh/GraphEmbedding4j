@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Initializes node embedding vectors using a configurable random distribution
- * (uniform, Gaussian, or exponential).
+ * Creates one seeded random embedding vector per graph node using a selected distribution.
  *
  * @param <V> node identifier type
  */
@@ -18,10 +17,7 @@ public non-sealed class EmbeddingInitializer<V> extends Initializer<V> {
     private final Random random;
 
     /**
-     * Creates a random embedding initializer.
-     * <p>
-     * The initializer generates one embedding vector per node using
-     * the selected initialization mode and random seed.
+     * Configures the distribution and reproducible seed used to initialize node vectors.
      *
      * @param immutableGraphData graph data used to determine the number of nodes
      * @param initializerMode initialization strategy to use
@@ -37,10 +33,7 @@ public non-sealed class EmbeddingInitializer<V> extends Initializer<V> {
     }
 
     /**
-     * Initializes embedding vectors for all nodes.
-     * <p>
-     * Each node receives an embedding vector generated according to
-     * the selected initialization mode.
+     * Builds an embedding vector for each indexed graph node.
      *
      * @return map of node IDs to embedding vectors
      */
@@ -60,7 +53,7 @@ public non-sealed class EmbeddingInitializer<V> extends Initializer<V> {
     }
 
     /**
-     * Creates a uniformly initialized embedding vector.
+     * Samples each coordinate from the configured uniform range.
      *
      * @return embedding vector sampled from [-1/d, 1/d]
      */
@@ -76,7 +69,7 @@ public non-sealed class EmbeddingInitializer<V> extends Initializer<V> {
     }
 
     /**
-     * Creates a Gaussian-initialized embedding vector.
+     * Samples each coordinate from the configured zero-centered Gaussian.
      *
      * @return embedding vector sampled from N(0, 1/sqrt(d))
      */
@@ -91,7 +84,7 @@ public non-sealed class EmbeddingInitializer<V> extends Initializer<V> {
     }
 
     /**
-     * Creates an exponential-initialized embedding vector.
+     * Samples each coordinate from the exponential distribution.
      *
      * @return embedding vector sampled from exponential term
      */

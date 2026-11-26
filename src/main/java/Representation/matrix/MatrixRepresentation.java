@@ -1,13 +1,13 @@
 package Representation.matrix;
 
 /**
- * Base class for graph representations backed by a matrix.
+ * Defines access to a graph represented by a matrix of values.
  *
  * @param <Mat> the matrix type
  */
 public abstract class MatrixRepresentation<Mat> {
     /**
-     * Returns the matrix representation of the graph.
+     * Exposes the matrix used to represent the graph.
      *
      * @return the graph matrix
      */

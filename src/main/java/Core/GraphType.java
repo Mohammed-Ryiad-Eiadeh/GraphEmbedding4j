@@ -1,7 +1,7 @@
 package Core;
 
 /**
- * Directionality of the graph edges.
+ * Selects whether graph edges have one-way or bidirectional semantics.
  */
 public enum GraphType {
     Directed,

@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Displays an immutable graph using GraphStream with styled nodes and edges.
+ * Turns immutable graph data into a styled GraphStream view or PNG export.
  *
  * @param <V> the type of vertices in the graph
  */
@@ -27,8 +27,7 @@ public class GraphVisualizer<V> {
     private final boolean visualizeEdges;
 
     /**
-     * Constructs a graph visualizer with the given graph name, immutable graph data,
-     * and options for directed edges, node IDs, and edge weights.
+     * Configures which graph data and labels the visualizer will render.
      *
      * @param graphName the name of the graph
      * @param immutableGraphData the immutable graph data to visualize
@@ -62,8 +61,7 @@ public class GraphVisualizer<V> {
     }
 
     /**
-     * Renders the graph using GraphStream with styled nodes, edges,
-     * labels, and enhanced rendering quality.
+     * Builds and displays the styled graph, optionally labeling nodes and edge weights.
      */
     public void displaySingleGraph() {
         Set<V> verticesSet = immutableGraphDataBuilder.vertexSet();
@@ -153,7 +151,7 @@ public class GraphVisualizer<V> {
     }
 
     /**
-     * Saves the graph as a PNG image at HD720 resolution.
+     * Exports the current graph view as an HD720 PNG image.
      *
      * @param path the output file path
      */

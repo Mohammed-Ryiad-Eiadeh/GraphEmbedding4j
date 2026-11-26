@@ -1,13 +1,13 @@
 package OptimizationAlgorithms;
 
 /**
- * Stochastic Gradient Descent (SGD) with a fixed learning rate.
+ * Applies each gradient directly with a fixed learning rate.
  */
 public non-sealed class SGD implements Optimizer {
     private final double learningRate;
 
     /**
-     * Constructs an SGD optimizer with the given learning rate.
+     * Sets the step size used for all gradient updates.
      *
      * @param learningRate the step size used during parameter updates
      */
@@ -19,7 +19,7 @@ public non-sealed class SGD implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Subtracts the scaled gradient from each parameter.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

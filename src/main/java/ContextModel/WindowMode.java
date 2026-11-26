@@ -1,7 +1,7 @@
 package ContextModel;
 
 /**
- * Direction of the sliding window relative to the center node in a walk.
+ * Selects which side of a target contributes context nodes from a walk.
  */
 public enum WindowMode {
     Symmetric, // Uses both left and right neighbors.

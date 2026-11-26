@@ -5,10 +5,7 @@ import org.ejml.simple.SimpleMatrix;
 import org.ejml.simple.SimpleSVD;
 
 /**
- * Low-rank matrix approximation via Singular Value Decomposition (SVD).
- * <p>
- * Decomposes matrix A into U × W × V^T, where U and V are orthogonal matrices
- * and W contains singular values in descending order.
+ * Uses SVD components to represent a matrix with its leading dimensions.
  *
  * @param <Mat> the type of the underlying matrix representation element
  */
@@ -17,7 +14,7 @@ public class SimpleSVDApproximation<Mat> {
     private final SimpleSVD<SimpleMatrix> simpleSVD;
 
     /**
-     * Decomposes the given matrix using full SVD with the specified target rank.
+     * Computes the matrix's SVD and records how many leading dimensions to use for embeddings.
      *
      * @param matrix      the matrix to decompose
      * @param kDimension  target rank for low-rank approximation (0 ≤ k ≤ columns)
@@ -42,7 +39,7 @@ public class SimpleSVDApproximation<Mat> {
     }
 
     /**
-     * Returns the U matrix (left singular vectors).
+     * Exposes the left singular vectors from the decomposition.
      *
      * @return the U matrix from the SVD decomposition
      */
@@ -51,7 +48,7 @@ public class SimpleSVDApproximation<Mat> {
     }
 
     /**
-     * Returns the V matrix (right singular vectors).
+     * Exposes the right singular vectors from the decomposition.
      *
      * @return the V matrix from the SVD decomposition
      */
@@ -60,7 +57,7 @@ public class SimpleSVDApproximation<Mat> {
     }
 
     /**
-     * Returns the W matrix (singular values in descending order).
+     * Exposes the diagonal matrix of singular values.
      *
      * @return the W matrix from the SVD decomposition
      */
@@ -69,8 +66,7 @@ public class SimpleSVDApproximation<Mat> {
     }
 
     /**
-     * Returns the low-rank embedding matrix by multiplying the top-k left singular vectors
-     * with the top-k singular values (U_K × W_K).
+     * Forms node embeddings from the leading left singular vectors scaled by their singular values.
      *
      * @return the low-rank embedding matrix of shape (rows × k)
      */

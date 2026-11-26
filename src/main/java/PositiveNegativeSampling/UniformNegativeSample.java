@@ -10,15 +10,13 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * Generates negative samples by uniformly sampling from all graph vertices,
- * excluding a set of forbidden nodes (e.g., the target and its positive contexts).
+ * Chooses negative contexts uniformly from graph vertices not in the forbidden set.
  */
 public non-sealed class UniformNegativeSample<V> implements NegativeSample {
     private final int graphSize;
 
     /**
-     * Creates a generator for negative samples using a uniform distribution
-     * over the graph vertices.
+     * Sets the graph's indexed vertex range used as the negative-candidate pool.
      *
      * @param mapper mapping between vertices and integer indices
      *
@@ -30,8 +28,7 @@ public non-sealed class UniformNegativeSample<V> implements NegativeSample {
     }
 
     /**
-     * Samples K negative (target, context) pairs for the given target
-     * from a candidate set, excluding any forbidden nodes.
+     * Returns up to the requested number of eligible negative contexts for a target.
      *
      * @param target the target node
      * @param forbidden nodes that must not be sampled as negatives

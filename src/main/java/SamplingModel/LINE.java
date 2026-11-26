@@ -1,8 +1,7 @@
 package SamplingModel;
 
 /**
- * Placeholder for LINE (Large-scale Information Network Embedding) implementation.
- * Not yet implemented.
+ * Reserves the LINE embedding strategy; its implementation is not yet available.
  */
 public class LINE<V> {
     // ToDo

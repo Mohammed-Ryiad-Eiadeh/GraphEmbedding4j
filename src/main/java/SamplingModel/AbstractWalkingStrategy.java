@@ -8,10 +8,7 @@ import java.util.Collections;
 import java.util.Random;
 
 /**
- * Base class for random-walk strategies that generate sequences of vertex indices.
- * <p>
- * Manages walk configuration and caches the generated walks for reuse.
- * </p>
+ * Manages walk limits and generates a cached collection of indexed walks for each graph node.
  *
  * @param <V> vertex type used by the input graph
  */
@@ -22,7 +19,7 @@ public abstract sealed class AbstractWalkingStrategy<V> extends AbstractSampling
     private volatile ArrayList<ArrayList<Integer>> cachedSetWalks;
 
     /**
-     * Constructs a walk strategy with shared graph and sampling settings.
+     * Sets the graph, hop limit, and number of walks generated per vertex.
      *
      * @param immutableGraphData immutable graph data containing vertices and edges
      * @param mapping            mapping between vertices and internal node IDs
@@ -47,7 +44,7 @@ public abstract sealed class AbstractWalkingStrategy<V> extends AbstractSampling
     }
 
     /**
-     * Returns a random walk starting from a given source node.
+     * Defines how a concrete strategy creates one walk from a starting vertex.
      *
      * @param start the node to launch the walk from
      * @return a random walk starting from the given source node
@@ -55,11 +52,7 @@ public abstract sealed class AbstractWalkingStrategy<V> extends AbstractSampling
     abstract ArrayList<Integer> generateWalk(V start);
 
     /**
-     * Returns the generated random walks.
-     * <p>
-     * If the walks were generated before, the cached set is returned.
-     * Otherwise, random walks are generated for each vertex and stored for reuse.
-     * Only walks of length at least {@code 2} are included.
+     * Generates walks for every vertex once and reuses the cached collection on later calls.
      *
      * @return a set of generated random walks
      */

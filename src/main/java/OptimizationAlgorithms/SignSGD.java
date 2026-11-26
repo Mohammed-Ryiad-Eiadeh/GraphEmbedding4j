@@ -1,16 +1,13 @@
 package OptimizationAlgorithms;
 
 /**
- * Sign SGD optimizer.
- * <p>
- * Updates each parameter by moving it in the opposite direction of the
- * gradient's sign, scaled by a fixed learning rate.
+ * Moves each parameter opposite the gradient sign using a fixed step size.
  */
 public non-sealed class SignSGD implements Optimizer {
     private final double learningRate;
 
     /**
-     * Constructs a SignSGD optimizer with the given learning rate.
+     * Sets the step size applied to each gradient sign.
      *
      * @param learningRate the step size used during parameter updates
      */
@@ -22,7 +19,7 @@ public non-sealed class SignSGD implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Adjusts each parameter by the signed direction of its gradient.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

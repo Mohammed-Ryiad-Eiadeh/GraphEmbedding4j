@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * AdaGrad optimizer that adapts the learning rate per parameter
- * using an accumulating sum of squared gradients.
+ * Shrinks each parameter's step according to its accumulated squared gradients.
  */
 public non-sealed class AdaGrad implements Optimizer {
     private final double learningRate;
@@ -12,7 +11,7 @@ public non-sealed class AdaGrad implements Optimizer {
     private final HashMap<double[], double[]> accumulatorVector;
 
     /**
-     * Constructs an AdaGrad optimizer.
+     * Sets the global step size and numerical stability value for AdaGrad updates.
      *
      * @param learningRate the learning rate used for parameter updates
      * @param epsilon the numerical stability constant, in the range [1e-12, 1e-6]
@@ -33,7 +32,7 @@ public non-sealed class AdaGrad implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Accumulates squared gradients and scales each parameter update by its history.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

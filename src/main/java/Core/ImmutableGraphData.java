@@ -6,14 +6,11 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Immutable snapshot of a graph's structure.
- * <p>
- * Thread-safe and safe to share across algorithms and random walks.
- * </p>
+ * Holds an immutable, shareable snapshot of a graph's vertices, edges, and type.
  */
 public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<Edge<V>> edgeSet) implements GraphData<V> {
     /**
-     * Constructs an immutable graph data instance.
+     * Copies the supplied graph components into an immutable snapshot.
      *
      * @param graphType the graph structure type
      * @param vertexSet the set of vertices (defensively copied)
@@ -27,7 +24,7 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<E
     }
 
     /**
-     * Returns the name of the graph type as a string.
+     * Supplies a string identifier for the graph's directionality.
      *
      * @return graph type name
      */
@@ -37,7 +34,7 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<E
     }
 
     /**
-     * Returns a human-readable string representation of the graph data.
+     * Formats the graph type, vertices, and edges for diagnostics.
      *
      * @return string representation
      */
@@ -50,7 +47,7 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<E
     }
 
     /**
-     * Returns the structural type of the graph.
+     * Exposes the directionality captured by this snapshot.
      *
      * @return graph type
      */
@@ -60,7 +57,7 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<E
     }
 
     /**
-     * Returns the immutable set of vertices.
+     * Exposes the snapshot's unmodifiable vertex set.
      *
      * @return vertex set
      */
@@ -70,7 +67,7 @@ public record ImmutableGraphData<V>(GraphType graphType, Set<V> vertexSet, Set<E
     }
 
     /**
-     * Returns the immutable set of edges.
+     * Exposes the snapshot's unmodifiable edge set.
      *
      * @return edge set
      */

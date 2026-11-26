@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Base class for graph representations backed by an adjacency list.
+ * Defines access to a graph stored as per-vertex neighbor lists.
  *
  * @param <T> the vertex type
  */
 public abstract class AdjacencyListData<T> {
     /**
-     * Returns the adjacency list of the graph.
-     * Each vertex is mapped to a list of outgoing edges.
+     * Exposes each vertex's outgoing neighbors and their edge weights.
      *
      * @return a map representing the adjacency list
      */

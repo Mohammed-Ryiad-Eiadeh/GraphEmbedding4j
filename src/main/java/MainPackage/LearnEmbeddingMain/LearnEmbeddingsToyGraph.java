@@ -24,10 +24,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * End-to-end demo that learns node embeddings on a small manually constructed graph
- * using DeepWalk random walks and Skip-Gram training.
+ * Demonstrates DeepWalk and Skip-Gram embedding on a small graph constructed in code.
  */
 public class LearnEmbeddingsToyGraph {
+    /** Builds the toy graph, trains embeddings, and writes the results to CSV. */
     public static void main(String[] args) throws IOException {
         var fileName = "ToyGraph";
 

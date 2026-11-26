@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Bidirectional mapping between graph vertices and contiguous integer indices [0…n-1].
- * Immutable after construction.
+ * Assigns each graph vertex a stable contiguous index and supports lookups in both directions.
  *
  * @param <V> the vertex type
  */
@@ -17,7 +16,7 @@ public class VertexIndexMapping<V> {
     private final List<V> indexToVertex;
 
     /**
-     * Constructs an index mapping from immutable graph data.
+     * Assigns indices in the order vertices appear in the graph data.
      */
     public VertexIndexMapping(GraphData<V> GraphData) {
         indexToVertex = List.copyOf(Objects.requireNonNull(GraphData).vertexSet());
@@ -32,7 +31,7 @@ public class VertexIndexMapping<V> {
     }
 
     /**
-     * Returns the immutable vertex to index mapping.
+     * Exposes the read-only lookup from vertices to their assigned indices.
      *
      * @return vertex to index map
      */
@@ -41,7 +40,7 @@ public class VertexIndexMapping<V> {
     }
 
     /**
-     * Returns the index associated with a given vertex.
+     * Resolves a graph vertex to its assigned integer index.
      *
      * @param vertex the vertex to look up
      * @return vertex index
@@ -56,7 +55,7 @@ public class VertexIndexMapping<V> {
     }
 
     /**
-     * Returns the vertex associated with a given index.
+     * Resolves an integer index back to its graph vertex.
      *
      * @param index the vertex index
      * @return vertex at the given index

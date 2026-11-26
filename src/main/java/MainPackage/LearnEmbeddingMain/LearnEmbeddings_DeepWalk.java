@@ -22,10 +22,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 /**
- * End-to-end demo that learns node embeddings on graphs
- * using DeepWalk random walks and Skip-Gram training.
+ * Demonstrates node embedding training from uniform DeepWalk sequences.
  */
 public class LearnEmbeddings_DeepWalk {
+    /** Loads the example graph, trains the DeepWalk embedding model, and exports its vectors. */
     public static void main(String[] args) throws Exception {
         // Load the graph from Graphs
         var fileName = "Karate_Edges";

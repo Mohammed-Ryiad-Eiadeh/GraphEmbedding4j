@@ -3,8 +3,7 @@ package OptimizationAlgorithms;
 import java.util.HashMap;
 
 /**
- * Momentum SGD — standard SGD augmented with a velocity term
- * that accumulates a moving average of past gradients to reduce oscillations.
+ * Smooths stochastic gradient updates by carrying a decaying velocity between steps.
  */
 public non-sealed class MomentumSGD implements Optimizer {
     private final double learningRate;
@@ -12,7 +11,7 @@ public non-sealed class MomentumSGD implements Optimizer {
     private final HashMap<double[], double[]> velocityVector;
 
     /**
-     * Constructs a Momentum SGD optimizer.
+     * Configures the step size and the fraction of prior velocity to retain.
      *
      * @param learningRate the learning rate used for parameter updates
      * @param momentum     the momentum coefficient in the range [0, 1)
@@ -34,7 +33,7 @@ public non-sealed class MomentumSGD implements Optimizer {
     }
 
     /**
-     * Updates the model parameters using the computed gradient.
+     * Accumulates the current gradient into velocity and applies the resulting step.
      *
      * @param weights  the parameter vector to be updated
      * @param gradient the computed gradient vector

@@ -3,16 +3,16 @@ package ActivationFunction;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Activation function applied to the dot product of target and context embeddings.
+ * Defines how a target-context score becomes an output and how its gradient is computed.
  */
 public sealed interface Activation extends DoubleUnaryOperator
         permits SigmoidFunction, CLogLogFunction {
 
     /**
-     * Computes the activation function derivative using the activation output.
+     * Returns the activation's local derivative for the supplied operand.
      *
-     * @param operand input value
-     * @return derivative
+     * @param operand value used to evaluate the derivative
+     * @return the local derivative
      */
     double derivative(double operand);
 }

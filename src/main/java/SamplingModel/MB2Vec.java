@@ -15,12 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * MB2Vec — Markov Blanket-based biased random walk for directed graphs.
- * <p>
- * The Markov Blanket of a node comprises its parents, children, and co-parents.
- * Transitions are biased by four parameters (a1–a4) reflecting the structural
- * relationship between each candidate and the previously visited node.
- * </p>
+ * Generates directed-graph walks over Markov Blankets with relation-specific transition weights.
  *
  * @param <V> the vertex type
  */
@@ -46,8 +41,7 @@ public non-sealed class MB2Vec<V> extends AbstractWalkingStrategy<V> implements 
     private final Random mbSeed;
 
     /**
-     * Initializes MB2Vec with the graph structure, walk configuration,
-     * transition bias parameters, and random seeds.
+     * Configures the graph, walk count, four transition weights, and reproducible random streams.
      *
      * @param immutableGraphData the immutable graph data
      * @param mapping vertex-to-index mapping
@@ -101,12 +95,7 @@ public non-sealed class MB2Vec<V> extends AbstractWalkingStrategy<V> implements 
     }
 
     /**
-     * Generates a Markov Blanket-based biased random walk
-     * starting from the specified source node.
-     *
-     * The first transition uses uniform sampling. Subsequent
-     * transitions assign weights according to the relationship
-     * between each candidate and the previous node.
+     * Walks through each node's Markov Blanket, using uniform choice first and biased choice thereafter.
      *
      * @param start the source node
      * @return the generated sequence of vertex indices
@@ -126,11 +115,7 @@ public non-sealed class MB2Vec<V> extends AbstractWalkingStrategy<V> implements 
         List<Neighbor<Integer>> parentList = parents.getOrDefault(current, List.of());
 
         List<Neighbor<Integer>> markovBlanket;
-        if (true) {
-            markovBlanket = getMarkovBlanket(current, childrenList, parentList);
-        } else {
-            markovBlanket = getMarkovBlanket(current, childrenList, parentList);
-        }
+        markovBlanket = getMarkovBlanket(current, childrenList, parentList);
 
         // First transition: uniform sampling from the Markov Blanket
         if (!markovBlanket.isEmpty()) {
@@ -203,15 +188,7 @@ public non-sealed class MB2Vec<V> extends AbstractWalkingStrategy<V> implements 
     }
 
     /**
-     * Constructs the Markov Blanket of the specified node.
-     *
-     * The Markov Blanket combines:
-     * - Parents: nodes with incoming edges to the current node.
-     * - Children: nodes reachable through outgoing edges.
-     * - Co-parents: nodes sharing at least one child with the current node.
-     *
-     * The resulting collection is deduplicated and shuffled before
-     * being returned.
+     * Collects and caches the node's parents, children, and co-parents as walk candidates.
      *
      * @param current the current vertex index
      * @param childrenList outgoing neighbors of the current node

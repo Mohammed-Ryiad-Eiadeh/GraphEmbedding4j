@@ -9,15 +9,14 @@ import java.nio.file.Path;
 import java.util.Map;
 
 /**
- * Writes learned node embeddings to a CSV file, one row per node.
+ * Serializes node embedding vectors as one feature row per node in a CSV file.
  *
  * @param <V> the vertex type
  */
 public class CSVNodeEmbeddingExporter<V> {
 
     /**
-     * Saves learned node embeddings to a CSV file, mapping integer indices
-     * back to original vertex labels.
+     * Exports vectors while translating internal indices back to original vertex labels.
      *
      * @param path the output file path
      * @param vertexIndexMapping maps node indices back to original vertices
@@ -46,7 +45,7 @@ public class CSVNodeEmbeddingExporter<V> {
     }
 
     /**
-     * Saves learned node embeddings to a CSV file using integer node IDs directly.
+     * Exports vectors using their integer node indices as CSV identifiers.
      *
      * @param path the output file path
      * @param embeddings the learned node embeddings keyed by integer node ID

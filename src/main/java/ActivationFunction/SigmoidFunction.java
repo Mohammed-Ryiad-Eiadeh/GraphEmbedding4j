@@ -1,15 +1,15 @@
 package ActivationFunction;
 
 /**
- * Sigmoid activation function that maps a real-valued score to (0, 1).
+ * Converts a real-valued score to a probability-like output with the sigmoid function.
  */
 public non-sealed class SigmoidFunction implements Activation {
 
     /**
-     * Applies the sigmoid activation function.
+     * Transforms a score into its sigmoid activation output.
      *
-     * @param dotProduct input value
-     * @return sigmoid output in the range (0, 1)
+     * @param dotProduct target-context score
+     * @return activation output in the range (0, 1)
      */
     @Override
     public double applyAsDouble(double dotProduct) {
@@ -17,10 +17,10 @@ public non-sealed class SigmoidFunction implements Activation {
     }
 
     /**
-     * Computes the sigmoid derivative using the activation output.
+     * Computes the slope of the sigmoid function at the supplied score.
      *
-     * @param dotProduct input value
-     * @return sigmoid derivative
+     * @param dotProduct target-context score
+     * @return the activation derivative
      */
     @Override
     public double derivative(double dotProduct) {

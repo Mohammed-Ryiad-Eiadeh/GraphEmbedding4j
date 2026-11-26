@@ -13,11 +13,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
- * Skip-Gram with Negative Sampling (SGNS) for learning node embeddings.
- * <p>
- * Maintains separate target and context embedding vectors and optimizes
- * binary cross-entropy loss over positive and negative (target, context) pairs.
- * </p>
+ * Learns separate target and context vectors by classifying positive and negative node pairs.
  *
  * @param <V> the vertex type used in the input graph
  */
@@ -33,7 +29,7 @@ public class SkipGram<V> {
     private final HashMap<Integer, double[]> contextEmbeddings;
 
     /**
-     * Constructs the Skip-Gram model.
+     * Initializes embeddings and training samples for the SGNS learning process.
      *
      * @param embeddingInitializer embedding initialization strategy
      * @param positiveNegativeSample training sample generator
@@ -94,13 +90,7 @@ public class SkipGram<V> {
     }
 
     /**
-     * Trains Skip-Gram using positive and negative pairs.
-     *
-     * For each pair:
-     * 1. Calculate target-context dot product.
-     * 2. Apply sigmoid.
-     * 3. Compute binary cross-entropy gradients.
-     * 4. Update target and context embeddings.
+     * Updates target and context vectors over the configured epochs using pair labels as supervision.
      */
     public void trainModel() {
         for (int epoch = 0; epoch < numOfEpochs; epoch++) {
@@ -173,10 +163,7 @@ public class SkipGram<V> {
     }
 
     /**
-     * Returns the learned target-node embeddings.
-     *
-     * These embeddings can be used for node classification,
-     * community detection, and other downstream tasks.
+     * Returns defensive copies of the learned node representations used as targets.
      *
      * @return defensive copy of target embeddings
      */
@@ -190,7 +177,7 @@ public class SkipGram<V> {
     }
 
     /**
-     * Returns the learned context-node embeddings.
+     * Returns defensive copies of the learned context-side representations.
      *
      * @return defensive copy of context embeddings
      */
